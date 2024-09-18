@@ -1,0 +1,13 @@
+/* home.component.scss */
+.highlight {
+    border: 2px solid #007BFF;
+    background-color: #f8f9fa;
+    padding: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Optional: Menambahkan efek transisi */
+  .highlight {
+    transform: scale(1.05);
+  }
+  
