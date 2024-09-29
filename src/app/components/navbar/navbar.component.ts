@@ -14,15 +14,17 @@ export class NavbarComponent implements OnInit {
     this.Cssclass = false;
   }
 
-  onClick() {
+  onClick(): void {
+    // Toggle the Cssclass property to show/hide mobile menu
     this.Cssclass = !this.Cssclass;
   }
 
-  // Fungsi untuk menavigasi ke bagian tertentu pada halaman
+  // Function to navigate to a specific section on the page and hide the navbar
   navigate(sectionId: string): void {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    this.Cssclass = false; // Hide the mobile menu after navigating
   }
 }

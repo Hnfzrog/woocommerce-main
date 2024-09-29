@@ -52,14 +52,21 @@ ul {
 
 .bg-gradient {
   background: rgb(229, 239, 255);
-  background-image: url("../assets/bgclip.png");
-  background: url("../assets/bgclip.png"),
-    linear-gradient(
-      180deg,
-      rgba(229, 239, 255, 1) 0%,
-      rgba(229, 239, 255, 0.27) 88%,
-      rgba(229, 239, 255, 0) 100%
-    );
+  // background-image: url("../assets/bgheroes.svg");
+/* Rectangle 177 */
+
+  // position: absolute;
+  left: 0px;
+  top: 86px;
+
+  background: linear-gradient(118.73deg, rgba(251, 251, 251, 0.24) 12.25%, rgba(255, 213, 213, 0.096) 35.17%);
+  backdrop-filter: blur(190px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  // background-image: url("../assets/bgclip.png");
+  // background: url("../assets/bgclip.png"),
+  // linear-gradient(118.73deg, rgba(251, 251, 251, 0.24) 12.25%, rgba(255, 213, 213, 0.096) 35.17%);
+
   background-repeat: no-repeat;
   background-position: right 0% top 0%;
   height: 100%;

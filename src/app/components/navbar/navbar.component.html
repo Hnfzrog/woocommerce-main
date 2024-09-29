@@ -1,67 +1,60 @@
-<!-- navbar.component.html -->
 <section class="section">
-    <div class="container">
-      <nav class="wc__nav">
-        <div class="wc__nav-brand">
-          <img src='../../../assets/LOGO.png' alt="Brand Logo">
-        </div>
-        <div class="wc__nav-links">
-          <ul>
-            <li>
-              <a (click)="navigate('sale')">Sale</a>
-            </li>
-            <li>
-              <a (click)="navigate('marketplace')">Marketplace</a>
-            </li>
-            <li>
-              <a (click)="navigate('community')">Community</a>
-            </li>
-            <li>
-              <a (click)="navigate('develope')">Develope</a>
-            </li>
-            <li>
-              <a (click)="navigate('resources')">Resources</a>
-            </li>
-          </ul>
-        </div>
-        <div class="wc__nav-cta">
-          <p>Log In</p>
-          <button type="button">Get Started</button>
-          <a href="#">
-            <img src="../../../assets/search.png" alt="">
-          </a>
-          <!-- Mobile Menue -->
-          <div [ngClass]="Cssclass ? 'wc__nav-menu header__toggle' : 'wc__nav-menu'" (click)="onClick()">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      </nav>
-      <div [ngClass]="Cssclass ? 'overlay fade-in':'overlay fade-out'" [hidden]="!Cssclass"></div>
-      <div class="wc__nav-mobile" [ngClass]="Cssclass ? 'fade-in' :'fade-out'" [hidden]="!Cssclass">
+  <div class="container">
+    <nav class="wc__nav">
+      <div class="wc__nav-brand">
+        <img src='../../../assets/logo.svg' style="width: 100%; height: 120%;" alt="Brand Logo">
+      </div>
+      <div class="wc__nav-links">
         <ul>
           <li>
-            <a (click)="navigate('sale')">Sale</a>
+            <a (click)="navigate('')">Beranda</a>
           </li>
           <li>
-            <a (click)="navigate('marketplace')">Marketplace</a>
+            <a (click)="navigate('fitur')">Fitur</a>
           </li>
           <li>
-            <a (click)="navigate('community')">Community</a>
+            <a (click)="navigate('undangan')">Undangan website</a>
           </li>
           <li>
-            <a (click)="navigate('develope')">Develope</a>
-          </li>
-          <li>
-            <a (click)="navigate('resources')">Resources</a>
+            <a (click)="navigate('develope')">Undangan video</a>
           </li>
         </ul>
-        <div class="wc__nav-mobile_cta">
-          <p>Log In</p>
-          <button type="button">Get Started</button>
+      </div>
+      <div class="wc__nav-cta">
+        <p>Log In</p>
+        <button type="button">Get Started</button>
+        <a href="#">
+          <img src="../../../assets/search.png" alt="Search">
+        </a>
+        <!-- Mobile Menu -->
+        <div [ngClass]="Cssclass ? 'wc__nav-menu header__toggle' : 'wc__nav-menu'" (click)="onClick()">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
+    </nav>
+    <!-- Mobile Menu -->
+    <div [ngClass]="Cssclass ? 'overlay fade-in' : 'overlay fade-out'" [hidden]="!Cssclass"></div>
+    <div class="wc__nav-mobile" [ngClass]="Cssclass ? 'fade-in' : 'fade-out'" [hidden]="!Cssclass">
+      <ul>
+        <li>
+          <a (click)="navigate('')">Beranda</a>
+        </li>
+        <li>
+          <a (click)="navigate('fitur')">Fitur</a>
+        </li>
+        <li>
+          <a (click)="navigate('undangan')">Undangan website</a>
+        </li>
+        <li>
+          <a (click)="navigate('develope')">Undangan video</a>
+        </li>
+      </ul>
+      <div class="wc__nav-mobile_cta">
+        <p>Log In</p>
+        <button type="button">Get Started</button>
+      </div>
     </div>
-  </section>
-  
+  </div>
+</section>

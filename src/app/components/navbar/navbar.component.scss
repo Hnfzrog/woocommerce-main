@@ -6,8 +6,8 @@
   position: relative;
   z-index: 2;
   &-brand {
-    width: 10.5625rem;
-    height: 2.13rem;
+    width: 12.5625rem;
+    height: 3rem;
   }
   &-links {
     ul {
@@ -204,5 +204,11 @@ Resposnive
         display: none;
       }
     }
+  }
+}
+@media screen and (max-width: 425px) {
+  .wc__nav {
+    width: 119%;
+    right: 50px;
   }
 }
