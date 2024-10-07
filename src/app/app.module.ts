@@ -10,6 +10,8 @@ import { CommunityComponent } from './home/community/community.component';
 import { TestimonialsComponent } from './home/testimonials/testimonials.component';
 import { DevelopersComponent } from './home/developers/developers.component';
 import { FooterComponent } from './home/footer/footer.component';
+import { FooterHeroComponent } from './home/footer-hero/footer-hero.component';
+import { FeatureFooterComponent } from './home/features/feature-footer/feature-footer.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { FooterComponent } from './home/footer/footer.component';
     TestimonialsComponent,
     DevelopersComponent,
     FooterComponent,
+    FooterHeroComponent,
+    FeatureFooterComponent,
   ],
   imports: [BrowserModule],
   providers: [],

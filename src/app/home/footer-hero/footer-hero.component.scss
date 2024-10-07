@@ -1,0 +1,132 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section {
+  background: #FFFFFF;
+  min-height: 100vh; /* Ensure full viewport height */
+}
+
+.wc__footer-hero {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding-top: 7.0625rem;
+  justify-content: center;
+  align-items: center;
+  opacity: 0; /* Initial state */
+  animation: fadeIn 1.5s ease-in-out forwards; /* Fade-in animation */
+  animation-delay: 0.5s;
+
+  h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 2.5rem;
+    max-width: 30rem;
+    text-align: center;
+  }
+
+  b {
+    color: black;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 2.5rem;
+    max-width: 30rem;
+    text-align: center;
+  }
+}
+
+html, body {
+  background-color: lightgray;
+  height: 100%;
+  width: 100vw;
+}
+
+.container {
+  width: 100%;
+  padding: 5rem;
+  background-color: inherit;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
+}
+
+.feature {
+  display: grid;
+  padding: 1rem;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  column-gap: 0.5rem;
+}
+
+.item {
+  margin: 0.5rem;
+  padding: 6rem;
+  color: white;
+  font-size: 2.5rem;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  border-radius: .2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1rem 4rem rgba(0,0,0,.25);
+  transition: all .2s;
+  opacity: 0; /* Initial state */
+  animation: fadeInUp 1s ease-in-out forwards; /* Fade-in and up animation */
+}
+
+.item--1 {
+  background-color: blue;
+  animation-delay: 0.5s;
+}
+
+.item--2 {
+  background-color: purple;
+  animation-delay: 0.7s;
+}
+
+.item--3 {
+  background-color: red;
+  animation-delay: 0.9s;
+}
+
+.item--4 {
+  background-color: green;
+  animation-delay: 1.1s;
+}
+
+.item--5 {
+  background-color: teal;
+  animation-delay: 1.3s;
+}
+
+.item--6 {
+  background-color: navy;
+  animation-delay: 1.5s;
+}
+
+.item:hover {
+  background-color: lightgray;
+  color: gray;
+  transform: translate(0,-0.3rem);
+  box-shadow: 0 1rem 4rem rgba(0,0,0,.50);
+}

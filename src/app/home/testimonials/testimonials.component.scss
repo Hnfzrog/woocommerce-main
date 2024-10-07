@@ -1,117 +1,85 @@
-@import "../../../styles/variable";
-.wc__testimonials {
+.section {
+  background: #FFFFFF;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  min-height: 100vh; /* Ensure full viewport height */
+}
+
+.wc__footer-hero {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-top: 7.0625rem;
+  justify-content: center;
   align-items: center;
-  margin-top: 2rem;
-  padding: 5rem 0 0;
-  &-heading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 32.5rem;
-    h3 {
-      font-weight: 700;
-      font-size: 45px;
-      line-height: 50px;
-      text-align: center;
-    }
+  h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 2.5rem;
+    max-width: 30rem;
+    text-align: center;
   }
-  &-cards {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 6.4375rem;
-    position: relative;
-    .card {
-      display: flex;
-      justify-self: center;
-      align-items: center;
-      border-radius: 1.25rem;
-      background-color: #fff;
-      max-width: 45.625rem;
-      height: auto;
-      padding: 106px 82px 87px;
-      background-image: url(../../../assets/quote.png);
-      background-size: 234px 168px;
-      background-position: top 20% center;
-      background-repeat: no-repeat;
-      z-index: 1;
-      p {
-        font-size: 1.375rem;
-        line-height: 2.4375rem;
-        font-weight: 300;
-        text-align: center;
-        color: $gray;
-      }
-    }
-    .card-float {
-      border-radius: 1.25rem;
-      background-color: rgba(235, 235, 235, 0.507);
-      width: 90%;
-
-      max-width: 678px;
-      height: 363px;
-      position: absolute;
-      bottom: -30px;
-    }
-    .card-float-2 {
-      border-radius: 1.25rem;
-      background-color: rgba(235, 235, 235, 0.315);
-      width: 80%;
-      max-width: 678px;
-
-      height: 331px;
-      position: absolute;
-      bottom: -45px;
-      // border: 1px solid red;
-    }
-  }
-  &-buttons {
-    display: flex;
-    position: relative;
-    width: 45.625rem;
-    margin-top: 70px;
-    :not(:last-child) {
-      margin-right: 2rem;
-    }
-    button {
-      background-color: transparent;
-      border: 0;
-      outline: none;
-      position: relative;
-      left: 520px;
-      cursor: pointer;
-    }
+  b {
+    color: black;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 2.5rem;
+    max-width: 30rem;
+    text-align: center;
   }
 }
 
-/*
-***********
-Responsive
-***********
-*/
-@media screen and (max-width: 550px) {
-  .wc__testimonials {
-    &-heading {
-      h3 {
-        font-size: 35px;
-        line-height: 40px;
-      }
-    }
-    &-cards {
-      .card {
-        padding: 5rem 2rem;
-        background-position: top 10% center;
-      }
-    }
-    &-buttons {
-      button {
-        left: 320px;
-      }
-    }
-  }
+html, body {
+  background-color: lightgray;
+  height: 100%;
+  width: 100vw;
+}
+
+.container {
+  width: 100%;
+  padding: 5rem;
+  background-color: inherit;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
+}
+
+.feature {
+  display: grid;
+  padding: 1rem;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  column-gap: 0.5rem;
+}
+
+.item {
+  margin: 0.5rem;
+  padding: 6rem;
+  color: white;
+  font-size: 2.5rem;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  border-radius: .2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1rem 4rem rgba(0,0,0,.25);
+  transition: all .2s;
+}
+
+.item--1 { background-color: blue; }
+.item--2 { background-color: purple; }
+.item--3 { background-color: red; }
+.item--4 { background-color: green; }
+.item--5 { background-color: teal; }
+.item--6 { background-color: navy; }
+
+.item:hover {
+  background-color: lightgray;
+  color: gray;
+  transform: translate(0,-0.3rem);
+  box-shadow: 0 1rem 4rem rgba(0,0,0,.50);
 }
