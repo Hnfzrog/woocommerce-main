@@ -12,6 +12,7 @@ import { DevelopersComponent } from './home/developers/developers.component';
 import { FooterComponent } from './home/footer/footer.component';
 import { FooterHeroComponent } from './home/footer-hero/footer-hero.component';
 import { FeatureFooterComponent } from './home/features/feature-footer/feature-footer.component';
+import { FeatureFooterSectionComponent } from './home/features/feature-footer/feature-footer-section/feature-footer-section.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { FeatureFooterComponent } from './home/features/feature-footer/feature-f
     FooterComponent,
     FooterHeroComponent,
     FeatureFooterComponent,
+    FeatureFooterSectionComponent,
   ],
   imports: [BrowserModule],
   providers: [],
