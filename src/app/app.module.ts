@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -13,6 +14,9 @@ import { FooterComponent } from './home/footer/footer.component';
 import { FooterHeroComponent } from './home/footer-hero/footer-hero.component';
 import { FeatureFooterComponent } from './home/features/feature-footer/feature-footer.component';
 import { FeatureFooterSectionComponent } from './home/features/feature-footer/feature-footer-section/feature-footer-section.component';
+import { TestemoniFooterComponent } from './home/testimonials/testemoni-footer/testemoni-footer.component';
+import { TestemonialFooterComponent } from './home/testimonials/testemonial-footer/testemonial-footer.component';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 @NgModule({
   declarations: [
@@ -28,9 +32,18 @@ import { FeatureFooterSectionComponent } from './home/features/feature-footer/fe
     FooterHeroComponent,
     FeatureFooterComponent,
     FeatureFooterSectionComponent,
+    TestemoniFooterComponent,
+    TestemonialFooterComponent,
+    LoginPageComponent,
   ],
-  imports: [BrowserModule],
-  providers: [],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [
+    Title,
+    { provide: LOCALE_ID, useValue: 'id' },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

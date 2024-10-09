@@ -20,6 +20,10 @@
   }
 }
 
+button{
+  background: linear-gradient(69.44deg, #599FE6 0%, #52ECF0 70%);
+}
+
 .wc__hero {
   display: flex;
   justify-content: space-between;
@@ -52,7 +56,8 @@
     p {
       font-size: 18px;
       font-weight: 400;
-      color: $gray;
+      color: black;
+      font-family: Poppins;
       line-height: 25px;
       margin: 1.8125rem 0 1.9375rem;
     }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'wc-navbar',
@@ -8,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 export class NavbarComponent implements OnInit {
   Cssclass: boolean = false;
 
-  constructor() {}
+  constructor(
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.Cssclass = false;
@@ -26,5 +29,16 @@ export class NavbarComponent implements OnInit {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     this.Cssclass = false; // Hide the mobile menu after navigating
+  }
+
+  clickButton() {
+    console.log('Button clicked');
+    this.router.navigate(['/login']).then(success => {
+      if (success) {
+        console.log('Navigation successful!');
+      } else {
+        console.log('Navigation failed!');
+      }
+    });
   }
 }
