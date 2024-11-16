@@ -1,0 +1,70 @@
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img
+        alt="Company Logo"
+        src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
+      />
+      <h1>Horuzt Invitation</h1>
+    </div>
+
+    <div class="menu">
+      <a class="menu-item" routerLink="overview" routerLinkActive="active">
+        <i class="fas fa-th"></i> Dashboard
+      </a>
+    </div>
+    <hr>
+
+    <div class="menu">
+      <div class="none"><p>FITUR</p></div>
+      <a class="menu-item" routerLink="website" routerLinkActive="active">
+        <i class="fas fa-globe"></i> Website
+      </a>
+      <a class="menu-item" routerLink="pengunjung" routerLinkActive="active">
+        <i class="fas fa-chart-line"></i> Pengunjung
+      </a>
+      <a class="menu-item" routerLink="testimoni" routerLinkActive="active">
+        <i class="fas fa-comments"></i> Testimoni
+      </a>
+    </div>
+
+    <hr>
+
+    <!-- Help none -->
+    <div class="menu">
+      <div class="none"><p>BANTUAN</p></div>
+      <a class="menu-item" routerLink="hubungi-kami" routerLinkActive="active">
+        <i class="fas fa-phone"></i> Hubungi Kami
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Header -->
+    <div class="header">
+      <div class="breadcrumb">
+        <span class="route-name">{{ currentRouteName }}</span>
+        <span class="route-path">/ Tampilan</span>
+      </div>
+      <div class="user-profile">
+        <img
+          class="user-avatar"
+          src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
+          alt="User Avatar"
+        />
+        <span class="user-name">Sheraphine Alana</span>
+        <i class="fas fa-caret-down"></i>
+      </div>
+    </div>
+
+    <!-- Well and Footer -->
+    <div class="well">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="footer">
+      <p>Copyright &#64; Horuzt Invitation 2024</p>
+    </div>
+  </div>
+</div>

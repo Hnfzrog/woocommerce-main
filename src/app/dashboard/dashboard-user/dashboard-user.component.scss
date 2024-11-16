@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Frank+Ruhl+Libre:wght@300..900&display=swap');
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'ABeeZee', Arial, sans-serif;
+
+  .sidebar {
+    width: 250px;
+    background-color: #fff;
+    border-right: 1px solid #f0f0f0;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+
+      img {
+        width: 70px;
+        height: auto;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+        margin: 0;
+      }
+    }
+
+    .menu {
+      margin-bottom: 20px;
+
+      .section {
+        font-size: 12px;
+        font-weight: bold;
+        color: #FFC0CB; // Soft pink
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+        text-align: left; // Align text to the start (left)
+      }
+
+      .none p {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 28.37px;
+        font-family: ABeeZee;
+        text-align: left;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+
+        width: 50%;
+        font-weight: bold;
+        color: #FFC0CB; // Soft pink
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        color: #333;
+        font-size: 14px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+
+        i {
+          margin-right: 12px;
+          font-size: 16px;
+          color: inherit;
+        }
+
+        &:hover {
+          background-color: #FDE4E6; // Slightly brighter pink hover background
+          color: #FF5678; // Strong pink hover text
+        }
+
+        &.active {
+          background-color: #FFC0CB; // Solid light pink for active state
+          color: white;
+
+          i {
+            color: white;
+          }
+        }
+      }
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #f0f0f0;
+      margin: 15px 0;
+    }
+  }
+
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    overflow-y: hidden; // Disable outer scroll
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      // padding: 10px 20px;
+      margin: 10px 20px;
+      
+      // background-color: #fff;
+      // border-bottom: 1px solid #f0f0f0;
+
+      .breadcrumb {
+        display: flex;
+        align-items: baseline;
+
+        .route-name {
+          font-size: 20px;
+          font-weight: bold;
+          color: #333;
+        }
+
+        .route-path {
+          margin-left: 5px;
+          font-size: 16px;
+          color: #777;
+        }
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .user-name {
+          font-size: 16px;
+          font-weight: bold;
+          color: #333;
+        }
+
+        .fas {
+          font-size: 14px;
+          color: #777;
+        }
+      }
+    }
+
+    .well {
+      flex: 1;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      overflow-y: auto; // Enable scrolling for the well
+    }
+
+    .footer {
+      padding: 10px 20px;
+      
+      // background-color: #fff;
+      // border-top: 1px solid #f0f0f0;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+  }
+}

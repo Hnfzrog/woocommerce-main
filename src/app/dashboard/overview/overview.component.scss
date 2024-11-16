@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+  }
+  .dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1 1 22%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .card h3 {
+    margin: 0;
+    font-size: 24px;
+  }
+  .card p {
+    margin: 5px 0 0;
+    color: #6c757d;
+  }
+  .chart-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1 1 100%;
+  }
+  .comments {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1 1 100%;
+    margin-top: 20px;
+  }
+  .comment {
+    margin-bottom: 10px;
+  }
+  .comment h4 {
+    margin: 0;
+    font-size: 18px;
+  }
+  .comment p {
+    margin: 5px 0 0;
+    color: #6c757d;
+  }
+  .view-website {
+    text-align: right;
+    margin: 20px 0;
+  }
+  .view-website button {
+    background-color: #f8d7da;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #721c24;
+  }
+  

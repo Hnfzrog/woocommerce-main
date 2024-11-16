@@ -17,6 +17,14 @@ import { FeatureFooterSectionComponent } from './home/features/feature-footer/fe
 import { TestemoniFooterComponent } from './home/testimonials/testemoni-footer/testemoni-footer.component';
 import { TestemonialFooterComponent } from './home/testimonials/testemonial-footer/testemonial-footer.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { DashboardUserComponent } from './dashboard/dashboard-user/dashboard-user.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
+import { OverviewComponent } from './dashboard/overview/overview.component';
+import { SettingsComponent } from './dashboard/settings/settings.component';
+import { WebsiteComponent } from './dashboard/website/website.component';
+import { PengunjungComponent } from './dashboard/pengunjung/pengunjung.component';
+import { TestimoniComponent } from './dashboard/testimoni/testimoni.component';
+import { HubungiKamiComponent } from './dashboard/hubungi-kami/hubungi-kami.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +43,14 @@ import { LoginPageComponent } from './login-page/login-page.component';
     TestemoniFooterComponent,
     TestemonialFooterComponent,
     LoginPageComponent,
+    DashboardUserComponent,
+    ProfileComponent,
+    OverviewComponent,
+    SettingsComponent,
+    WebsiteComponent,
+    PengunjungComponent,
+    TestimoniComponent,
+    HubungiKamiComponent,
   ],
   imports: [
     BrowserModule,

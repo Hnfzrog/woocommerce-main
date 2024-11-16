@@ -24,9 +24,8 @@ export class LoginPageComponent implements OnInit {
   }
 
   onLogin() {
-    // Logika login di sini
-    alert('Login berhasil!');
-  }
+    this.router.navigate(['/dashboard']);
+ } 
 
   onRegister() {
     // Logika pendaftaran di sini

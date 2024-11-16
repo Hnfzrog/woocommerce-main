@@ -1,0 +1,40 @@
+<div class="view-website">
+    <button>Lihat Website</button>
+  </div>
+  <div class="dashboard">
+    <div class="card">
+      <h3>19</h3>
+      <p>Total Pengunjung</p>
+      <p>Orang / 7 hari</p>
+    </div>
+    <div class="card">
+      <h3>17</h3>
+      <p>Konfirmasi Kehadiran</p>
+      <p>orang akan datang</p>
+    </div>
+    <div class="card">
+      <h3>3</h3>
+      <p>Doa & Ucapan</p>
+      <p>orang memberi ucapan</p>
+    </div>
+    <div class="card">
+      <h3>4</h3>
+      <p>Total Hadiah</p>
+      <p>diterima</p>
+    </div>
+  </div>
+  <div class="chart-container">
+    <!-- <canvas baseChart
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+            chartType="line">
+    </canvas> -->
+  </div>
+  <div class="comments">
+    <h3>Data Doa & Ucapan</h3>
+    <div *ngFor="let comment of comments" class="comment">
+      <h4>{{ comment.name }}</h4>
+      <p>"{{ comment.text }}"</p>
+    </div>
+  </div>
+  
