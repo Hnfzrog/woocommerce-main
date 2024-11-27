@@ -25,6 +25,18 @@ import { WebsiteComponent } from './dashboard/website/website.component';
 import { PengunjungComponent } from './dashboard/pengunjung/pengunjung.component';
 import { TestimoniComponent } from './dashboard/testimoni/testimoni.component';
 import { HubungiKamiComponent } from './dashboard/hubungi-kami/hubungi-kami.component';
+import { TampilanComponent } from './dashboard/website/tampilan/tampilan.component';
+import { PengaturanComponent } from './dashboard/website/pengaturan/pengaturan.component';
+import { DataWebsiteComponent } from './dashboard/website/data-website/data-website.component';
+import { MempelaiComponent } from './dashboard/website/mempelai/mempelai.component';
+import { AcaraComponent } from './dashboard/website/acara/acara.component';
+import { GalleryComponent } from './dashboard/website/gallery/gallery.component';
+import { CeritaQuoteComponent } from './dashboard/website/cerita-quote/cerita-quote.component';
+import { RekeningComponent } from './dashboard/website/rekening/rekening.component';
+import { FormsModule } from '@angular/forms';
+import { RiwayatComponent } from './dashboard/pengunjung/riwayat/riwayat.component';
+import { UcapanComponent } from './dashboard/pengunjung/ucapan/ucapan.component';
+import { GenerateUndanganComponent } from './generate-undangan/generate-undangan.component';
 
 @NgModule({
   declarations: [
@@ -51,10 +63,22 @@ import { HubungiKamiComponent } from './dashboard/hubungi-kami/hubungi-kami.comp
     PengunjungComponent,
     TestimoniComponent,
     HubungiKamiComponent,
+    TampilanComponent,
+    PengaturanComponent,
+    DataWebsiteComponent,
+    MempelaiComponent,
+    AcaraComponent,
+    GalleryComponent,
+    CeritaQuoteComponent,
+    RekeningComponent,
+    RiwayatComponent,
+    UcapanComponent,
+    GenerateUndanganComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [
     Title,

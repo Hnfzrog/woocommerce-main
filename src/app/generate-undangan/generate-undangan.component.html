@@ -1,0 +1,99 @@
+<div class="form-container">
+    <h1>Undangan Form</h1>
+    <div class="progress-bar">
+      <div class="progress" [style.width]="progressPercentage"></div>
+    </div>
+  
+    <!-- Steps -->
+    <div [ngSwitch]="currentStep">
+      <!-- Step 1: Paket Undangan -->
+      <div *ngSwitchCase="1">
+        <h2>Step 1: Pilih Paket Undangan</h2>
+        <form>
+          <label for="paket-undangan">Paket Undangan:</label>
+          <select id="paket-undangan" [(ngModel)]="formData.paket" required>
+            <option value="">-Pilih Paket-</option>
+            <option value="basic">Basic</option>
+            <option value="premium">Premium</option>
+          </select>
+        </form>
+      </div>
+  
+      <!-- Step 2: Informasi Mempelai -->
+      <div *ngSwitchCase="2">
+        <h2>Step 2: Informasi Mempelai</h2>
+        <form>
+          <!-- Groom Info -->
+          <h3>Mempelai Pria</h3>
+          <input
+            type="text"
+            placeholder="Nama Lengkap Pria"
+            [(ngModel)]="formData.groom.fullName"
+          />
+          <input
+            type="text"
+            placeholder="Nama Ayah"
+            [(ngModel)]="formData.groom.fatherName"
+          />
+          <input
+            type="text"
+            placeholder="Nama Ibu"
+            [(ngModel)]="formData.groom.motherName"
+          />
+  
+          <!-- Bride Info -->
+          <h3>Mempelai Wanita</h3>
+          <input
+            type="text"
+            placeholder="Nama Lengkap Wanita"
+            [(ngModel)]="formData.bride.fullName"
+          />
+          <input
+            type="text"
+            placeholder="Nama Ayah"
+            [(ngModel)]="formData.bride.fatherName"
+          />
+          <input
+            type="text"
+            placeholder="Nama Ibu"
+            [(ngModel)]="formData.bride.motherName"
+          />
+        </form>
+      </div>
+  
+      <!-- Step 3: Cerita -->
+      <div *ngSwitchCase="3">
+        <h2>Step 3: Cerita</h2>
+        <form>
+          <div *ngFor="let story of stories; let i = index">
+            <h3>#{{ i + 1 }}</h3>
+            <input
+              type="date"
+              [(ngModel)]="story.date"
+              placeholder="Tanggal (e.g. 1 Januari 2025)"
+            />
+            <input
+              type="text"
+              [(ngModel)]="story.title"
+              placeholder="Judul (e.g. Pertama Bertemu)"
+            />
+            <textarea
+              [(ngModel)]="story.content"
+              placeholder="Isi cerita (max 500 karakter)"
+            ></textarea>
+            <button type="button" *ngIf="i > 0" (click)="removeStory(i)">Hapus</button>
+          </div>
+          <button type="button" (click)="addStory()">Tambah Cerita</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Navigation Buttons -->
+    <div class="button-group">
+      <button type="button" [disabled]="currentStep === 1" (click)="previousStep()">Kembali</button>
+      <button type="button" (click)="nextStep()">
+        {{ currentStep < totalSteps ? 'Lanjut' : 'Selesai' }}
+      </button>
+    </div>
+  </div>
+  

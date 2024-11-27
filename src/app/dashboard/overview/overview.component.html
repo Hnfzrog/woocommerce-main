@@ -1,34 +1,54 @@
 <div class="view-website">
-    <button>Lihat Website</button>
-  </div>
-  <div class="dashboard">
-    <div class="card">
-      <h3>19</h3>
-      <p>Total Pengunjung</p>
-      <p>Orang / 7 hari</p>
+  <button>Lihat Website</button>
+</div>
+
+<div class="infobox">
+  <div class="infobox-item green">
+    <div class="infobox-header">
+      <span>Total Pengunjung</span>
+      <span class="icon green"></span>
     </div>
-    <div class="card">
-      <h3>17</h3>
-      <p>Konfirmasi Kehadiran</p>
-      <p>orang akan datang</p>
-    </div>
-    <div class="card">
-      <h3>3</h3>
-      <p>Doa & Ucapan</p>
-      <p>orang memberi ucapan</p>
-    </div>
-    <div class="card">
-      <h3>4</h3>
-      <p>Total Hadiah</p>
-      <p>diterima</p>
+    <div class="infobox-content">
+      <span class="count">19</span>
+      <span class="description">Orang / 7 hari</span>
     </div>
   </div>
+  <div class="infobox-item orange">
+    <div class="infobox-header">
+      <span>Konfirmasi Kehadiran</span>
+      <span class="icon orange"></span>
+    </div>
+    <div class="infobox-content">
+      <span class="count">17</span>
+      <span class="description">orang akan datang</span>
+    </div>
+  </div>
+  <div class="infobox-item blue">
+    <div class="infobox-header">
+      <span>Doa & Ucapan</span>
+      <span class="icon blue"></span>
+    </div>
+    <div class="infobox-content">
+      <span class="count">3</span>
+      <span class="description">orang memberi ucapan</span>
+    </div>
+  </div>
+  <div class="infobox-item pink">
+    <div class="infobox-header">
+      <span>Total Hadiah</span>
+      <span class="icon pink"></span>
+    </div>
+    <div class="infobox-content">
+      <span class="count">4</span>
+      <span class="description">diterima</span>
+    </div>
+  </div>
+</div>
+
+
+<div class="content-wrapper">
   <div class="chart-container">
-    <!-- <canvas baseChart
-            [data]="lineChartData"
-            [options]="lineChartOptions"
-            chartType="line">
-    </canvas> -->
+    <canvas id="MyChart"></canvas>
   </div>
   <div class="comments">
     <h3>Data Doa & Ucapan</h3>
@@ -37,4 +57,4 @@
       <p>"{{ comment.text }}"</p>
     </div>
   </div>
-  
+</div>

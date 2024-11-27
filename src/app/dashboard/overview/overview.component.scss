@@ -1,68 +1,193 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
-  }
-  .dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  .card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    flex: 1 1 22%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .card h3 {
-    margin: 0;
-    font-size: 24px;
-  }
-  .card p {
-    margin: 5px 0 0;
-    color: #6c757d;
-  }
-  .chart-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    flex: 1 1 100%;
-  }
-  .comments {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    flex: 1 1 100%;
-    margin-top: 20px;
-  }
-  .comment {
-    margin-bottom: 10px;
-  }
-  .comment h4 {
-    margin: 0;
-    font-size: 18px;
-  }
-  .comment p {
-    margin: 5px 0 0;
-    color: #6c757d;
-  }
-  .view-website {
-    text-align: right;
-    margin: 20px 0;
-  }
-  .view-website button {
-    background-color: #f8d7da;
-    border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
-    cursor: pointer;
-    color: #721c24;
-  }
-  
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+}
+
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1 1 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.card p {
+  margin: 5px 0 0;
+  color: #6c757d;
+}
+
+.chart-container {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1 1 60%;
+}
+
+.comments {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1 1 35%;
+  margin-left: 20px;
+}
+
+.comment {
+  margin-bottom: 10px;
+}
+
+.comment h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.comment p {
+  margin: 5px 0 0;
+  color: #6c757d;
+}
+
+.view-website {
+  text-align: right;
+  margin: 20px 0;
+}
+
+.view-website button {
+  background-color: #f8d7da;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #721c24;
+}
+
+.infobox {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.infobox-item {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  width: 23%;
+  position: relative;
+}
+
+.infobox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.infobox-header span {
+  font-size: 1.2em;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.icon.green {
+  background-color: green;
+}
+
+.icon.orange {
+  background-color: orange;
+}
+
+.icon.blue {
+  background-color: blue;
+}
+
+.icon.pink {
+  background-color: pink;
+}
+
+.infobox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 10px;
+  border-left: 5px solid; /* Default color, will be overridden by specific classes */
+}
+
+.infobox-content .count {
+  display: block;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.infobox-content .description {
+  font-size: 1em;
+  color: #666;
+}
+
+.infobox-item .icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Specific classes for each infobox item to match border and icon colors */
+.infobox-item.green .infobox-content {
+  border-color: green;
+}
+
+.infobox-item.orange .infobox-content {
+  border-color: orange;
+}
+
+.infobox-item.blue .infobox-content {
+  border-color: blue;
+}
+
+.infobox-item.pink .infobox-content {
+  border-color: pink;
+}
+
+.infobox-item.green .infobox-content .count {
+  color: green;
+}
+
+.infobox-item.orange .infobox-content .count {
+  color: orange;
+}
+
+.infobox-item.blue .infobox-content .count {
+  color: blue;
+}
+
+.infobox-item.pink .infobox-content .count {
+  color: pink;
+}
+
+
+.content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}

@@ -1,0 +1,88 @@
+$form-border-color: #f0f0f0;
+$form-header-color: #ff66a3;
+$button-primary-color: #4bd0f1;
+
+.form-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+
+  .form-card {
+    background: #fff;
+    border: 1px solid $form-border-color;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      font-size: 1.5rem;
+      color: $form-header-color;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid $form-border-color;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s;
+
+        &:focus {
+          border-color: $form-header-color;
+        }
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      .input-with-icon {
+        position: relative;
+
+        input {
+          padding-right: 2.5rem;
+        }
+
+        .icon {
+          position: absolute;
+          right: 0.75rem;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.2rem;
+          color: #999;
+        }
+      }
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background: $button-primary-color;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background: darken($button-primary-color, 10%);
+      }
+    }
+  }
+}

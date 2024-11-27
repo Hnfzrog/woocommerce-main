@@ -2,10 +2,7 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <img
-        alt="Company Logo"
-        src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
-      />
+      <img alt="Company Logo" src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg" />
       <h1>Horuzt Invitation</h1>
     </div>
 
@@ -18,12 +15,33 @@
 
     <div class="menu">
       <div class="none"><p>FITUR</p></div>
-      <a class="menu-item" routerLink="website" routerLinkActive="active">
+      <div class="menu-item" [ngClass]="{'active': isActiveRoute('website')}" (click)="toggleWebsiteSubmenu()">
         <i class="fas fa-globe"></i> Website
-      </a>
-      <a class="menu-item" routerLink="pengunjung" routerLinkActive="active">
-        <i class="fas fa-chart-line"></i> Pengunjung
-      </a>
+        <i class="fas fa-chevron-down" [ngClass]="{'rotate': isWebsiteSubmenuOpen}"></i>
+      </div>
+      <div *ngIf="isWebsiteSubmenuOpen" class="submenu">
+        <a class="submenu-item" routerLink="website/tampilan" routerLinkActive="active">Tampilan</a>
+        <a class="submenu-item" routerLink="website/pengaturan" routerLinkActive="active">Pengaturan</a>
+        <a class="submenu-item" routerLink="website/data-website" routerLinkActive="active">Data Website</a>
+        <a class="submenu-item" routerLink="website/mempelai" routerLinkActive="active">Mempelai</a>
+        <a class="submenu-item" routerLink="website/acara" routerLinkActive="active">Acara</a>
+        <a class="submenu-item" routerLink="website/gallery" routerLinkActive="active">Gallery</a>
+        <a class="submenu-item" routerLink="website/cerita-quote" routerLinkActive="active">Cerita & Quote</a>
+        <a class="submenu-item" routerLink="website/rekening" routerLinkActive="active">Rekening</a>
+      </div>
+      
+      <div class="menu">
+        <a class="menu-item" [ngClass]="{'active': isActiveRoute('pengunjung')}" (click)="togglePengunjungSubmenu()">
+          <i class="fas fa-chart-line"></i> Pengunjung
+          <i class="fas fa-chevron-down" [ngClass]="{'rotate': isPengunjungSubmenuOpen}"></i>
+        </a>
+        <div *ngIf="isPengunjungSubmenuOpen" class="submenu">
+          <a class="submenu-item" routerLink="pengunjung/riwayat" routerLinkActive="active">Riwayat</a>
+          <a class="submenu-item" routerLink="pengunjung/ucapan" routerLinkActive="active">Ucapan</a>
+        </div>
+      </div>
+      
+      
       <a class="menu-item" routerLink="testimoni" routerLinkActive="active">
         <i class="fas fa-comments"></i> Testimoni
       </a>
@@ -46,8 +64,8 @@
     <div class="header">
       <div class="breadcrumb">
         <span class="route-name">{{ currentRouteName }}</span>
-        <span class="route-path">/ Tampilan</span>
-      </div>
+        <span class="route-path">{{ routePath }}</span>
+      </div>      
       <div class="user-profile">
         <img
           class="user-avatar"

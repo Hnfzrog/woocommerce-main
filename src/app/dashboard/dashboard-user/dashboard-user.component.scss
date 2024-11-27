@@ -35,27 +35,12 @@
     .menu {
       margin-bottom: 20px;
 
-      .section {
-        font-size: 12px;
-        font-weight: bold;
-        color: #FFC0CB; // Soft pink
-        text-transform: uppercase;
-        margin-bottom: 10px;
-        letter-spacing: 0.5px;
-        text-align: left; // Align text to the start (left)
-      }
-
       .none p {
         font-size: 16px;
         font-weight: 400;
         line-height: 28.37px;
         font-family: ABeeZee;
         text-align: left;
-        text-underline-position: from-font;
-        text-decoration-skip-ink: none;
-
-        width: 50%;
-        font-weight: bold;
         color: #FFC0CB; // Soft pink
         text-transform: uppercase;
         margin-bottom: 10px;
@@ -65,6 +50,7 @@
       .menu-item {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         padding: 10px 15px;
         text-decoration: none;
         border-radius: 5px;
@@ -72,9 +58,9 @@
         font-size: 14px;
         margin-bottom: 10px;
         transition: all 0.3s ease;
+        cursor: pointer;
 
         i {
-          margin-right: 12px;
           font-size: 16px;
           color: inherit;
         }
@@ -91,6 +77,47 @@
           i {
             color: white;
           }
+        }
+
+        .submenu {
+          display: none; /* Hide submenu by default */
+          position: absolute;
+          left: 100%; /* Position the submenu to the right of the menu item */
+          top: 0;
+          background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 10px;
+          width: 200px;
+          z-index: 10; /* Ensure it appears above other content */
+        }
+
+        &.active .submenu {
+          display: block; /* Show submenu when parent item is active */
+        }
+
+        &:hover .submenu {
+          display: block; /* Optionally show on hover if desired */
+        }
+      }
+
+      .submenu-item {
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        font-size: 13px;
+        color: #555;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: #FDE4E6; // Slightly brighter pink hover background
+          color: #FF5678; // Strong pink hover text
+        }
+
+        &.active {
+          background-color: #FFC0CB; // Solid light pink for active state
+          color: white;
         }
       }
     }
@@ -113,11 +140,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      // padding: 10px 20px;
       margin: 10px 20px;
-      
-      // background-color: #fff;
-      // border-bottom: 1px solid #f0f0f0;
 
       .breadcrumb {
         display: flex;
@@ -131,54 +154,55 @@
 
         .route-path {
           margin-left: 5px;
-          font-size: 16px;
-          color: #777;
+          font-size: 14px;
+          color: #999;
         }
       }
 
       .user-profile {
         display: flex;
         align-items: center;
-        gap: 10px;
+        cursor: pointer;
 
         .user-avatar {
-          width: 40px;
-          height: 40px;
+          width: 35px;
+          height: 35px;
           border-radius: 50%;
-          object-fit: cover;
+          margin-right: 10px;
         }
 
         .user-name {
-          font-size: 16px;
-          font-weight: bold;
+          font-size: 14px;
           color: #333;
+          font-weight: 500;
         }
 
-        .fas {
+        i {
           font-size: 14px;
-          color: #777;
+          color: #999;
+          margin-left: 5px;
         }
       }
     }
 
     .well {
-      flex: 1;
       padding: 20px;
-      margin: 20px;
-      border-radius: 5px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      overflow-y: auto; // Enable scrolling for the well
+      flex: 1;
+      overflow-y: auto; // Enable inner scroll for main content area
     }
 
     .footer {
-      padding: 10px 20px;
-      
-      // background-color: #fff;
-      // border-top: 1px solid #f0f0f0;
       text-align: center;
-      font-size: 14px;
-      color: #777;
+      padding: 10px 0;
+      font-size: 12px;
+      color: #999;
+      background-color: #f0f0f0;
+      border-top: 1px solid #e0e0e0;
     }
   }
+}
+
+// Rotate class for the chevron icon
+.rotate {
+  transform: rotate(180deg);
 }

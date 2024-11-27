@@ -21,6 +21,15 @@ export class HeroSectionComponent implements OnInit {
     });
   }
 
+  clickGenerateUndangan(){
+    this.router.navigate(['/buat-undangan']).then(success => {
+      if (success) {
+        console.log('Navigation successful!');
+      } else {
+        console.log('Navigation failed!');
+      }
+    });
+  }
   clickButton() {
     console.log('Button clicked');
     this.router.navigate(['/login']).then(success => {

@@ -1,0 +1,19 @@
+<div class="grid-container">
+    <div class="grid-item" *ngFor="let card of cards">
+      <div class="custom-card">
+        <div class="label">{{ card.label }}</div>
+        <img [src]="card.image" [alt]="card.title" class="card-image">
+        <h5 class="card-title">{{ card.title }}</h5>
+        <ng-container *ngIf="card.isActive; else inactive">
+          <button class="btn btn-secondary btn-disabled">Aktif</button>
+        </ng-container>
+        <ng-template #inactive>
+          <div class="btn-group">
+            <button class="btn btn-outline-primary">Demo</button>
+            <button class="btn btn-primary">Aktifkan</button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  

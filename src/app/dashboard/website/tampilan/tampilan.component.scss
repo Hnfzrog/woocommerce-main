@@ -1,0 +1,109 @@
+body {
+    background: radial-gradient(circle, #ffeccc, #f9c4ff, #ffeccc);
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); // 3 items per row
+    gap: 20px;
+    justify-items: center; // Center the cards horizontally
+  }
+  
+  .grid-item {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .custom-card {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    z-index: 1; // Ensure card content stays above pseudo-elements
+    overflow: hidden; // Hide the circle edges outside the card boundaries
+  
+    // Circle backgrounds using pseudo-elements
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%; // Make them circles
+      filter: blur(80px); // Use filter blur instead of backdrop-filter
+      z-index: -1; // Position behind the card content
+      opacity: 0.6; // Add transparency for better visuals
+    }
+  
+    // First circle (top-right, middle-ish)
+    &::before {
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 229, 146, 0.35); // Replace hex with rgba
+      top: -100px; // Slightly above the card
+      right: -120px; // Positioned toward the top-right corner
+    }
+  
+    // Second circle (bottom-left, middle-ish)
+    &::after {
+      width: 300px;
+      height: 300px;
+      background: rgba(249, 108, 179, 0.13); // Replace hex with rgba
+      bottom: -100px; // Slightly below the card
+      left: -120px; // Positioned toward the bottom-left corner
+    }
+  
+    .label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: orange;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+  
+    .card-image {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+  
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+  
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+  
+      .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        border-radius: 6px;
+  
+        &.btn-outline-primary {
+          color: #007bff;
+          border: 1px solid #007bff;
+        }
+  
+        &.btn-primary {
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+        }
+  
+        &.btn-disabled {
+          background-color: #ccc;
+          color: #fff;
+          cursor: not-allowed;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+  

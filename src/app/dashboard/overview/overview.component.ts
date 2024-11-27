@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { Chart, ChartConfiguration, ChartOptions, registerables } from 'chart.js';
 
 @Component({
   selector: 'wc-overview',
@@ -30,7 +30,21 @@ export class OverviewComponent implements OnInit {
     { name: 'Zainuddin Akbar', text: 'Lorem ipsum dolor sit amet consectetur. Eu vitae amet nulla sapien dolor mi ...' }
   ];
 
+  chart: any;
+
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // Register Chart.js components
+    Chart.register(...registerables);
+    this.createChart();
+  }
+
+  createChart() {
+    this.chart = new Chart("MyChart", {
+      type: 'line', // Use 'line' chart type
+      data: this.lineChartData, // Use lineChartData for the data
+      options: this.lineChartOptions // Use lineChartOptions for the options
+    });
+  }
 }

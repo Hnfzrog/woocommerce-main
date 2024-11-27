@@ -1,0 +1,70 @@
+.review-container {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  
+    h2 {
+      color: #ff007f;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+  
+    p {
+      color: #555;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+  
+    .form-group {
+      margin-bottom: 16px;
+  
+      label {
+        display: block;
+        margin-bottom: 6px;
+        color: #333;
+        font-size: 0.9rem;
+      }
+  
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        font-size: 0.9rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+  
+        &:focus {
+          border-color: #ff007f;
+          outline: none;
+          box-shadow: 0 0 4px rgba(255, 0, 127, 0.4);
+        }
+      }
+  
+      textarea {
+        resize: none;
+        height: 80px;
+      }
+    }
+  
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #00c8ff;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #009ecb;
+      }
+    }
+  }
+  

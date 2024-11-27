@@ -1,0 +1,70 @@
+<div class="pengunjung-container">
+    <!-- Chart and Summary Section -->
+    <div class="chart-summary-container">
+      <!-- Chart Section -->
+      <div class="chart-section">
+        <canvas id="visitorChart"></canvas>
+      </div>
+  
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="card today">
+          <p>Pengunjung Hari Ini</p>
+          <h2>0</h2>
+        </div>
+        <div class="card total">
+          <p>Total Pengunjung</p>
+          <h2>29</h2>
+          <span>Orang</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Data Table Section -->
+    <div class="data-table">
+      <div class="table-header">
+        <h3>Data Pengunjung</h3>
+        <button class="delete-all">
+          <i class="fas fa-trash"></i> Hapus Semua
+        </button>
+      </div>
+  
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <input type="text" placeholder="Cari" />
+        <i class="fas fa-search"></i>
+      </div>
+  
+      <!-- Table -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Tanggal</th>
+              <th>Nama</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let visitor of visitors; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ visitor.date }}</td>
+              <td>{{ visitor.name }}</td>
+              <td><button class="delete-btn">Hapus</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Pagination -->
+      <div class="pagination">
+        <span>Menampilkan</span>
+        <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
+          <option *ngFor="let option of [10, 20, 50]" [value]="option">{{ option }}</option>
+        </select>
+        <span>Data</span>
+      </div>
+    </div>
+  </div>
+  

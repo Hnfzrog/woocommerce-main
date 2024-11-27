@@ -1,0 +1,76 @@
+.gallery {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .add-photo, .add-video {
+    width: 45%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-photo h2, .add-video h2 {
+    color: #ff69b4;
+    border-left: 4px solid #ff69b4;
+    padding-left: 10px;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  
+  .upload-box, .video-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #ccc;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .upload-box p {
+    margin: 10px 0;
+    font-size: 1em;
+    color: #666;
+  }
+  
+  .browse-button, .youtube-link-button, .save-button {
+    padding: 10px 20px;
+    background-color: #ff69b4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+  }
+  
+  .url-input {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .help-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9em;
+    margin-top: 10px;
+  }
+  
+  .help-link:hover {
+    text-decoration: underline;
+  }
+  
+  .save-button {
+    margin-top: 20px;
+    align-self: flex-start;
+    background-color: #00bfff;
+  }
+  
