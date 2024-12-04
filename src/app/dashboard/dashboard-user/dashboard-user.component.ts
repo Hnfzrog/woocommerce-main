@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
 
 @Component({
   selector: 'wc-dashboard-user',
@@ -10,9 +11,14 @@ export class DashboardUserComponent implements OnInit {
   currentRouteName: string = '';
   routePath: string = '';
   isWebsiteSubmenuOpen: boolean = false;
-  isPengunjungSubmenuOpen: boolean = false; // State for Pengunjung submenu
+  isPengunjungSubmenuOpen: boolean = false;
+  isDropdownOpen = false;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router, 
+    private activatedRoute: ActivatedRoute,
+    private DashBoardSvc: DashboardService
+  ) {}
 
   ngOnInit(): void {
     this.router.events.subscribe(() => {
@@ -48,6 +54,25 @@ export class DashboardUserComponent implements OnInit {
     return route.charAt(0).toUpperCase() + route.slice(1);
   }
 
+  toggleDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  logout(): void {
+    this.DashBoardSvc.create(DashboardServiceType.USER_LOGOUT, '').subscribe(
+      (res) => {
+        alert(res.message);
+        this.router.navigate(['/']); // Redirect to root path '/'
+      },
+      (error) => {
+        // Handle error if needed
+        console.error('Logout error:', error);
+      }
+    );
+  }
+  
+
   isActiveRoute(route: string): boolean {
     return this.router.url.includes(route);
   }
@@ -58,5 +83,17 @@ export class DashboardUserComponent implements OnInit {
 
   togglePengunjungSubmenu(): void {
     this.isPengunjungSubmenuOpen = !this.isPengunjungSubmenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const target = event.target as HTMLElement; 
+    if (target && !target.closest('.user-profile')) {
+      this.isDropdownOpen = false;
+    }
+  }
+  
+  selectMenu(): void {
+    this.isDropdownOpen = false;
   }
 }

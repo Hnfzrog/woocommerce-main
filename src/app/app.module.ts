@@ -1,6 +1,8 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -33,10 +35,13 @@ import { AcaraComponent } from './dashboard/website/acara/acara.component';
 import { GalleryComponent } from './dashboard/website/gallery/gallery.component';
 import { CeritaQuoteComponent } from './dashboard/website/cerita-quote/cerita-quote.component';
 import { RekeningComponent } from './dashboard/website/rekening/rekening.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RiwayatComponent } from './dashboard/pengunjung/riwayat/riwayat.component';
 import { UcapanComponent } from './dashboard/pengunjung/ucapan/ucapan.component';
 import { GenerateUndanganComponent } from './generate-undangan/generate-undangan.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './auth.interceptor';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -74,15 +79,25 @@ import { GenerateUndanganComponent } from './generate-undangan/generate-undangan
     RiwayatComponent,
     UcapanComponent,
     GenerateUndanganComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    HttpClientModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
+    ReactiveFormsModule
   ],
   providers: [
     Title,
     { provide: LOCALE_ID, useValue: 'id' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor, // Provide the AuthInterceptor
+      multi: true // Allow multiple interceptors
+    }
   ],
   bootstrap: [AppComponent],
 })

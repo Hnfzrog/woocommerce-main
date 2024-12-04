@@ -1,3 +1,5 @@
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
 .login-container {
     display: flex;
     justify-content: center;
@@ -205,4 +207,15 @@
       opacity: 1;
     }
   }
+
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  
   

@@ -20,10 +20,12 @@ import { RekeningComponent } from './dashboard/website/rekening/rekening.compone
 import { RiwayatComponent } from './dashboard/pengunjung/riwayat/riwayat.component';
 import { UcapanComponent } from './dashboard/pengunjung/ucapan/ucapan.component';
 import { GenerateUndanganComponent } from './generate-undangan/generate-undangan.component';
+import { RegisterComponent } from './register/register.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'buat-undangan', component: GenerateUndanganComponent },
   {
     path: 'dashboard',

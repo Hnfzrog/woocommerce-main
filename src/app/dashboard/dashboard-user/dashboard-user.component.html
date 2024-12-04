@@ -66,15 +66,24 @@
         <span class="route-name">{{ currentRouteName }}</span>
         <span class="route-path">{{ routePath }}</span>
       </div>      
-      <div class="user-profile">
-        <img
-          class="user-avatar"
-          src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
-          alt="User Avatar"
-        />
-        <span class="user-name">Sheraphine Alana</span>
-        <i class="fas fa-caret-down"></i>
-      </div>
+<!-- User Profile Section -->
+<div class="user-profile" (click)="toggleDropdown($event)">
+  <img
+    class="user-avatar"
+    src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
+    alt="User Avatar"
+  />
+  <span class="user-name">Sheraphine Alana</span>
+  <i class="fas fa-caret-down"></i>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown-menu" *ngIf="isDropdownOpen">
+    <a class="dropdown-item" routerLink="profile" (click)="selectMenu()">Profile</a>
+    <a class="dropdown-item" (click)="logout()">Logout</a>
+  </div>
+</div>
+
+
     </div>
 
     <!-- Well and Footer -->
