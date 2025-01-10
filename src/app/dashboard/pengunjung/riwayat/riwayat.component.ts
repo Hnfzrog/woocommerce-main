@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Chart } from 'chart.js';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
+import { ModalComponent } from '../../../shared/modal/modal.component';
+import { Notyf } from 'notyf';
 
 @Component({
   selector: 'wc-riwayat',
@@ -13,11 +16,26 @@ export class RiwayatComponent implements OnInit {
   filteredData: Array<any> = []; // Data yang ditampilkan di tabel setelah pencarian.
   searchTerm: string = ''; // Kata kunci pencarian.
   itemsPerPage = 10; // Jumlah item per halaman.
+  selectedVisitor: any = null; // Data pengunjung yang dipilih.
+
+  private notyf : Notyf
+
+  modalRef?: BsModalRef;
 
   constructor(
     private dashboardSvc: DashboardService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private modalSvc: BsModalService,
+    
+  ) {
+    this.notyf = new Notyf({
+      duration: 3000,
+      position: {
+        x: 'right',
+        y: 'top'
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.showTable();
@@ -76,22 +94,87 @@ export class RiwayatComponent implements OnInit {
     );
   }
 
+  // Menangani pemilihan pengunjung
+  selectVisitor(visitor: any): void {
+    this.selectedVisitor = visitor;
+    console.log('Selected visitor:', this.selectedVisitor);
+  }
+
+  doDelete(event: any): void {
+    let parameterDelete = event.id;
+
+    console.log(event);
+    
+    const initialState = {
+        message: `Apakah anda ingin menghapus data dari ${event?.nama}?`,
+        cancelClicked: () => this.handleCancelClicked(),
+        // submitClicked: (data: any) => this.deleteVisitor(data.id)
+    };
+
+    // Open modal and pass the dynamic message
+    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+
+    // Check if modalRef and modalRef.content are defined
+    if (this.modalRef && this.modalRef.content) {
+        this.modalRef.content.onClose.subscribe((res: any) => {
+            if (res && res.state === 'delete') {
+                this.deleteVisitor(parameterDelete); 
+                console.log('yuhuuu');
+                
+            } else if (res && res.state === 'cancel') {
+                console.log('Delete canceled');
+            }
+            this.modalRef?.hide();
+        });
+    }
+}
+
+  doDeleteAll(): void {
+    
+    const initialState = {
+        message: `Apakah anda ingin menghapus semua data riwayat?`,
+        cancelClicked: () => this.handleCancelClicked(),
+        // submitClicked: (data: any) => this.deleteVisitor(data.id)
+    };
+
+    // Open modal and pass the dynamic message
+    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+
+    // Check if modalRef and modalRef.content are defined
+    if (this.modalRef && this.modalRef.content) {
+        this.modalRef.content.onClose.subscribe((res: any) => {
+            if (res && res.state === 'delete') {
+                this.deleteAllVisitor(); 
+                console.log('yuhuuu');
+                
+            } else if (res && res.state === 'cancel') {
+                console.log('Delete canceled');
+            }
+            this.modalRef?.hide();
+        });
+    }
+}
+
+handleCancelClicked() {
+    console.log('Cancel clicked');
+    // Add any additional logic for cancel action
+}
+
+// handleSubmitClicked(data: any, parameterDelete: any) {
+//     console.log('Submit clicked with data:', data);
+//     // this.deleteVisitor(parameterDelete); // Perform the delete operation here
+// }
+
   // Menghapus data pengunjung berdasarkan ID
   deleteVisitor(visitorId: number): void {
     const params = `/${visitorId}`
     this.dashboardSvc.deleteV2(DashboardServiceType.DELETE_PENGUNJUNG_RIWAYAT_SINGLE, visitorId ).subscribe({
-      next: () => {
-        this.snackBar.open('Visitor deleted successfully!', 'Close', {
-          duration: 2000,
-          panelClass: ['mat-toolbar', 'mat-primary']
-        });
+      next: (res) => {
+        this.notyf.success(res?.message || 'Successfully deleted');
         this.showTable();
       },
       error: (err) => {
-        this.snackBar.open('Error deleting visitor.', 'Close', {
-          duration: 2000,
-          panelClass: ['mat-toolbar', 'mat-warn']
-        });
+        this.notyf.error(err?.message || 'Any error system');
         console.error('Error deleting visitor:', err);
       },
     });
@@ -100,18 +183,12 @@ export class RiwayatComponent implements OnInit {
   // Menghapus semua data pengunjung
   deleteAllVisitor(): void {
     this.dashboardSvc.delete(DashboardServiceType.DELETE_PENGUNJUNG_RIWAYAT_ALL).subscribe({
-      next: () => {
-        this.snackBar.open('All visitors deleted successfully!', 'Close', {
-          duration: 2000,
-          panelClass: ['mat-toolbar', 'mat-primary']
-        });
+      next: (res) => {
+        this.notyf.success(res?.message || 'Successfully deleted');
         this.showTable();
       },
       error: (err) => {
-        this.snackBar.open('Error deleting all visitors.', 'Close', {
-          duration: 2000,
-          panelClass: ['mat-toolbar', 'mat-warn']
-        });
+        this.notyf.error(err?.message || 'Any error system');
         console.error('Error deleting all visitors:', err);
       },
     });

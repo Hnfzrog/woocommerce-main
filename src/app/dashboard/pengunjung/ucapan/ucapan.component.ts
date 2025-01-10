@@ -55,7 +55,7 @@ export class UcapanComponent implements OnInit {
     const initialState = {
         message: `Apakah anda ingin menghapus pesan dari ${event?.nama}?`,
         cancelClicked: () => this.handleCancelClicked(),
-        submitClicked: (data: any) => this.handleSubmitClicked(data, parameterDelete)
+        // submitClicked: (data: any) => this.handleSubmitClicked(data, parameterDelete)
     };
 
     // Open modal and pass the dynamic message

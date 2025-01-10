@@ -15,9 +15,19 @@ export enum DashboardServiceType {
   USER_BUKUTAMU,
   USER_BUKUTAMU_V2,
   USER_BUKUTAMU_V3,
+
+  //RIWAYAT
   USER_PENGUNJUNG_RIWAYAT,
   DELETE_PENGUNJUNG_RIWAYAT_ALL,
-  DELETE_PENGUNJUNG_RIWAYAT_SINGLE
+  DELETE_PENGUNJUNG_RIWAYAT_SINGLE,
+
+  //REKENING
+  SEND_REKENING,
+  MD_LIST_BANK,
+
+  //cerita
+  CERITA_SUBMIT,
+  QUOTE_SUBMIT
 }
 
 @Injectable({
@@ -64,8 +74,24 @@ export class DashboardService {
 
       case DashboardServiceType.DELETE_PENGUNJUNG_RIWAYAT_SINGLE:
         return `${this.BASE_URL_API}/v1/user/pengunjung`;
-      default:
-        return '';
+
+      //REKENING
+      case DashboardServiceType.SEND_REKENING:
+        return `${this.BASE_URL_API}/v1/user/send-rekening`;
+      case DashboardServiceType.MD_LIST_BANK:
+        return `${this.BASE_URL_API}/v1/all-bank`;
+        
+      //CERITA
+      case DashboardServiceType.CERITA_SUBMIT:
+        return `${this.BASE_URL_API}/v1/user/send-cerita`;
+      
+    
+      // Quote
+      case DashboardServiceType.QUOTE_SUBMIT:
+              return `${this.BASE_URL_API}/v1/user/send-qoute`;
+        default:
+          return '';
+
     }
   }
 

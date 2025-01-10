@@ -1,19 +1,26 @@
 <div class="gallery">
-    <div class="add-photo">
-      <h2>Tambah Foto</h2>
-      <div class="upload-box">
-        <p>Seret file kamu ke sini atau</p>
-        <button class="browse-button">Browse File</button>
-      </div>
-    </div>
-    <div class="add-video">
-      <h2>Tambah Video</h2>
-      <div class="video-box">
-        <button class="youtube-link-button">Youtube Link</button>
-        <input type="text" placeholder="URL here..." class="url-input" />
-        <a href="#" class="help-link">Lihat cara menambahkan video</a>
-      </div>
-      <button class="save-button">Simpan</button>
+  <div class="add-photo">
+    <h2>Tambah Foto</h2>
+    <div class="upload-box" 
+         (dragover)="onDragOver($event)" 
+         (drop)="onDrop($event)">
+      <p>Seret file kamu ke sini atau</p>
+      <input type="file" 
+             id="fileInput" 
+             (change)="onFileSelected($event)" 
+             style="display: none;" />
+      <button class="browse-button" (click)="browseFiles()">Browse File</button>
+      <br>
+      <div *ngIf="uploadStatus" class="upload-status">{{ uploadStatus }}</div>
     </div>
   </div>
-  
+  <div class="add-video">
+    <h2>Tambah Video</h2>
+    <div class="video-box">
+      <button class="youtube-link-button">Youtube Link</button>
+      <input type="text" placeholder="URL here..." class="url-input" />
+      <a href="#" class="help-link">Lihat cara menambahkan video</a>
+    </div>
+    <button class="save-button">Simpan</button>
+  </div>
+</div>

@@ -9,6 +9,7 @@ export class ModalComponent implements OnInit {
   @Input() message: string = '';
   @Input() cancelClicked: () => void = () => {};
   @Input() submitClicked: (data: any) => void = (data: any) => {};
+  @Input() submitMessage = '';
   @Output() onClose = new EventEmitter<any>();
 
   catatan_penghapusan: string = ''; 

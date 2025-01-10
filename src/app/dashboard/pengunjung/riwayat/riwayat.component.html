@@ -24,7 +24,7 @@
   <div class="data-table">
     <div class="table-header">
       <h3>Data Pengunjung</h3>
-      <button (click)="deleteAllVisitor()" class="delete-all">
+      <button (click)="doDeleteAll()" class="delete-all">
         <i class="fas fa-trash"></i> Hapus Semua
       </button>
     </div>
@@ -52,17 +52,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let visitor of filteredData; let i = index">
+          <tr *ngFor="let visitor of filteredData; let i = index" (click)="selectVisitor(visitor)">
             <td>{{ i + 1 }}</td>
             <td>{{ formatTanggal(visitor.tanggal) }}</td>
             <td>{{ visitor.nama }}</td>
             <td>
-              <button class="delete-btn" (click)="deleteVisitor(visitor.id)">Hapus</button>
+              <button class="delete-btn" (click)="doDelete(visitor); $event.stopPropagation()">Hapus</button>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
+    </div>    
 
     <!-- Pagination -->
     <div class="pagination">

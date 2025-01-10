@@ -3,35 +3,69 @@
     <div class="form-card" *ngFor="let account of accounts.controls; let i = index" [formGroupName]="i">
       <div class="form-header">
         <h2>Tambah Rekening</h2>
-        <button type="button" class="btn" [ngClass]="{'btn-primary': i === 0, 'btn-danger': i !== 0}" (click)="i === 0 ? addAccount() : removeAccount(i)" [attr.aria-label]="i === 0 ? 'Add Account' : 'Remove Account'">
+        <button type="button" class="btn" [ngClass]="{'btn-primary': i === 0, 'btn-danger': i !== 0}" 
+          (click)="i === 0 ? addAccount() : removeAccount(i)" 
+          [attr.aria-label]="i === 0 ? 'Add Account' : 'Remove Account'">
           <i class="fa" [ngClass]="{'fa-plus': i === 0, 'fa-trash': i !== 0}"></i>
         </button>
       </div>
       <h3>#{{i + 1}}</h3>
-      <div class="form-group">
+
+      <!-- Bank Name Input with Auto-Suggest -->
+      <div class="form-group has-suggestions">
         <label for="namaBank{{i + 1}}">Nama Bank</label>
-        <input type="text" id="namaBank{{i + 1}}" formControlName="kode_bank" placeholder="Contoh: Bank Rakyat Indonesia" />
-        <div *ngIf="account.get('kode_bank')?.invalid && account.get('kode_bank')?.touched" class="error-message">Nama Bank is required.</div>
+        <input 
+          type="text" 
+          id="namaBank{{i + 1}}" 
+          formControlName="nama_bank" 
+          placeholder="Contoh: Bank Rakyat Indonesia"
+          (input)="onBankInputChange(i)"
+          (keydown)="onKeydown($event, i)" 
+        />
+        <div *ngIf="account.get('nama_bank')?.invalid && account.get('nama_bank')?.touched" class="error-message">
+          Nama Bank is required.
+        </div>
+
+        <!-- Suggestion List -->
+        <ul *ngIf="filteredBanks[i]?.length && showSuggestions[i]" class="suggestion-list">
+          <li 
+            *ngFor="let bank of filteredBanks[i]; let idx = index" 
+            [class.active]="idx === activeSuggestionIndex[i]"
+            (click)="selectBank(i, bank)"
+            [innerHTML]="highlightMatch(bank.name, account.get('nama_bank')?.value)">
+          </li>
+        </ul>
       </div>
+
+      <!-- Account Number -->
       <div class="form-group">
         <label for="noRekening{{i + 1}}">No Rekening</label>
         <input type="text" id="noRekening{{i + 1}}" formControlName="nomor_rekening" placeholder="Contoh: 009988112233" />
-        <div *ngIf="account.get('nomor_rekening')?.invalid && account.get('nomor_rekening')?.touched" class="error-message">No Rekening is required.</div>
+        <div *ngIf="account.get('nomor_rekening')?.invalid && account.get('nomor_rekening')?.touched" class="error-message">
+          No Rekening is required.
+        </div>
       </div>
+
+      <!-- Account Owner Name -->
       <div class="form-group">
         <label for="namaPemilik{{i + 1}}">Nama Pemilik</label>
         <input type="text" id="namaPemilik{{i + 1}}" formControlName="nama_pemilik" placeholder="Contoh: John Doe" />
-        <div *ngIf="account.get('nama_pemilik')?.invalid && account.get('nama_pemilik')?.touched" class="error-message">Nama Pemilik is required.</div>
-      </div>
-      <div class="form-group file-upload">
-        <img [src]="i === 0 ? 'assets/images/bank-bri.png' : 'assets/images/placeholder-image.png'" [alt]="'Bank ' + (i === 0 ? 'BRI Logo' : 'Placeholder')" />
-        <div>
-          <input type="file" id="bankLogo{{i + 1}}" formControlName="photo_rek" />
-          <label for="bankLogo{{i + 1}}" class="file-label">Choose File</label>
-          <span class="file-info">No file chosen</span>
+        <div *ngIf="account.get('nama_pemilik')?.invalid && account.get('nama_pemilik')?.touched" class="error-message">
+          Nama Pemilik is required.
         </div>
       </div>
-      <button type="button" class="btn-simpan" (click)="onSubmit(i)">Simpan</button>
+
+      <!-- File Upload Section -->
+      <div class="form-group file-upload">
+        <input type="file" id="bankLogo{{ i + 1 }}" (change)="onFileSelect($event, i)" formControlName="photo_rek" />
+        <label for="bankLogo{{ i + 1 }}" class="file-label">Choose File</label>
+        <span class="file-info">
+          {{ account.get('photo_rek')?.value?.name || 'No file chosen' }}
+        </span>
+      </div>
     </div>
+  </div>
+  <div class="row" style="padding-top: 10px; width: 15%; margin-left: 0.1%;">
+    <button type="button" class="btn btn-primary" (click)="onSubmit()">Simpan</button>
   </div>
 </div>

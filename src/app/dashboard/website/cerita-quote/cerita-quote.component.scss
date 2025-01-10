@@ -2,87 +2,165 @@ $form-border-color: #f0f0f0;
 $form-header-color: #ff66a3;
 $button-primary-color: #4bd0f1;
 
+.main-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2%;
+  padding: 2rem;
+  width: 100%;
+  justify-content: space-between; /* Pastikan form memiliki jarak yang proporsional */
+}
+
 .form-container {
   display: flex;
-  gap: 2rem;
-  padding: 2rem;
+  flex-direction: column;
+  width: 49%; /* Set width to 49% for two-column layout */
+  box-sizing: border-box;
 
-  .form-card {
-    background: #fff;
-    border: 1px solid $form-border-color;
-    border-radius: 12px;
-    padding: 1.5rem;
-    width: 100%;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* Tambahkan transisi smooth */
+  // transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  // &:hover {
+  //   transform: translateY(-5px);
+  //   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  // }
+}
+
+.form-card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-card {
+  background: #fff;
+  border: 1px solid $form-border-color;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  .form-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 
     h2 {
       font-size: 1.5rem;
       color: $form-header-color;
-      margin-bottom: 1rem;
+      margin: 0;
     }
 
-    .form-group {
-      margin-bottom: 1.5rem;
-
-      label {
-        display: block;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-
-      input,
-      textarea {
-        width: 100%;
-        border: 1px solid $form-border-color;
-        border-radius: 8px;
-        padding: 0.75rem;
-        font-size: 1rem;
-        outline: none;
-        transition: border-color 0.3s;
-
-        &:focus {
-          border-color: $form-header-color;
-        }
-      }
-
-      textarea {
-        resize: none;
-      }
-
-      .input-with-icon {
-        position: relative;
-
-        input {
-          padding-right: 2.5rem;
-        }
-
-        .icon {
-          position: absolute;
-          right: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          font-size: 1.2rem;
-          color: #999;
-        }
-      }
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      font-weight: bold;
-      color: #fff;
-      background: $button-primary-color;
+    /* Tambahkan animasi hover pada tombol header */
+    button {
+      background: $form-header-color;
       border: none;
       border-radius: 8px;
+      padding: 0.5rem 1rem;
+      color: #fff;
       cursor: pointer;
-      transition: background 0.3s;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
 
       &:hover {
-        background: darken($button-primary-color, 10%);
+        background: lighten($form-header-color, 10%);
+      }
+
+      i {
+        margin: 0;
       }
     }
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid $form-border-color;
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+
+      &:focus {
+        border-color: $form-header-color;
+        box-shadow: 0 0 5px rgba(255, 102, 163, 0.5);
+      }
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    .input-with-icon {
+      position: relative;
+
+      .icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #aaa;
+      }
+    }
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background: $button-primary-color;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+      background: darken($button-primary-color, 10%);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .text-right {
+    text-align: right;
+  }
+}
+
+/* Responsiveness: Stack items vertically for smaller screens */
+@media (max-width: 768px) {
+  .form-container {
+    width: 100%; /* Full width for each form container on smaller screens */
+    margin-bottom: 1rem; /* Tambahkan jarak antar form di layar kecil */
+  }
+
+  .form-card {
+    padding: 1rem; /* Kurangi padding agar lebih compact */
+  }
+
+  .form-card-header h2 {
+    font-size: 1.2rem; /* Perkecil ukuran font heading di layar kecil */
+  }
+
+  .btn {
+    font-size: 0.9rem; /* Perkecil tombol agar tetap proporsional */
+    padding: 0.5rem 1rem;
   }
 }

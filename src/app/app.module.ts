@@ -1,8 +1,9 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'; // Import BsDatepickerModule
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -47,6 +48,9 @@ import { ToastService } from './toast.service';
 import { TableComponent } from './shared/table/table.component';
 import { ModalComponent } from './shared/modal/modal.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -97,15 +101,19 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     BrowserAnimationsModule,
     MatSnackBarModule,
     ReactiveFormsModule,
-    ModalModule.forRoot()
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
+    BsDatepickerModule.forRoot(), // Use forRoot() on BsDatepickerModule
+    ModalModule.forRoot(),
   ],
   providers: [
     Title,
     { provide: LOCALE_ID, useValue: 'id' },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor, // Provide the AuthInterceptor
-      multi: true // Allow multiple interceptors
+      useClass: AuthInterceptor,
+      multi: true
     },
   ],
   bootstrap: [AppComponent],
