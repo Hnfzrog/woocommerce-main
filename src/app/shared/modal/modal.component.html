@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <button type="button" class="close" (click)="cancelDelete()">×</button>
+  </div>
+  <div class="modal-body">
+    <p>{{ message }}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="confirmDelete()">Hapus</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Batal</button>
+  </div>
+  

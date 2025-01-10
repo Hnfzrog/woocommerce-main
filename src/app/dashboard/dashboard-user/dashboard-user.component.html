@@ -29,7 +29,7 @@
         <a class="submenu-item" routerLink="website/cerita-quote" routerLinkActive="active">Cerita & Quote</a>
         <a class="submenu-item" routerLink="website/rekening" routerLinkActive="active">Rekening</a>
       </div>
-      
+
       <div class="menu">
         <a class="menu-item" [ngClass]="{'active': isActiveRoute('pengunjung')}" (click)="togglePengunjungSubmenu()">
           <i class="fas fa-chart-line"></i> Pengunjung
@@ -40,8 +40,7 @@
           <a class="submenu-item" routerLink="pengunjung/ucapan" routerLinkActive="active">Ucapan</a>
         </div>
       </div>
-      
-      
+
       <a class="menu-item" routerLink="testimoni" routerLinkActive="active">
         <i class="fas fa-comments"></i> Testimoni
       </a>
@@ -65,25 +64,23 @@
       <div class="breadcrumb">
         <span class="route-name">{{ currentRouteName }}</span>
         <span class="route-path">{{ routePath }}</span>
-      </div>      
-<!-- User Profile Section -->
-<div class="user-profile" (click)="toggleDropdown($event)">
-  <img
-    class="user-avatar"
-    src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
-    alt="User Avatar"
-  />
-  <span class="user-name">Sheraphine Alana</span>
-  <i class="fas fa-caret-down"></i>
+      </div>
+      <!-- User Profile Section -->
+      <div class="user-profile" (click)="toggleDropdown($event)">
+        <img
+          class="user-avatar"
+          src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
+          alt="User Avatar"
+        />
+        <span class="user-name">Sheraphine Alana</span>
+        <i class="fas fa-caret-down"></i>
 
-  <!-- Dropdown Menu -->
-  <div class="dropdown-menu" *ngIf="isDropdownOpen">
-    <a class="dropdown-item" routerLink="profile" (click)="selectMenu()">Profile</a>
-    <a class="dropdown-item" (click)="logout()">Logout</a>
-  </div>
-</div>
-
-
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" *ngIf="isDropdownOpen">
+          <a class="dropdown-item" routerLink="profile" (click)="selectMenu()">Profile</a>
+          <a class="dropdown-item" (click)="logout()">Logout</a>
+        </div>
+      </div>
     </div>
 
     <!-- Well and Footer -->
@@ -95,3 +92,6 @@
     </div>
   </div>
 </div>
+
+<!-- Toast Notifications -->
+<wc-toast></wc-toast>

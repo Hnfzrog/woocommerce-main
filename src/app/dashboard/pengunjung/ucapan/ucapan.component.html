@@ -1,58 +1,65 @@
 <div class="container">
-    <!-- Stats Section -->
-    <div class="stats">
-      <div class="stat-card">
-        <p>Doa & Ucapan Hari Ini</p>
-        <h2>0</h2>
-        <span>orang memberi ucapan</span>
-      </div>
-      <div class="stat-card">
-        <p>Total Doa & Ucapan</p>
-        <h2>8</h2>
-        <span>orang memberi ucapan</span>
-      </div>
+  <!-- Stats Section -->
+  <div class="stats">
+    <div class="stat-card">
+      <p>Doa & Ucapan Hari Ini</p>
+      <h2>{{ data?.today_count_tamu }}</h2>
+      <span>orang memberi ucapan</span>
     </div>
-  
-    <!-- Main Content Section -->
-    <div class="content">
-      <h3>Data Ucapan dan Doa</h3>
-      <button class="delete-all">Hapus Semua</button>
-  
-      <!-- Search Input -->
-      <div class="search-bar">
-        <input type="text" placeholder="Cari" [(ngModel)]="searchQuery" />
-      </div>
-  
-      <!-- Data Table -->
-      <table>
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Nama</th>
-            <th>Ucapan</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of filteredDataList; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ data.nama }}</td>
-            <td>{{ data.ucapan }}</td>
-            <td><button class="delete" (click)="deleteEntry(i)">Hapus</button></td>
-          </tr>
-        </tbody>
-      </table>
-  
-      <!-- Pagination -->
-      <div class="pagination">
-        <label>
-          Menampilkan
-          <select [(ngModel)]="entriesToShow">
-            <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
-          </select>
-          Data
-        </label>
-      </div>
+    <div class="stat-card">
+      <p>Total Doa & Ucapan</p>
+      <h2> {{data?.all_count_tamu}} </h2>
+      <span>orang memberi ucapan</span>
     </div>
   </div>
-  
+
+  <!-- Main Content Section -->
+  <div class="content">
+    <h3>Data Ucapan dan Doa</h3>
+    <button [disabled]="filteredDataList.length === 0" (click)="doDeleteAll()" class="delete-all">Hapus Semua</button>
+
+    <!-- Search Input -->
+    <div class="search-bar">
+      <input type="text" placeholder="Cari" [(ngModel)]="searchQuery" />
+    </div>
+
+    <!-- Data Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Nama</th>
+          <th>Ucapan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="filteredDataList.length > 0; else noData">
+        <tr *ngFor="let data of filteredDataList; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ data.nama }}</td>
+          <td>{{ data.pesan }}</td>
+          <td><button class="delete" (click)="doDelete(data)">Hapus</button></td>
+        </tr>
+      </tbody>
+
+      <ng-template #noData>
+        <tbody>
+          <tr>
+            <td colspan="4" style="text-align: center;">Tidak ada data.</td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <label>
+        Menampilkan
+        <select [(ngModel)]="entriesToShow">
+          <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
+        </select>
+        Data
+      </label>
+    </div>
+  </div>
+</div>

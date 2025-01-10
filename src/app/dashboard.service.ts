@@ -6,7 +6,18 @@ import { tap } from 'rxjs/operators';
 export enum DashboardServiceType {
   USER_LOGIN,
   USER_LOGOUT,
-  USER_REGISTER
+  USER_REGISTER,
+
+  //TESTEMONI
+  USER_TESTEMONI,
+
+  //UCAPAN
+  USER_BUKUTAMU,
+  USER_BUKUTAMU_V2,
+  USER_BUKUTAMU_V3,
+  USER_PENGUNJUNG_RIWAYAT,
+  DELETE_PENGUNJUNG_RIWAYAT_ALL,
+  DELETE_PENGUNJUNG_RIWAYAT_SINGLE
 }
 
 @Injectable({
@@ -29,6 +40,30 @@ export class DashboardService {
 
       case DashboardServiceType.USER_REGISTER:
         return `${this.BASE_URL_API}/v1/register`;
+
+      //testemoni
+      case DashboardServiceType.USER_TESTEMONI:
+        return `${this.BASE_URL_API}/v1/user/post-testimoni`;
+
+      //Ucapan
+      case DashboardServiceType.USER_BUKUTAMU:
+        return `${this.BASE_URL_API}/v1/user/result-bukutamu`;
+
+      case DashboardServiceType.USER_BUKUTAMU_V2:
+        return `${this.BASE_URL_API}/v1/user/buku-tamu`;
+
+      case DashboardServiceType.USER_BUKUTAMU_V3:
+        return `${this.BASE_URL_API}/v1/user/buku-tamu/delete-all`;
+
+      //RIWAYAT PENGUNJUNG
+      case DashboardServiceType.USER_PENGUNJUNG_RIWAYAT:
+        return `${this.BASE_URL_API}/v1/user/result-pengunjung`;
+
+      case DashboardServiceType.DELETE_PENGUNJUNG_RIWAYAT_ALL:
+        return `${this.BASE_URL_API}/v1/user/pengunjung/delete-all`;
+
+      case DashboardServiceType.DELETE_PENGUNJUNG_RIWAYAT_SINGLE:
+        return `${this.BASE_URL_API}/v1/user/pengunjung`;
       default:
         return '';
     }
@@ -45,6 +80,14 @@ export class DashboardService {
   delete(serviceType: DashboardServiceType, params?: any): Observable<any> {
     return this.httpSvc.delete(this.getUrl(serviceType), { params });
   }
+
+  deleteV2(serviceType: DashboardServiceType, id?: number, params?: any): Observable<any> {
+    const baseUrl = this.getUrl(serviceType); // Get the base URL
+    const url = id !== undefined ? `${baseUrl}/${id}` : baseUrl; // Append the ID if provided
+    return this.httpSvc.delete(url, { params });
+  }
+  
+  
 
   detail(serviceType: DashboardServiceType, params: string = ''): Observable<any> {
     return this.httpSvc.get(`${this.getUrl(serviceType)}${params}`);

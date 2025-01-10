@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../dashboard.service';
 
 @Component({
@@ -14,10 +14,18 @@ export class LoginPageComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute, // Inject ActivatedRoute to read query parameters
     private dashboardService: DashboardService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Check if there's an error message in the query parameters
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['error']) {
+        this.errorMessage = params['error']; // Set the error message
+      }
+    });
+  }
 
   onLogin() {
     this.dashboardService.login(this.email, this.password).subscribe(

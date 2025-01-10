@@ -62,6 +62,7 @@ export class DashboardUserComponent implements OnInit {
   logout(): void {
     this.DashBoardSvc.create(DashboardServiceType.USER_LOGOUT, '').subscribe(
       (res) => {
+        localStorage.removeItem('access_token')
         alert(res.message);
         this.router.navigate(['/']); // Redirect to root path '/'
       },

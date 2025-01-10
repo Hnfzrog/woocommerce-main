@@ -42,6 +42,11 @@ import { GenerateUndanganComponent } from './generate-undangan/generate-undangan
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
 import { RegisterComponent } from './register/register.component';
+import { ToastComponent } from './shared/toast/toast.component';
+import { ToastService } from './toast.service';
+import { TableComponent } from './shared/table/table.component';
+import { ModalComponent } from './shared/modal/modal.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -80,6 +85,9 @@ import { RegisterComponent } from './register/register.component';
     UcapanComponent,
     GenerateUndanganComponent,
     RegisterComponent,
+    ToastComponent,
+    TableComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,7 +96,8 @@ import { RegisterComponent } from './register/register.component';
     FormsModule,
     BrowserAnimationsModule,
     MatSnackBarModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ModalModule.forRoot()
   ],
   providers: [
     Title,
@@ -97,7 +106,7 @@ import { RegisterComponent } from './register/register.component';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor, // Provide the AuthInterceptor
       multi: true // Allow multiple interceptors
-    }
+    },
   ],
   bootstrap: [AppComponent],
 })

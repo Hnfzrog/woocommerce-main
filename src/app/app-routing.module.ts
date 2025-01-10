@@ -21,6 +21,7 @@ import { RiwayatComponent } from './dashboard/pengunjung/riwayat/riwayat.compone
 import { UcapanComponent } from './dashboard/pengunjung/ucapan/ucapan.component';
 import { GenerateUndanganComponent } from './generate-undangan/generate-undangan.component';
 import { RegisterComponent } from './register/register.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardUserComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: OverviewComponent },
