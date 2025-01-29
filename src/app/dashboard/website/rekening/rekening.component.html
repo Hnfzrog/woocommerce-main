@@ -57,7 +57,7 @@
 
       <!-- File Upload Section -->
       <div class="form-group file-upload">
-        <input type="file" id="bankLogo{{ i + 1 }}" (change)="onFileSelect($event, i)" formControlName="photo_rek" />
+        <input type="file" id="bankLogo{{ i + 1 }}" (change)="onFileSelect($event, i)" />
         <label for="bankLogo{{ i + 1 }}" class="file-label">Choose File</label>
         <span class="file-info">
           {{ account.get('photo_rek')?.value?.name || 'No file chosen' }}

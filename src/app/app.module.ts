@@ -51,6 +51,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgxSelectModule } from 'ngx-select-ex';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatAutocompleteModule,
     MatInputModule,
     MatFormFieldModule,
+    NgxSelectModule,
     BsDatepickerModule.forRoot(), // Use forRoot() on BsDatepickerModule
     ModalModule.forRoot(),
   ],

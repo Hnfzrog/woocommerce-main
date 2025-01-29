@@ -1,35 +1,43 @@
 .main-container {
-    width: 90%;
-    margin: auto;
-    font-family: 'Arial, sans-serif';
-  }
-  
-  .section {
+  width: 90%;
+  margin: auto;
+  font-family: 'Poppins';
+
+  .section, .form-section {
     background-color: #f9f9f9;
     border: 1px solid #eaeaea;
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
-    text-align: center;
-  
+
     .title {
       font-size: 18px;
       font-weight: bold;
       color: #ff69b4;
       margin-bottom: 15px;
     }
-  
+
     .photo-upload {
-      margin-bottom: 15px;
-  
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+
       .photo-placeholder {
-        width: 120px;
-        height: 120px;
+        width: 100%; /* Full width for main section */
+        height: 30vh;
         border: 2px dashed #ccc;
-        border-radius: 50%;
-        margin: auto;
+        border-radius: 10px;
+        background-size: cover;
+        background-position: center;
+        margin-bottom: 15px;
+        transition: border-color 0.3s;
+
+        &:hover {
+          border-color: #ff69b4;
+        }
       }
-  
+
       .upload-button {
         background-color: #ff69b4;
         color: white;
@@ -37,10 +45,20 @@
         border: none;
         border-radius: 20px;
         cursor: pointer;
-        margin-top: 10px;
+        display: inline-block;
+        text-align: center;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #e75480;
+        }
+
+        input {
+          display: none;
+        }
       }
     }
-  
+
     .dropdown {
       width: 100%;
       padding: 10px;
@@ -48,7 +66,7 @@
       border-radius: 5px;
       margin: 15px 0;
     }
-  
+
     .save-button {
       background-color: #00aced;
       color: white;
@@ -56,61 +74,68 @@
       border: none;
       border-radius: 20px;
       cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #0084b4;
+      }
     }
   }
-  
+
   .dual-section {
     display: flex;
     justify-content: space-between;
     gap: 20px;
+
+    .form-section {
+      flex: 1;
+
+      .photo-placeholder {
+        width: 120px;
+        height: 120px; /* Circular preview */
+        border-radius: 50%;
+        border: 2px dashed #ccc;
+        margin-bottom: 15px;
+        background-size: cover;
+        background-position: center;
+        transition: border-color 0.3s;
+
+        &:hover {
+          border-color: #ff69b4;
+        }
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+
+        label {
+          margin-top: 10px;
+          font-size: 14px;
+        }
+
+        input {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          margin-top: 5px;
+        }
+
+        .save-button {
+          background-color: #00aced;
+          color: white;
+          padding: 10px;
+          border: none;
+          border-radius: 5px;
+          margin-top: 20px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: #0084b4;
+          }
+        }
+      }
+    }
   }
-  
-  .form-section {
-    flex: 1;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #eaeaea;
-    border-radius: 15px;
-  
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #ff69b4;
-      margin-bottom: 20px;
-    }
-  
-    .photo-upload {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-  
-    form {
-      display: flex;
-      flex-direction: column;
-  
-      label {
-        margin-top: 10px;
-        font-size: 14px;
-      }
-  
-      input {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-top: 5px;
-      }
-  
-      .save-button {
-        background-color: #00aced;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        margin-top: 20px;
-        cursor: pointer;
-      }
-    }
-  }
-  
+}

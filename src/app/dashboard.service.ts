@@ -27,7 +27,17 @@ export enum DashboardServiceType {
 
   //cerita
   CERITA_SUBMIT,
-  QUOTE_SUBMIT
+  QUOTE_SUBMIT,
+  GALERY_SUBMIT,
+  SETTINGS_SUBMIT,
+  MEMPELAI_SUBMIT,
+  MEMPELAI_DATA,
+  MEMPELAI_SUBMIT_COVER,
+  MEMPELAI_UPDATE,
+  ACARA_DATA,
+  ACARA_SUBMIT_COUNTDOWN,
+  SETTINGS_GET_FILTER,
+  ACARA_SUBMIT_DYNAMIC
 }
 
 @Injectable({
@@ -89,6 +99,36 @@ export class DashboardService {
       // Quote
       case DashboardServiceType.QUOTE_SUBMIT:
               return `${this.BASE_URL_API}/v1/user/send-qoute`;
+      
+      //GALERY
+      case DashboardServiceType.GALERY_SUBMIT:
+              return `${this.BASE_URL_API}/v1/user/submission-galery`;
+
+      // Settings
+      case DashboardServiceType.SETTINGS_SUBMIT:
+              return `${this.BASE_URL_API}/v1/user/settings/`;
+      case DashboardServiceType.SETTINGS_GET_FILTER:
+              return `${this.BASE_URL_API}/v1/user/submission-filter`;
+
+      //MEMPELAI 
+      case DashboardServiceType.MEMPELAI_DATA:
+              return `${this.BASE_URL_API}/v1/user/get-mempelai`;
+      case DashboardServiceType.MEMPELAI_SUBMIT:
+              return `${this.BASE_URL_API}/v1/user/submission-mempelai`;
+      case DashboardServiceType.MEMPELAI_SUBMIT_COVER:
+              return `${this.BASE_URL_API}/v1/user/submission-cover-mempelai`;
+      case DashboardServiceType.MEMPELAI_UPDATE:
+              return `${this.BASE_URL_API}/v1/user/submission-update`;
+              
+      //ACARA
+      case DashboardServiceType.ACARA_DATA:
+              return `${this.BASE_URL_API}/v1/user/acara`;
+      case DashboardServiceType.ACARA_SUBMIT_COUNTDOWN:
+              return `${this.BASE_URL_API}/v1/user/submission-countdown`;
+      case DashboardServiceType.ACARA_SUBMIT_DYNAMIC:
+              return `${this.BASE_URL_API}/v1/user/submission-acara`;
+      
+
         default:
           return '';
 

@@ -4,28 +4,35 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('access_token');
 
-    const clonedRequest = token
+    // Tambahkan token ke header request jika tersedia
+    const authReq = token
       ? req.clone({
-          setHeaders: { Authorization: `Bearer ${token}` },
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
         })
       : req;
 
-    return next.handle(clonedRequest).pipe(
+    return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Handle 401 Unauthorized error (token missing or expired)
         if (error.status === 401) {
-          this.router.navigate(['/login'], { queryParams: { error: 'sesi telah habis, harap login kembali' } });
+          console.error('Unauthorized request - Redirecting to login...');
+          this.router.navigate(['/login']);
+        } else if (error.status === 403) {
+          console.error('Access denied - Redirecting to login...');
+          this.router.navigate(['/login']);
         }
-        return throwError(() => new Error(error.message)); // Updated throwError syntax
+        return throwError(() => error);
       })
     );
   }
 }
-

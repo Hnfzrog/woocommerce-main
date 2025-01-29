@@ -1,6 +1,5 @@
 import { Component, HostListener, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Notyf } from 'notyf';
 import { DashboardService, DashboardServiceType } from '../../../dashboard.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -10,7 +9,7 @@ import { ModalComponent } from 'src/app/shared/modal/modal.component';
   selector: 'wc-rekening',
   templateUrl: './rekening.component.html',
   styleUrls: ['./rekening.component.scss'],
-  encapsulation: ViewEncapsulation.None 
+  encapsulation: ViewEncapsulation.None
 })
 export class RekeningComponent implements OnInit {
   rekeningForm!: FormGroup;
@@ -20,7 +19,7 @@ export class RekeningComponent implements OnInit {
   activeSuggestionIndex: number[] = []; // Track active suggestion index for each account
   private notyf: Notyf;
 
-  private modalRef? : BsModalRef
+  private modalRef?: BsModalRef;
 
   constructor(
     private fb: FormBuilder,
@@ -47,10 +46,9 @@ export class RekeningComponent implements OnInit {
       nama_bank: ['', Validators.required],
       nomor_rekening: ['', Validators.required],
       nama_pemilik: ['', Validators.required],
-      photo_rek: [null] // Ensure this is included
+      photo_rek: [null] // Ensure this is included for file uploads
     });
   }
-  
 
   addAccount() {
     this.accounts.push(this.createAccountFormGroup());
@@ -138,62 +136,31 @@ export class RekeningComponent implements OnInit {
       formData.append(`nomor_rekening[${index}]`, accountValue.nomor_rekening || '');
       formData.append(`nama_pemilik[${index}]`, accountValue.nama_pemilik || '');
   
-      // Append binary file if available
+      // Append file if available, ensure it's an instance of File
       if (accountValue.photo_rek instanceof File) {
         formData.append(`photo_rek[${index}]`, accountValue.photo_rek);
+      } else {
+        console.log(`No file found for account ${index}`);
       }
     });
   
     // Display confirmation modal before submitting
     const initialState = {
       message: 'Apakah anda ingin menyimpan semua data rekening?',
-      cancelClicked: () => this.handleCancelClicked(),
+      cancelClicked: () => this.modalRef?.hide(),
       submitClicked: () => this.onSubmitForm(formData),
       submitMessage: 'Simpan',
     };
   
     this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-  
-    if (this.modalRef?.content) {
-      this.modalRef.content.onClose.subscribe((res: any) => {
-        if (res?.state === 'delete') {
-          console.log('Delete action triggered');
-        } else if (res?.state === 'cancel') {
-          console.log('Action canceled');
-        }
-        this.modalRef?.hide();
-      });
-    }
-  }
-  
+  }  
+
   onSubmitForm(formData: FormData) {
-    // Clear any existing form data to prevent duplicates
-    formData = new FormData();
-  
-    this.accounts.controls.forEach((account, index) => {
-      // Parse kode_bank to an integer if it's not empty
-      const kodeBank = account.get('kode_bank')?.value
-        ? parseInt(account.get('kode_bank')?.value, 10)
-        : null; // Convert only if there's a value
-  
-      const nomorRekening = account.get('nomor_rekening')?.value;
-      const namaPemilik = account.get('nama_pemilik')?.value;
-      const photoRek = account.get('photo_rek')?.value;
-  
-      // Append fields, converting kode_bank to an integer
-      formData.append(`kode_bank[${index}]`, kodeBank !== null ? kodeBank.toString() : '');
-      formData.append(`nomor_rekening[${index}]`, nomorRekening || '');
-      formData.append(`nama_pemilik[${index}]`, namaPemilik || '');
-  
-      if (photoRek instanceof File) {
-        formData.append(`photo_rek[${index}]`, photoRek);
-      }
-    });
-  
     // Submit the form data
     this.dashboardSvc.create(DashboardServiceType.SEND_REKENING, formData).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
+        this.modalRef?.hide();
         this.rekeningForm.reset();
         this.accounts.clear();
         this.addAccount();
@@ -204,14 +171,11 @@ export class RekeningComponent implements OnInit {
       }
     });
   }
-  
+
   handleCancelClicked() {
     console.log('Cancel clicked');
     // Add any additional logic for cancel action
-}
-
-
-
+  }
 
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
@@ -224,9 +188,13 @@ export class RekeningComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      
       const account = this.accounts.at(index) as FormGroup;
-      account.get('photo_rek')?.setValue(file);
+      account.get('photo_rek')?.setValue(file); 
+      
+      console.log(`Selected file for account ${index}:`, file);
     }
-  }  
+  }
+  
   
 }

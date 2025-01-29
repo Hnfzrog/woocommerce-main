@@ -1,14 +1,15 @@
 <div class="container">
-    <!-- Domain and Token Section -->
-    <div class="card">
+  <!-- Row 1 -->
+  <div class="form-row">
+    <form [formGroup]="domainTokenForm" (ngSubmit)="saveDomainToken()" class="form-card">
       <h3>Domain dan Token</h3>
       <div class="form-group">
         <label for="domain">URL</label>
         <input
           type="text"
           id="domain"
-          placeholder="undangan.horuzt.com/"
-          [(ngModel)]="domain"
+          placeholder="undangan.horuzt.com/ URL here..."
+          formControlName="domain"
         />
       </div>
       <div class="form-group">
@@ -17,30 +18,37 @@
           type="text"
           id="token"
           placeholder="Masukkan Token WhatsApp gateway Anda"
-          [(ngModel)]="token"
+          formControlName="token"
         />
       </div>
-      <button class="btn" (click)="saveToken()">Simpan</button>
-    </div>
-  
-    <!-- Music Upload Section -->
-    <div class="card">
+      <button class="btn" type="submit" [disabled]="domainTokenForm.invalid">Simpan</button>
+    </form>
+
+    <div class="form-card">
       <h3>Musik</h3>
       <div class="form-group">
-        <input type="file" (change)="uploadMusic($event)" />
+        <label for="musicUpload">Tambahkan Musik (Max. 5 MB)</label>
+        <input 
+          type="file" 
+          id="musicUpload" 
+          (change)="uploadMusic($event)" 
+          accept=".mp3, .wav, .ogg" />
       </div>
       <button class="btn" (click)="submitMusic()">Sisipkan</button>
-    </div>
-  
-    <!-- Salam Pembuka Section -->
-    <div class="card">
+    </div>    
+  </div>
+
+  <!-- Row 2 -->
+  <div class="form-row">
+    <form [formGroup]="salamForm" (ngSubmit)="saveSalam()" class="form-card">
       <h3>Salam Pembuka</h3>
       <div class="form-group">
         <label for="salamUndangan">Salam Pembuka Undangan</label>
         <textarea
           id="salamUndangan"
           rows="3"
-          [(ngModel)]="salamUndangan"
+          placeholder="Masukan salam pembuka undangan"
+          formControlName="salam_pembuka"
         ></textarea>
       </div>
       <div class="form-group">
@@ -48,7 +56,8 @@
         <textarea
           id="salamWhatsappAtas"
           rows="3"
-          [(ngModel)]="salamWhatsappAtas"
+          placeholder="Masukkan salam WhatsApp bagian atas"
+          formControlName="salam_tengah"
         ></textarea>
       </div>
       <div class="form-group">
@@ -56,22 +65,25 @@
         <textarea
           id="salamWhatsappBawah"
           rows="3"
-          [(ngModel)]="salamWhatsappBawah"
+          placeholder="Masukkan salam WhatsApp bagian bawah"
+          formControlName="salam_bawah"
         ></textarea>
       </div>
-      <button class="btn" (click)="saveSalam()">Simpan</button>
-    </div>
-  
-    <!-- Filter Undangan Section -->
-    <div class="card">
+      <button class="btn" type="submit" [disabled]="salamForm.invalid">Simpan</button>
+    </form>
+
+    <div class="form-card">
       <h3>Filter Undangan</h3>
-      <div class="checkbox-group" *ngFor="let filter of filters">
+      <div class="checkbox-group" *ngFor="let filter of filters; let i = index">
         <label>
-          <input type="checkbox" [(ngModel)]="filter.active" />
+          <input
+            type="checkbox"
+            [(ngModel)]="filter.active"
+          />
           {{ filter.name }}
         </label>
       </div>
       <button class="btn" (click)="applyFilters()">Terapkan</button>
     </div>
   </div>
-  
+</div>

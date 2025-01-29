@@ -1,0 +1,7 @@
+{
+    "/api": {
+      "target": "https://lib.horuzt.com",
+      "secure": false
+    }
+  }
+  

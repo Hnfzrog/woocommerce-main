@@ -103,3 +103,16 @@
     cursor: pointer;
   }
   
+  .add-icon {
+    cursor: pointer;
+    float: right;
+    font-size: 1.5rem;
+    border-radius: 10px;
+    background: #ff66a3;
+    font-weight: bold;
+  }
+  
+  .add-icon:hover {
+    color: #0056b3;
+  }
+  
