@@ -172,3 +172,12 @@ $file-button-color: #ff66a3;
     margin-top: 5px;
   }
 }
+
+.preview-image {
+  width: 50px; /* Sesuaikan ukuran preview */
+  height: 50px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}

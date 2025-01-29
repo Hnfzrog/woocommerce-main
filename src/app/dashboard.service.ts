@@ -24,6 +24,8 @@ export enum DashboardServiceType {
   //REKENING
   SEND_REKENING,
   MD_LIST_BANK,
+  REKENING_DATA,
+  UPDATE_REKENING,
 
   //cerita
   CERITA_SUBMIT,
@@ -34,6 +36,8 @@ export enum DashboardServiceType {
   MEMPELAI_DATA,
   MEMPELAI_SUBMIT_COVER,
   MEMPELAI_UPDATE,
+
+  //ACARA
   ACARA_DATA,
   ACARA_SUBMIT_COUNTDOWN,
   SETTINGS_GET_FILTER,
@@ -90,6 +94,10 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/user/send-rekening`;
       case DashboardServiceType.MD_LIST_BANK:
         return `${this.BASE_URL_API}/v1/all-bank`;
+      case DashboardServiceType.REKENING_DATA:
+        return `${this.BASE_URL_API}/v1/user/get-rekening`;
+      case DashboardServiceType.UPDATE_REKENING:
+        return `${this.BASE_URL_API}/v1/user/update-rekening`;
         
       //CERITA
       case DashboardServiceType.CERITA_SUBMIT:

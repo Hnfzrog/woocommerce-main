@@ -12,132 +12,117 @@
         [optionValueField]="'name'"
         placeholder="Pilih acara"
         formControlName="selectedEvent"
-      >
-      </ngx-select>
+      ></ngx-select>
       <div *ngIf="staticEventForm.get('selectedEvent')?.invalid && staticEventForm.get('selectedEvent')?.touched" class="error-message">
         Harap pilih salah satu acara.
       </div>
     </div>
-    <button type="button" class="btn-save" (click)="submitStaticEventForm()">Simpan</button>
+    <ng-container *ngIf="data?.length === 0 else noData">
+      <button type="button" class="btn-save" (click)="onStaticSubmitClicked()">Simpan</button>
+    </ng-container>
+
+    <ng-template #noData>
+      <button type="button" class="btn-save" (click)="onStaticUpdateClicked(data)">Update</button>
+    </ng-template>
   </div>
 
   <!-- Dynamic Forms for Events -->
-  <div class="event-forms" [formGroup]="dynamicEventForm">
-    <div
-      *ngFor="let event of dynamicEvents.controls; let i = index"
-      class="event-form"
-      [formGroupName]="i"
-    >
-      <h3>Acara #{{ i + 1 }}</h3>
-      
-      <!-- Dynamic Event Form -->
-      <div class="form-group">
-        <label for="eventName{{ i }}">Nama Acara</label>
-        <input
-          id="eventName{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="name"
-          placeholder="Contoh: Pernikahan Andra dan Mega"
-        />
-        <div *ngIf="event.get('name')?.invalid && event.get('name')?.touched" class="error-message">
-          Nama acara wajib diisi.
-        </div>
-      </div>
+  <div [formGroup]="dynamicEventForm">
+    <div class="event-forms" *ngIf="dynamicEvents as events" formArrayName="dynamicEvents">
+      <div *ngFor="let event of events.controls; let i = index" class="event-form" [formGroupName]="i">
+        <h3>Acara #{{ i + 1 }}
+          <div class="add-icon">
+            <button
+              type="button"
+              class="btn"
+              *ngIf="dynamicEvents.length === 1"
+              (click)="addDynamicEvent()"
+            >
+              <i style="color: whitesmoke;" class="fa fa-plus"></i>
+            </button>
+          </div>
+        </h3>
 
-      <div class="form-group">
-        <label for="eventDate{{ i }}">Tanggal</label>
-        <input
-          id="eventDate{{ i }}"
-          type="text"
-          class="form-control"
-          bsDatepicker
-          #dp="bsDatepicker"
-          formControlName="date"
-          [bsConfig]="bsConfig"
-          placeholder="yyyy-mm-dd"
-        />
-        <div *ngIf="event.get('date')?.invalid && event.get('date')?.touched" class="error-message">
-          Tanggal wajib diisi.
-        </div>
-      </div>
-
-      <div class="form-group time-group">
-        <div class="time-input">
-          <label for="startTime{{ i }}">Waktu Mulai</label>
+        <!-- Nama Acara -->
+        <div class="form-group">
+          <label for="eventName{{ i }}">Nama Acara</label>
           <input
-            id="startTime{{ i }}"
-            type="time"
+            id="eventName{{ i }}"
+            type="text"
             class="form-control"
-            formControlName="startTime"
+            formControlName="name"
+            placeholder="Contoh: Pernikahan Andra dan Mega"
           />
+          <div *ngIf="event.get('name')?.invalid && event.get('name')?.touched" class="error-message">
+            Nama acara wajib diisi.
+          </div>
+        </div>
+
+        <!-- Tanggal -->
+        <div class="form-group">
+          <label for="eventDate{{ i }}">Tanggal</label>
+          <input
+            id="eventDate{{ i }}"
+            type="text"
+            class="form-control"
+            bsDatepicker
+            #dp="bsDatepicker"
+            formControlName="date"
+            [bsConfig]="bsConfig"
+            placeholder="yyyy-mm-dd"
+          />
+          <div *ngIf="event.get('date')?.invalid && event.get('date')?.touched" class="error-message">
+            Tanggal wajib diisi.
+          </div>
+        </div>
+
+        <!-- Waktu Mulai & Selesai -->
+        <div class="form-group">
+          <label for="startTime{{ i }}">Waktu Mulai</label>
+          <input id="startTime{{ i }}" type="time" class="form-control" formControlName="startTime" />
           <div *ngIf="event.get('startTime')?.invalid && event.get('startTime')?.touched" class="error-message">
             Waktu mulai wajib diisi.
           </div>
         </div>
-        <div class="time-input">
+
+        <div class="form-group">
           <label for="endTime{{ i }}">Waktu Selesai</label>
-          <input
-            id="endTime{{ i }}"
-            type="time"
-            class="form-control"
-            formControlName="endTime"
-          />
+          <input id="endTime{{ i }}" type="time" class="form-control" formControlName="endTime" />
           <div *ngIf="event.get('endTime')?.invalid && event.get('endTime')?.touched" class="error-message">
             Waktu selesai wajib diisi.
           </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="location{{ i }}">Alamat</label>
-        <input
-          id="location{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="location"
-          placeholder="Alamat"
-        />
-        <div *ngIf="event.get('location')?.invalid && event.get('location')?.touched" class="error-message">
-          Alamat wajib diisi.
+        <!-- Alamat -->
+        <div class="form-group">
+          <label for="location{{ i }}">Alamat</label>
+          <input id="location{{ i }}" type="text" class="form-control" formControlName="location" placeholder="Alamat" />
+          <div *ngIf="event.get('location')?.invalid && event.get('location')?.touched" class="error-message">
+            Alamat wajib diisi.
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="mapLink{{ i }}">Google Maps</label>
-        <input
-          id="mapLink{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="mapLink"
-          placeholder="URL Google Maps"
-        />
-        <div *ngIf="event.get('mapLink')?.invalid && event.get('mapLink')?.touched" class="error-message">
-          Link Google Maps wajib diisi.
+        <!-- Google Maps -->
+        <div class="form-group">
+          <label for="mapLink{{ i }}">Google Maps</label>
+          <input id="mapLink{{ i }}" type="text" class="form-control" formControlName="mapLink" placeholder="URL Google Maps" />
+          <div *ngIf="event.get('mapLink')?.invalid && event.get('mapLink')?.touched" class="error-message">
+            Link Google Maps wajib diisi.
+          </div>
         </div>
-      </div>
 
-      <!-- Add and Delete Buttons -->
-      <div class="buttons">
-        <button
-          type="button"
-          class="btn-add"
-          *ngIf="dynamicEvents.length === i + 1"
-          (click)="addDynamicEvent()"
-        >
-          <i class="fa fa-plus"></i> Tambah Acara
-        </button>
-        <button
-          type="button"
-          class="btn-delete"
-          *ngIf="dynamicEvents.length > 1"
-          (click)="deleteDynamicEvent(i)"
-        >
-          <i class="fa fa-trash"></i> Hapus Acara
-        </button>
+        <div class="buttons" *ngIf="dynamicEvents.length > 1">
+          <button (click)="deleteDynamicEvent(i)" class="btn-delete">Hapus</button>
       </div>
     </div>
   </div>
 
-  <button type="button" class="btn-save" (click)="submitDynamicEventForm()">Simpan Semua Acara</button>
+  <ng-container *ngIf="data?.length === 0; else noDataUpdate">
+    <button type="button" class="btn-save" (click)="onDynamicSubmitClicked()">Simpan Semua Acara</button>
+  </ng-container>
+
+  <ng-template #noDataUpdate>
+    <button type="button" class="btn-save" (click)="onDynamicUpdateClicked(data)">Update Semua Acara</button>
+  </ng-template>
 </div>
+

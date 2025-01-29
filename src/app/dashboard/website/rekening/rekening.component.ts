@@ -21,6 +21,8 @@ export class RekeningComponent implements OnInit {
 
   private modalRef?: BsModalRef;
 
+  data:any
+
   constructor(
     private fb: FormBuilder,
     private dashboardSvc: DashboardService,
@@ -31,6 +33,7 @@ export class RekeningComponent implements OnInit {
 
   ngOnInit() {
     this.getListBank();
+    this.getDataRekening();
     this.rekeningForm = this.fb.group({
       accounts: this.fb.array([this.createAccountFormGroup()])
     });
@@ -70,6 +73,60 @@ export class RekeningComponent implements OnInit {
     });
   }
 
+  getDataRekening() {
+    this.dashboardSvc.list(DashboardServiceType.REKENING_DATA).subscribe(async (res) => {
+      this.data = res?.data;
+      if (res?.data?.length) {
+        this.accounts.clear();
+  
+        for (const item of res.data) {
+          const accountGroup = this.createAccountFormGroup();
+  
+          accountGroup.addControl('id', this.fb.control(item.id));
+  
+          const file = await this.convertUrlToFile(item.photo_rek, `photo_rek_${item.id}.jpg`);
+  
+          accountGroup.patchValue({
+            id: item.id, // Isi ID rekening
+            kode_bank: item.kode_bank,
+            nama_bank: item.bank_name,
+            nomor_rekening: item.nomor_rekening,
+            nama_pemilik: item.nama_pemilik,
+            photo_rek: file // Simpan sebagai File agar bisa dikirim ulang
+          });
+  
+          this.accounts.push(accountGroup);
+        }
+      }
+    });
+  }  
+
+  getBankNameById(kode_bank: string): string {
+    const bank = this.listBank.find(b => b.id === kode_bank);
+    return bank ? bank.name : '';
+  }
+  
+  onBankSelect(index: number, selectedBankId: any) {
+    const selectedBank = this.listBank.find(bank => bank.id === selectedBankId);
+    if (selectedBank) {
+      const account = this.accounts.at(index);
+      account.get('kode_bank')?.setValue(selectedBank.id);
+      account.get('nama_bank')?.setValue(selectedBank.name);
+    }
+  }
+
+  async convertUrlToFile(url: string, filename: string): Promise<File> {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new File([blob], filename, { type: blob.type });
+    } catch (error) {
+      console.error('Error converting image URL to file:', error);
+      return new File([], filename); // Return empty file jika gagal
+    }
+  }
+  
+  
   onBankInputChange(index: number) {
     const control = this.accounts.at(index).get('nama_bank');
     if (control) {
@@ -155,12 +212,84 @@ export class RekeningComponent implements OnInit {
     this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
   }  
 
+  onUpdate() {
+    // Prepare a flat payload for all accounts
+    const formData = new FormData();
+  
+    this.accounts.controls.forEach((account, index) => {
+      const accountValue = account.value;
+  
+      // Append each field using the required format
+      formData.append(`rekenings[${index}][id]`, accountValue.id || '');
+      formData.append(`rekenings[${index}][kode_bank]`, accountValue.kode_bank || '');
+      formData.append(`rekenings[${index}][nomor_rekening]`, accountValue.nomor_rekening || '');
+      formData.append(`rekenings[${index}][nama_pemilik]`, accountValue.nama_pemilik || '');
+  
+      // Append file if available
+      if (accountValue.photo_rek instanceof File) {
+        formData.append(`rekenings[${index}][photo_rek]`, accountValue.photo_rek);
+      } else {
+        console.log(`No file found for rekenings[${index}]`);
+      }
+    });
+  
+    // Display confirmation modal before submitting
+    const initialState = {
+      message: 'Apakah anda ingin menyimpan perubahan semua data rekening?',
+      cancelClicked: () => this.modalRef?.hide(),
+      submitClicked: () => this.onUpdateForm(formData),
+      submitMessage: 'Simpan',
+    };
+  
+    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+  }
+  
+
   onSubmitForm(formData: FormData) {
-    // Submit the form data
+    this.accounts.controls.forEach((account, index) => {
+      const accountValue = account.value;
+  
+      if (accountValue.photo_rek instanceof File) {
+        formData.append(`photo_rek[${index}]`, accountValue.photo_rek);
+      } else {
+        console.log(`No valid file for account ${index}`);
+      }
+    });
+  
     this.dashboardSvc.create(DashboardServiceType.SEND_REKENING, formData).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
         this.modalRef?.hide();
+        window.location.reload();
+        this.rekeningForm.reset();
+        this.accounts.clear();
+        this.addAccount();
+      },
+      error: (err) => {
+        this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
+        console.error('Error while submitting data:', err);
+      }
+    });
+  }
+
+  onUpdateForm(formData: FormData) {
+    console.log('here!!');
+    
+    this.accounts.controls.forEach((account, index) => {
+      const accountValue = account.value;
+  
+      // if (accountValue.photo_rek instanceof File) {
+      //   formData.append(`photo_rek[${index}]`, accountValue.photo_rek);
+      // } else {
+      //   console.log(`No valid file for account ${index}`);
+      // }
+    });
+  
+    this.dashboardSvc.update(DashboardServiceType.UPDATE_REKENING,'',formData).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Data berhasil disimpan.');
+        this.modalRef?.hide();
+        window.location.reload();
         this.rekeningForm.reset();
         this.accounts.clear();
         this.addAccount();
@@ -176,6 +305,13 @@ export class RekeningComponent implements OnInit {
     console.log('Cancel clicked');
     // Add any additional logic for cancel action
   }
+
+  getPhotoUrl(file: any): string {
+    if (file instanceof File) {
+      return URL.createObjectURL(file); // Jika file baru diunggah
+    }
+    return file; // Jika sudah berupa URL dari database
+  }  
 
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
@@ -195,6 +331,5 @@ export class RekeningComponent implements OnInit {
       console.log(`Selected file for account ${index}:`, file);
     }
   }
-  
   
 }

@@ -3,39 +3,33 @@
     <div class="form-card" *ngFor="let account of accounts.controls; let i = index" [formGroupName]="i">
       <div class="form-header">
         <h2>Tambah Rekening</h2>
-        <button type="button" class="btn" [ngClass]="{'btn-primary': i === 0, 'btn-danger': i !== 0}" 
-          (click)="i === 0 ? addAccount() : removeAccount(i)" 
-          [attr.aria-label]="i === 0 ? 'Add Account' : 'Remove Account'">
-          <i class="fa" [ngClass]="{'fa-plus': i === 0, 'fa-trash': i !== 0}"></i>
+        <button 
+          type="button" 
+          class="btn btn-danger"
+          (click)="accounts.length === 1 ? addAccount() : removeAccount(i)" 
+          [attr.aria-label]="accounts.length === 1 ? 'Add Account' : 'Remove Account'">
+          <i class="fa" [ngClass]="{'fa-plus': accounts.length === 1, 'fa-trash': accounts.length > 1}"></i>
         </button>
       </div>
+      
       <h3>#{{i + 1}}</h3>
 
       <!-- Bank Name Input with Auto-Suggest -->
-      <div class="form-group has-suggestions">
+      <div class="form-group">
         <label for="namaBank{{i + 1}}">Nama Bank</label>
-        <input 
-          type="text" 
-          id="namaBank{{i + 1}}" 
-          formControlName="nama_bank" 
-          placeholder="Contoh: Bank Rakyat Indonesia"
-          (input)="onBankInputChange(i)"
-          (keydown)="onKeydown($event, i)" 
-        />
-        <div *ngIf="account.get('nama_bank')?.invalid && account.get('nama_bank')?.touched" class="error-message">
+        <ngx-select 
+          [items]="listBank" 
+          [optionTextField]="'name'" 
+          [optionValueField]="'id'" 
+          placeholder="Pilih Bank" 
+          formControlName="kode_bank"
+          (change)="onBankSelect(i, $event)">
+        </ngx-select>
+        
+        <div *ngIf="account.get('kode_bank')?.invalid && account.get('kode_bank')?.touched" class="error-message">
           Nama Bank is required.
         </div>
-
-        <!-- Suggestion List -->
-        <ul *ngIf="filteredBanks[i]?.length && showSuggestions[i]" class="suggestion-list">
-          <li 
-            *ngFor="let bank of filteredBanks[i]; let idx = index" 
-            [class.active]="idx === activeSuggestionIndex[i]"
-            (click)="selectBank(i, bank)"
-            [innerHTML]="highlightMatch(bank.name, account.get('nama_bank')?.value)">
-          </li>
-        </ul>
-      </div>
+      </div>      
 
       <!-- Account Number -->
       <div class="form-group">
@@ -57,15 +51,34 @@
 
       <!-- File Upload Section -->
       <div class="form-group file-upload">
-        <input type="file" id="bankLogo{{ i + 1 }}" (change)="onFileSelect($event, i)" />
+        <!-- Preview Image -->
+        <img 
+          *ngIf="account.get('photo_rek')?.value" 
+          [src]="getPhotoUrl(account.get('photo_rek')?.value)" 
+          alt="Preview" 
+          class="preview-image"
+        />
+      
+        <input 
+          type="file" 
+          id="bankLogo{{ i + 1 }}" 
+          (change)="onFileSelect($event, i)" 
+          accept="image/*"
+        />
         <label for="bankLogo{{ i + 1 }}" class="file-label">Choose File</label>
         <span class="file-info">
           {{ account.get('photo_rek')?.value?.name || 'No file chosen' }}
         </span>
-      </div>
+      </div>      
+      
     </div>
   </div>
   <div class="row" style="padding-top: 10px; width: 15%; margin-left: 0.1%;">
-    <button type="button" class="btn btn-primary" (click)="onSubmit()">Simpan</button>
+    <ng-container *ngIf="data; else noData">
+      <button type="button" class="btn btn-primary" (click)="onUpdate()">Update</button>
+    </ng-container>
+    <ng-template #noData>
+      <button type="button" class="btn btn-primary" (click)="onSubmit()">Simpan</button>
+    </ng-template>
   </div>
 </div>
