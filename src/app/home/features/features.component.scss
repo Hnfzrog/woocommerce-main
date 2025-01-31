@@ -1,4 +1,4 @@
-@import "../../../styles//variable";
+@import "/styles//variable";
 
 @keyframes fadeInUp {
   from {
@@ -21,7 +21,7 @@
 }
 
 .section {
-  background-image: url('../../../assets/bg_feature.svg');
+  background-image: url('/assets/bg_feature.svg');
   max-height: 100%;
   background-size: cover;
   background-repeat: no-repeat;

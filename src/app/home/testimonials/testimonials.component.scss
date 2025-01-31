@@ -52,10 +52,10 @@
   background-position: center;
 }
 
-.item--1 { background-image: url('../../../assets/videotmp1.svg'); }
-.item--2 { background-image: url('../../../assets/videotmp2.svg'); }
-.item--3 { background-image: url('../../../assets/videotmp3.svg'); }
-.item--4 { background-image: url('../../../assets/videotmp4.svg'); }
+.item--1 { background-image: url('/assets/videotmp1.svg'); }
+.item--2 { background-image: url('/assets/videotmp2.svg'); }
+.item--3 { background-image: url('/assets/videotmp3.svg'); }
+.item--4 { background-image: url('/assets/videotmp4.svg'); }
 
 .item:hover {
   background-color: lightgray;

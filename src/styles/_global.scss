@@ -52,7 +52,7 @@ ul {
 
 .bg-gradient {
   // background: rgb(229, 239, 255);
-  background-image: url("../assets/bgheroes.svg");
+  background-image: url("/assets/bgheroes.svg");
 /* Rectangle 177 */
 
   // position: absolute;
@@ -63,8 +63,8 @@ ul {
   // backdrop-filter: blur(190px);
   /* Note: backdrop-filter has minimal browser support */
 
-  // background-image: url("../assets/bgclip.png");
-  // background: url("../assets/bgclip.png"),
+  // background-image: url("/assets/bgclip.png");
+  // background: url("/assets/bgclip.png"),
   // linear-gradient(118.73deg, rgba(251, 251, 251, 0.24) 12.25%, rgba(255, 213, 213, 0.096) 35.17%);
 
   background-repeat: no-repeat;
@@ -73,7 +73,7 @@ ul {
   padding-top: 37px;
 }
 .bg-blue {
-  background-image: url("../assets/bg-community.png");
+  background-image: url("/assets/bg-community.png");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -91,7 +91,7 @@ ul {
   );
 }
 .bg-testimonial-people {
-  background: url("../assets/people.png");
+  background: url("/assets/people.png");
   background-position: 25% 75%;
   background-size: 90%;
   background-repeat: no-repeat;
