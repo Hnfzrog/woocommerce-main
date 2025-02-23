@@ -1,58 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-generate-undangan',
   templateUrl: './generate-undangan.component.html',
   styleUrls: ['./generate-undangan.component.scss'],
 })
-export class GenerateUndanganComponent implements OnInit {
-  currentStep: number = 1; // Tracks the current step
-  totalSteps: number = 3; // Total number of steps
+export class GenerateUndanganComponent {
+  step = 1;
+  titles: string[] = [];
+  next: any;
 
-  // Form Data
-  formData = {
-    paket: '',
-    groom: { fullName: '', fatherName: '', motherName: '' },
-    bride: { fullName: '', fatherName: '', motherName: '' },
-  };
-
-  stories = [{ date: '', title: '', content: '' }];
-
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  // Progress percentage for the progress bar
-  get progressPercentage(): string {
-    return ((this.currentStep / this.totalSteps) * 100).toFixed(0) + '%';
+  ngOnInit(): void {
+    this.titles = ['Hallo', 'Isi Data Akun', 'Konfirmasi Data', 'Pembayaran'];
   }
 
-  // Navigation methods
-  previousStep() {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
+  get title(): string {
+    return this.titles[this.step - 1];
   }
 
-  nextStep() {
-    if (this.currentStep < this.totalSteps) {
-      this.currentStep++;
-    } else {
-      console.log('Form submitted:', this.formData, this.stories);
-    }
+  nextStep(): void {
+    if (this.step < 4) this.step++;
   }
 
-  addStory() {
-    if (this.stories.length < 10) {
-      this.stories.push({ date: '', title: '', content: '' });
-    } else {
-      alert('Maksimal 10 cerita!');
-    }
-  }
-
-  removeStory(index: number) {
-    if (index > 0) {
-      this.stories.splice(index, 1);
-    }
+  prevStep(): void {
+    if (this.step > 1) this.step--;
   }
 }

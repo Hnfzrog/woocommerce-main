@@ -1,0 +1,34 @@
+<form [formGroup]="formData" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label for="paketUndangan">Paket Undangan</label>
+      <select class="form-control" id="paketUndangan" formControlName="paketUndangan">
+        <option value="">Pilih Paket</option>
+        <option value="silver">Silver</option>
+        <option value="gold">Gold</option>
+        <option value="platinum">Platinum</option>
+      </select>
+    </div>
+  
+    <div class="form-group">
+      <label for="domainUndangan">Nama Domain / URL Undangan</label>
+      <input type="text" class="form-control" id="domainUndangan" formControlName="domainUndangan" placeholder="akudandia">
+    </div>
+  
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
+    </div>
+  
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" formControlName="password" placeholder="Password">
+    </div>
+  
+    <div class="form-group">
+      <label for="phone">Nomor Hp/WA</label>
+      <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="@08xxxxxx">
+    </div>
+  
+    <button type="submit" class="btn btn-primary w-100">Lanjut</button>
+  </form>
+  

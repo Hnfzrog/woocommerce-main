@@ -1,0 +1,103 @@
+// Global Styles
+body {
+    background-color: #f8f8f8;
+    font-family: 'Poppins';
+}
+
+// Dashboard Card Styling
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+// Konten dalam Card
+.card-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+// Garis di sisi kiri card
+.left-border {
+    width: 4px;
+    height: 100%;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+// Header untuk table invoice
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; // Memisahkan title dan button
+    background-color: white;
+    padding: 16px;
+}
+
+// Warna untuk garis
+.green { background-color: #2e7d32; }
+.orange { background-color: #f57c00; }
+.pink { background-color: #d81b60; }
+
+// Detail teks dalam Card
+.card-details {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.title {
+    font-size: 18px;
+    color: black;
+    display: block;
+}
+
+.amount {
+    font-size: 1.5rem;
+}
+
+// Ikon dalam Card
+.icon {
+    font-size: 1.5rem;
+}
+
+// Warna untuk teks
+.text-green { color: #2e7d32; }
+.text-orange { color: #f57c00; }
+.text-pink { color: #d81b60; }
+
+// Table Styling (Shared Component)
+.table-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.table-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #d81b60;
+}
+
+// Button "Lihat Selebihnya"
+.btn-lihat {
+    background-color: #ff69b4;
+    color: white;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    padding: 7px 16px;
+    border: none;
+}
+
+.btn-lihat:hover {
+    background-color: #ff85c1;
+}

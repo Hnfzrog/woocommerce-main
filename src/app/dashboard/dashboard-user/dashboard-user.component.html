@@ -1,14 +1,22 @@
 <div class="dashboard-container">
+  <!-- Toggle Button for Mobile -->
+  <button class="menu-toggle" (click)="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
   <!-- Sidebar -->
-  <div class="sidebar">
+  <div class="sidebar" [ngClass]="{'open': isSidebarOpen}">
     <div class="logo">
-      <img alt="Company Logo" src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg" />
+      <img 
+        alt="Company Logo" 
+        src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg" 
+      />
       <h1>Horuzt Invitation</h1>
     </div>
 
     <div class="menu">
       <a class="menu-item" routerLink="overview" routerLinkActive="active">
-        <i class="fas fa-th"></i> Dashboard
+        <i class="fas fa-th"></i> <span>Dashboard</span>
       </a>
     </div>
     <hr>
@@ -16,7 +24,7 @@
     <div class="menu">
       <div class="none"><p>FITUR</p></div>
       <div class="menu-item" [ngClass]="{'active': isActiveRoute('website')}" (click)="toggleWebsiteSubmenu()">
-        <i class="fas fa-globe"></i> Website
+        <i class="fas fa-globe"></i> <span>Website</span>
         <i class="fas fa-chevron-down" [ngClass]="{'rotate': isWebsiteSubmenuOpen}"></i>
       </div>
       <div *ngIf="isWebsiteSubmenuOpen" class="submenu">
@@ -32,7 +40,7 @@
 
       <div class="menu">
         <a class="menu-item" [ngClass]="{'active': isActiveRoute('pengunjung')}" (click)="togglePengunjungSubmenu()">
-          <i class="fas fa-chart-line"></i> Pengunjung
+          <i class="fas fa-chart-line"></i> <span>Pengunjung</span>
           <i class="fas fa-chevron-down" [ngClass]="{'rotate': isPengunjungSubmenuOpen}"></i>
         </a>
         <div *ngIf="isPengunjungSubmenuOpen" class="submenu">
@@ -42,17 +50,17 @@
       </div>
 
       <a class="menu-item" routerLink="testimoni" routerLinkActive="active">
-        <i class="fas fa-comments"></i> Testimoni
+        <i class="fas fa-comments"></i> <span>Testimoni</span>
       </a>
     </div>
 
     <hr>
 
-    <!-- Help none -->
+    <!-- Help Section -->
     <div class="menu">
       <div class="none"><p>BANTUAN</p></div>
       <a class="menu-item" routerLink="hubungi-kami" routerLinkActive="active">
-        <i class="fas fa-phone"></i> Hubungi Kami
+        <i class="fas fa-phone"></i> <span>Hubungi Kami</span>
       </a>
     </div>
   </div>
@@ -61,10 +69,11 @@
   <div class="content">
     <!-- Header -->
     <div class="header">
-      <div class="breadcrumb">
+      <div class="breadcrumbs">
         <span class="route-name">{{ currentRouteName }}</span>
         <span class="route-path">{{ routePath }}</span>
       </div>
+
       <!-- User Profile Section -->
       <div class="user-profile" (click)="toggleDropdown($event)">
         <img
@@ -83,10 +92,12 @@
       </div>
     </div>
 
-    <!-- Well and Footer -->
+    <!-- Content Area -->
     <div class="well">
       <router-outlet></router-outlet>
     </div>
+
+    <!-- Footer -->
     <div class="footer">
       <p>Copyright &#64; Horuzt Invitation 2024</p>
     </div>

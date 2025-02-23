@@ -1,0 +1,108 @@
+<div class="dashboard-container">
+    <!-- Toggle Button for Mobile -->
+    <button class="menu-toggle" (click)="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+  
+    <!-- Sidebar -->
+    <div class="sidebar" [ngClass]="{'open': isSidebarOpen}">
+      <div class="logo">
+        <img 
+          alt="Company Logo" 
+          src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg" 
+        />
+        <h1>Horuzt Invitation</h1>
+      </div>
+  
+      <div class="menu">
+        <a class="menu-item" routerLink="dashboard" routerLinkActive="active">
+          <i class="fas fa-th"></i> <span>Dashboard</span>
+        </a>
+      </div>
+      <div class="menu">
+        <a class="menu-item" routerLink="pengguna" routerLinkActive="active">
+          <i class="fas fa-id-card"></i> <span>Data pengguna</span>
+        </a>
+      </div>
+      <div class="menu">
+        <a class="menu-item" routerLink="pembayaran" routerLinkActive="active">
+          <i class="fas fa-credit-card"></i> <span>Data pembayaran</span>
+        </a>
+      </div>
+      <div class="menu">
+        <a class="menu-item" routerLink="gateway" routerLinkActive="active">
+          <i class="fas fa-whatsapp"></i> <span>What’sApp Gateway</span>
+        </a>
+      </div>
+      <div class="menu">
+        <a class="menu-item" routerLink="testimoni" routerLinkActive="active">
+          <i class="fas fa-comments"></i> <span>Testimoni</span>
+        </a>
+      </div>
+      <div class="menu">
+        <a class="menu-item" routerLink="website" routerLinkActive="active">
+          <i class="fas fa-desktop"></i> <span>Undangan website</span>
+        </a>
+      </div>
+      <div class="menu">
+        <a class="menu-item" routerLink="video" routerLinkActive="active">
+          <i class="fas fa-video-camera"></i> <span>Undangan video</span>
+        </a>
+      </div>
+      <hr>
+  
+       <div class="menu">
+        <div class="menu-item" [ngClass]="{'active': isActiveRoute('pengaturan')}" (click)="toggleWebsiteSubmenu()">
+          <i class="fas fa-globe"></i> <span>Pengaturan</span>
+        </div>
+        <div *ngIf="isWebsiteSubmenuOpen" class="submenu">  
+          <a class="submenu-item" routerLink="pengaturan/aplikasi" routerLinkActive="active">Aplikasi</a>
+          <a class="submenu-item" routerLink="pengaturan/paket" routerLinkActive="active">Paket</a>
+          <a class="submenu-item" routerLink="pengaturan/pembayaran" routerLinkActive="active">Pembayaran</a>
+        </div>
+      </div>
+      <hr>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Header -->
+      <div class="header">
+        <div class="breadcrumbs">
+          <span class="route-name">{{ currentRouteName }}</span>
+          <span class="route-path">{{ routePath }}</span>
+        </div>
+  
+        <!-- User Profile Section -->
+        <div class="user-profile" (click)="toggleDropdown($event)">
+          <img
+            class="user-avatar"
+            src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
+            alt="User Avatar"
+          />
+          <span class="user-name">Sheraphine Alana</span>
+          <i class="fas fa-caret-down"></i>
+  
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu" *ngIf="isDropdownOpen">
+            <a class="dropdown-item" routerLink="profile" (click)="selectMenu()">Profile</a>
+            <a class="dropdown-item" (click)="logout()">Logout</a>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Content Area -->
+      <div class="well">
+        <router-outlet></router-outlet>
+      </div>
+  
+      <!-- Footer -->
+      <div class="footer">
+        <p>Copyright &#64; Horuzt Invitation 2024</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast Notifications -->
+  <wc-toast></wc-toast>
+  

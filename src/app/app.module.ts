@@ -52,6 +52,20 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSelectModule } from 'ngx-select-ex';
+import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
+import { DashboardComponent } from './dashboard-admin/dashboard/dashboard.component';
+import { PenggunaComponent } from './dashboard-admin/pengguna/pengguna.component';
+import { PembayaranComponent } from './dashboard-admin/pembayaran/pembayaran.component';
+import { GatewayComponent } from './dashboard-admin/gateway/gateway.component';
+import { TestimoniesComponent } from './dashboard-admin/testimonies/testimonies.component';
+import { VideoComponent } from './dashboard-admin/video/video.component';
+import { SettingsAplicationComponent } from './dashboard-admin/pengaturan/settings-aplication/settings-aplication.component';
+import { SettingsBundleComponent } from './dashboard-admin/pengaturan/settings-bundle/settings-bundle.component';
+import { SettingsPaymentComponent } from './dashboard-admin/pengaturan/settings-payment/settings-payment.component';
+import { DataRegistrasiComponent } from './generate-undangan/data-registrasi/data-registrasi.component';
+import { InformasiMempelaiComponent } from './generate-undangan/informasi-mempelai/informasi-mempelai.component';
+import { RegisCeritaComponent } from './generate-undangan/regis-cerita/regis-cerita.component';
+import { RegisPembayaranComponent } from './generate-undangan/regis-pembayaran/regis-pembayaran.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +107,20 @@ import { NgxSelectModule } from 'ngx-select-ex';
     ToastComponent,
     TableComponent,
     ModalComponent,
+    DashboardAdminComponent,
+    DashboardComponent,
+    PenggunaComponent,
+    PembayaranComponent,
+    GatewayComponent,
+    TestimoniesComponent,
+    VideoComponent,
+    SettingsAplicationComponent,
+    SettingsBundleComponent,
+    SettingsPaymentComponent,
+    DataRegistrasiComponent,
+    InformasiMempelaiComponent,
+    RegisCeritaComponent,
+    RegisPembayaranComponent,
   ],
   imports: [
     BrowserModule,

@@ -10,32 +10,38 @@ import { DashboardService } from '../dashboard.service';
 export class LoginPageComponent implements OnInit {
   email: string = '';
   password: string = '';
-  errorMessage: string = ''; // Variable to store error message
+  errorMessage: string = '';
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute, // Inject ActivatedRoute to read query parameters
+    private activatedRoute: ActivatedRoute,
     private dashboardService: DashboardService
   ) {}
 
   ngOnInit(): void {
-    // Check if there's an error message in the query parameters
     this.activatedRoute.queryParams.subscribe(params => {
       if (params['error']) {
-        this.errorMessage = params['error']; // Set the error message
+        this.errorMessage = params['error'];
       }
     });
   }
 
   onLogin() {
     this.dashboardService.login(this.email, this.password).subscribe(
-      response => {
-        this.errorMessage = ''; // Clear error message on successful login
-        this.router.navigate(['/dashboard']);
+      (response: any) => {
+        this.errorMessage = '';
+        if (response.role.includes('user')) {
+          this.router.navigate(['/dashboard']);
+        } else if (response.role.includes('admin')) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.errorMessage = 'Unauthorized role. Please contact support.';
+        }
       },
       error => {
-        this.errorMessage = 'Login failed. Please check your credentials.'; // Set error message on failure
+        this.errorMessage = 'Login failed. Please check your credentials.';
       }
     );
   }
+  
 }

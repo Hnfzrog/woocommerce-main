@@ -41,7 +41,10 @@ export enum DashboardServiceType {
   ACARA_DATA,
   ACARA_SUBMIT_COUNTDOWN,
   SETTINGS_GET_FILTER,
-  ACARA_SUBMIT_DYNAMIC
+  ACARA_SUBMIT_DYNAMIC,
+
+  //SETTINGS ADMIN BUNDLE
+  ST_BUNDLE_ADMIN
 }
 
 @Injectable({
@@ -135,6 +138,10 @@ export class DashboardService {
               return `${this.BASE_URL_API}/v1/user/submission-countdown`;
       case DashboardServiceType.ACARA_SUBMIT_DYNAMIC:
               return `${this.BASE_URL_API}/v1/user/submission-acara`;
+
+      //SETTINGS BUNDLE ADMIN
+      case DashboardServiceType.ST_BUNDLE_ADMIN:
+              return `${this.BASE_URL_API}/v1/admin/paket-undangan`;
       
 
         default:

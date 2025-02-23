@@ -1,0 +1,69 @@
+<body>
+    <div class="container my-5">
+        <!-- Dashboard Cards -->
+        <div class="row mb-4">
+            <!-- Total Keuntungan -->
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-content">
+                        <div class="left-border green"></div>
+                        <div class="card-details">
+                            <span class="title">Total Keuntungan</span>
+                            <span class="amount text-green">Rp. 120.000</span>
+                        </div>
+                        <i class="fas fa-wallet icon text-green"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Pengguna -->
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-content">
+                        <div class="left-border orange"></div>
+                        <div class="card-details">
+                            <span class="title">Total Pengguna</span>
+                            <span class="amount text-orange">11</span>&nbsp;
+                            <small>pengguna terdaftar</small>
+                        </div>
+                        <i class="fas fa-users icon text-orange"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Request -->
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-content">
+                        <div class="left-border pink"></div>
+                        <div class="card-details">
+                            <span class="title">Pending Request</span>
+                            <span class="amount text-pink">1</span>
+                        </div>
+                        <i class="fas fa-power-off icon text-pink"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Table -->
+        <div class="card table-card">
+            <div class="card-header bg-white">
+                <span class="text-pink table-title">Invoice</span>
+                <button class="btn btn-lihat float-end">
+                    Lihat Selebihnya <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <wc-table
+                    [rows]="rows"
+                    [columns]="columns"
+                    [actionTitle]="'Action'"
+                    (confirmClicked)="onConfirmClicked($event)"
+                    (editClicked)="onEditClicked($event)"
+                    (deleteClicked)="onDeleteClicked($event)">
+                </wc-table>
+            </div>
+        </div>
+    </div>
+</body>

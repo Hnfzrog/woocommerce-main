@@ -22,6 +22,16 @@ import { UcapanComponent } from './dashboard/pengunjung/ucapan/ucapan.component'
 import { GenerateUndanganComponent } from './generate-undangan/generate-undangan.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './auth.guard';
+import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
+import { DashboardComponent } from './dashboard-admin/dashboard/dashboard.component';
+import { PenggunaComponent } from './dashboard-admin/pengguna/pengguna.component';
+import { PembayaranComponent } from './dashboard-admin/pembayaran/pembayaran.component';
+import { GatewayComponent } from './dashboard-admin/gateway/gateway.component';
+import { VideoComponent } from './dashboard-admin/video/video.component';
+import { TestimoniesComponent } from './dashboard-admin/testimonies/testimonies.component';
+import { SettingsAplicationComponent } from './dashboard-admin/pengaturan/settings-aplication/settings-aplication.component';
+import { SettingsBundleComponent } from './dashboard-admin/pengaturan/settings-bundle/settings-bundle.component';
+import { SettingsPaymentComponent } from './dashboard-admin/pengaturan/settings-payment/settings-payment.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -58,6 +68,29 @@ const routes: Routes = [
         ],
       },      { path: 'testimoni', component: TestimoniComponent },
       { path: 'hubungi-kami', component: HubungiKamiComponent },
+    ],
+  },
+  {
+    path: 'admin',
+    component: DashboardAdminComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'pengguna', component: PenggunaComponent },
+      { path: 'pembayaran', component: PembayaranComponent },
+      { path: 'gateway', component: GatewayComponent },
+      { path: 'testimoni', component: TestimoniesComponent },
+      { path: 'website', component: WebsiteComponent },
+      { path: 'video', component: VideoComponent },
+      {
+        path: 'pengaturan',
+        children: [
+          { path: 'aplikasi', component: SettingsAplicationComponent },
+          { path: 'paket', component: SettingsBundleComponent },
+          { path: 'pembayaran', component: SettingsPaymentComponent },
+        ],
+      },
     ],
   },
 ];

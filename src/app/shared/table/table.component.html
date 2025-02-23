@@ -1,1 +1,86 @@
-<p>table works!</p>
+<div class="table-container">
+    <table class="table custom-table">
+      <thead>
+        <tr>
+          <th *ngFor="let column of columns">{{ column.name }}</th>
+          <th *ngIf="actionTitle">{{ actionTitle }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Jika tidak ada data -->
+        <tr *ngIf="!paginatedRows || paginatedRows.length === 0">
+          <td [attr.colspan]="columns.length + (actionTitle ? 1 : 0)" class="no-data">
+            Tidak ada data tersedia
+          </td>
+        </tr>
+  
+        <!-- Jika ada data -->
+        <tr *ngFor="let row of paginatedRows; let i = index">
+          <td *ngFor="let column of columns">
+            {{ column.prop === 'number' ? (i + 1 + (currentPage - 1) * rowsPerPage) : row[column.prop] }}
+          </td>
+          <td *ngIf="actionTitle" class="text-center">
+            <!-- Confirm Button -->
+            <button *ngIf="row.auth?.canConfirm" class="btn btn-outline-pink btn-sm me-1 action-btn" 
+                    (click)="confirmClicked.emit(row)" title="Confirm">
+              <i class="fas fa-check-circle"></i> Confirm
+            </button>
+          
+            <!-- Edit Button -->
+            <button *ngIf="row.auth?.canUpdate" class="btn btn-outline-warning btn-sm me-1 action-btn" 
+                    (click)="editClicked.emit(row)" title="Edit">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+          
+            <!-- Delete Button -->
+            <button *ngIf="row.auth?.canDelete" class="btn btn-outline-danger btn-sm action-btn" 
+                    (click)="deleteClicked.emit(row)" title="Delete">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </td>          
+        </tr>
+      </tbody>
+    </table>
+  
+    <div class="pagination-container d-flex justify-content-between align-items-center" *ngIf="paginatedRows && paginatedRows.length > 0">
+      <!-- Rows per page -->
+      <div class="rows-per-page d-flex align-items-center">
+        <label for="rowsPerPage" class="me-2">Rows per page:</label> &nbsp;
+        <select
+          id="rowsPerPage"
+          class="form-select form-select-sm"
+          [ngModel]="rowsPerPage"
+          (ngModelChange)="onRowsPerPageChange($event)"
+        >
+          <option *ngFor="let option of rowsPerPageOptions" [value]="option">
+            {{ option }}
+          </option>
+        </select>
+      </div>
+  
+      <!-- Pagination -->
+      <nav>
+        <ul class="pagination mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="goToPage(currentPage - 1)">Previous</button>
+          </li>
+          <li
+            class="page-item"
+            *ngFor="let page of [].constructor(totalPages); let index = index"
+            [class.active]="index + 1 === currentPage"
+          >
+            <button class="page-link" (click)="goToPage(index + 1)">{{ index + 1 }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="goToPage(currentPage + 1)">Next</button>
+          </li>
+        </ul>
+      </nav>
+  
+      <!-- Showing data entries -->
+      <div class="data-entries">
+        <span>Showing {{ paginatedRows.length }} of {{ rows.length }} entries</span>
+      </div>
+    </div>
+  </div>
+  

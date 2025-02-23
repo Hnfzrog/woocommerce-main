@@ -1,0 +1,143 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    
+    <!-- Silver Package -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card">
+        <div class="card-header">Paket 1</div>
+        <div class="card-body">
+          <form [formGroup]="silverForm">
+            <div class="mb-3">
+              <label class="form-label">Nama Paket Undangan</label>
+              <input type="text" class="form-control" formControlName="name_paket">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Harga Paket Undangan</label>
+              <input type="text" class="form-control currency-format" formControlName="price">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Masa Aktif Undangan (hari)</label>
+              <input type="text" class="form-control" formControlName="masa_aktif">
+            </div>
+
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="silverHalamanBuku" formControlName="halaman_buku">
+              <label class="custom-control-label" for="silverHalamanBuku">Halaman Buku Tamu</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="silverKirimWa" formControlName="kirim_wa">
+              <label class="custom-control-label" for="silverKirimWa">Kirim WhatsApp</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="silverBebasTema" formControlName="bebas_pilih_tema">
+              <label class="custom-control-label" for="silverBebasTema">Bebas Pilih Tema</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="silverKirimHadiah" formControlName="kirim_hadiah">
+              <label class="custom-control-label" for="silverKirimHadiah">Kirim Hadiah</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="silverImportData" formControlName="import_data">
+              <label class="custom-control-label" for="silverImportData">Import Data Tamu (Excel)</label>
+            </div>
+
+            <button class="btn btn-custom mt-3" (click)="onClickSilver()">Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gold Package -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card">
+        <div class="card-header">Paket 2</div>
+        <div class="card-body">
+          <form [formGroup]="goldForm">
+            <div class="mb-3">
+              <label class="form-label">Nama Paket Undangan</label>
+              <input type="text" class="form-control" formControlName="name_paket">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Harga Paket Undangan</label>
+              <input type="text" class="form-control currency-format" formControlName="price">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Masa Aktif Undangan (hari)</label>
+              <input type="text" class="form-control" formControlName="masa_aktif">
+            </div>
+
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumHalamanBuku" formControlName="halaman_buku">
+              <label class="custom-control-label" for="platinumHalamanBuku">Halaman Buku Tamu</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumKirimWa" formControlName="kirim_wa">
+              <label class="custom-control-label" for="platinumKirimWa">Kirim WhatsApp</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumBebasTema" formControlName="bebas_pilih_tema">
+              <label class="custom-control-label" for="platinumBebasTema">Bebas Pilih Tema</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumKirimHadiah" formControlName="kirim_hadiah">
+              <label class="custom-control-label" for="platinumKirimHadiah">Kirim Hadiah</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumImportData" formControlName="import_data">
+              <label class="custom-control-label" for="platinumImportData">Import Data Tamu (Excel)</label>
+            </div>
+
+            <button class="btn btn-custom mt-3" (click)="onClickGold()">Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platinum Package -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card">
+        <div class="card-header">Paket 3</div>
+        <div class="card-body">
+          <form [formGroup]="platinumForm">
+            <div class="mb-3">
+              <label class="form-label">Nama Paket Undangan</label>
+              <input type="text" class="form-control" formControlName="name_paket">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Harga Paket Undangan</label>
+              <input type="text" class="form-control currency-format" formControlName="price">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Masa Aktif Undangan (hari)</label>
+              <input type="text" class="form-control" formControlName="masa_aktif">
+            </div>
+
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumHalamanBuku" formControlName="halaman_buku">
+              <label class="custom-control-label" for="platinumHalamanBuku">Halaman Buku Tamu</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumKirimWa" formControlName="kirim_wa">
+              <label class="custom-control-label" for="platinumKirimWa">Kirim WhatsApp</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumBebasTema" formControlName="bebas_pilih_tema">
+              <label class="custom-control-label" for="platinumBebasTema">Bebas Pilih Tema</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumKirimHadiah" formControlName="kirim_hadiah">
+              <label class="custom-control-label" for="platinumKirimHadiah">Kirim Hadiah</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="platinumImportData" formControlName="import_data">
+              <label class="custom-control-label" for="platinumImportData">Import Data Tamu (Excel)</label>
+            </div>
+
+            <button class="btn btn-custom mt-3" (click)="onClickPlatinum()">Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

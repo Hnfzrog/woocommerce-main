@@ -13,6 +13,7 @@ export class DashboardUserComponent implements OnInit {
   isWebsiteSubmenuOpen: boolean = false;
   isPengunjungSubmenuOpen: boolean = false;
   isDropdownOpen = false;
+  isSidebarOpen = false;
 
   constructor(
     private router: Router, 
@@ -30,6 +31,10 @@ export class DashboardUserComponent implements OnInit {
     this.setRoutePath();
   }
 
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
   private setRouteName(): void {
     const route = this.activatedRoute.firstChild?.snapshot.routeConfig?.path;
     this.currentRouteName = route ? this.capitalizeRouteName(route) : 'Dashboard';
@@ -37,8 +42,13 @@ export class DashboardUserComponent implements OnInit {
 
   private setRoutePath(): void {
     this.routePath = this.getFullRoutePath(this.activatedRoute);
+    
+    // Ambil segmen terakhir dari path
+    const segments = this.routePath.split('/');
+    this.routePath = `/${segments[segments.length - 1]}`;
+    
   }
-
+  
   private getFullRoutePath(route: ActivatedRoute | null): string {
     let path = '';
     while (route) {
