@@ -1,1 +1,24 @@
-<p>testimonies works!</p>
+<body>
+    <div class="container my-5">    
+        <!-- Invoice Table -->
+        <div class="card table-card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="text-pink table-title">Ulasan</span>
+            </div>            
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div (click)="onDeleteAllClicked()" class="btn btn-lihat"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;&nbsp; Hapus semua</div>
+                <input type="text" class="form-control search-input" placeholder="Cari pengguna..." (input)="onSearch($event)">
+            </div>            
+            <div class="card-body">
+                <wc-table
+                    [rows]="rows"
+                    [columns]="columns"
+                    [actionTitle]="'Action'"
+                    (confirmClicked)="onConfirmClicked($event)"
+                    (editClicked)="onEditClicked($event)"
+                    (deleteClicked)="onDeleteClicked($event)">
+                </wc-table>
+            </div>
+        </div>
+    </div>
+</body>

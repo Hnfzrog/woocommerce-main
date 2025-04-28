@@ -1,1 +1,63 @@
-<p>regis-pembayaran works!</p>
+<!-- <form [formGroup]="formRegis" (ngSubmit)="submit()"> -->
+    <div class="container mt-5">
+
+        <div class="form-group">
+          <label for="paket_undangan_id">Metode pembayaran</label>
+          <ngx-select
+            [items]="selectOptions.payment.items"
+            [optionTextField]="'name'"
+            [optionValueField]="'id'"
+            placeholder="Pilih metode pembayaran"
+            (select)="onMetodeSelect($event)"
+          ></ngx-select>
+        </div>
+       
+        <ng-container *ngIf="selectedMethod === 'Manual'">
+                <div class="manual-payment">
+                  <div class="form-group">
+                    <label class="label-title">Nama Bank Tujuan</label>
+                    <p class="text-muted">BCA</p>
+                  </div>
+              
+                  <div class="form-group">
+                    <label class="label-title">Nomer Rekening</label>
+                    <p class="text-muted">0123456789</p>
+                  </div>
+              
+                  <div class="form-group">
+                    <label class="label-title">Nama Pemilik</label>
+                    <p class="text-muted">Zayyin Al Farizi</p>
+                  </div>
+              
+                  <div class="form-group amount-container">
+                    <label class="amount-label">Nominal yang harus dibayarkan:</label>
+                    <p class="amount">Rp. 999.999</p>
+                  </div>                  
+              
+                  <p class="instructions">
+                    Setelah melakukan pembayaran, pastikan Anda klik "Lanjut" untuk langkah selanjutnya. 
+                    Mohon untuk menyimpan bukti pembayaran.
+                  </p>
+                </div>
+        </ng-container>
+    
+        <ng-container *ngIf="selectedMethod === 'Tripay'">
+            <p>INI Tripay</p>
+        </ng-container>
+    
+        <ng-container *ngIf="selectedMethod === 'Midtrans'">
+            <p>INI Midtrans</p>
+        </ng-container>
+    
+        <ng-container *ngIf="selectedMethod === 'Trial'">
+            <p>INI Trial</p>
+        </ng-container>
+
+        <div class="button-group">
+            <button class="btn-back" (click)="onBack()">Kembali</button>
+            <button class="btn-next" (click)="onNextClicked()">Lanjut</button>
+          </div>
+    </div>
+  
+    <!-- <button type="submit" class="btn btn-primary w-100" [disabled]="formRegis.invalid">Lanjut</button> -->
+  

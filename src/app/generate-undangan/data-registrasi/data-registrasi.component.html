@@ -1,34 +1,48 @@
-<form [formGroup]="formData" (ngSubmit)="submit()">
-    <div class="form-group">
-      <label for="paketUndangan">Paket Undangan</label>
-      <select class="form-control" id="paketUndangan" formControlName="paketUndangan">
-        <option value="">Pilih Paket</option>
-        <option value="silver">Silver</option>
-        <option value="gold">Gold</option>
-        <option value="platinum">Platinum</option>
-      </select>
-    </div>
-  
-    <div class="form-group">
-      <label for="domainUndangan">Nama Domain / URL Undangan</label>
-      <input type="text" class="form-control" id="domainUndangan" formControlName="domainUndangan" placeholder="akudandia">
-    </div>
-  
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
-    </div>
-  
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" class="form-control" id="password" formControlName="password" placeholder="Password">
-    </div>
-  
-    <div class="form-group">
-      <label for="phone">Nomor Hp/WA</label>
-      <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="@08xxxxxx">
-    </div>
-  
-    <button type="submit" class="btn btn-primary w-100">Lanjut</button>
-  </form>
-  
+<form [formGroup]="formRegis" (ngSubmit)="submit()">
+  <div class="form-group">
+    <label for="paket_undangan_id">Paket Undangan</label>
+    <select class="form-control" id="paket_undangan_id" formControlName="paket_undangan_id">
+      <option value="">Pilih Paket</option>
+      <option value="1">Silver</option>
+      <option value="2">Gold</option>
+      <option value="3">Platinum</option>
+    </select>
+    <small class="text-danger" *ngIf="formRegis.get('paket_undangan_id')?.invalid && formRegis.get('paket_undangan_id')?.touched">
+      Paket undangan wajib dipilih.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="domain">Nama Domain / URL Undangan</label>
+    <input type="text" class="form-control" id="domain" formControlName="domain" placeholder="akudandia.com">
+    <small class="text-danger" *ngIf="formRegis.get('domain')?.invalid && formRegis.get('domain')?.touched">
+      Nama domain minimal 3 karakter.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
+    <small class="text-danger" *ngIf="formRegis.get('email')?.invalid && formRegis.get('email')?.touched">
+      Masukkan email yang valid.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" class="form-control" id="password" formControlName="password" placeholder="Password">
+    <small class="text-danger" *ngIf="formRegis.get('password')?.invalid && formRegis.get('password')?.touched">
+      Password minimal 6 karakter.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="phone">Nomor Hp/WA</label>
+    <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="@08xxxxxx">
+    <small class="text-danger" *ngIf="formRegis.get('phone')?.invalid && formRegis.get('phone')?.touched">
+      Masukkan nomor HP yang valid.
+    </small>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100" [disabled]="formRegis.invalid">Lanjut</button>
+</form>

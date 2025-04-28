@@ -1,1 +1,72 @@
-<p>informasi-mempelai works!</p>
+<div class="container mt-5">
+  <form [formGroup]="formGroup">
+    <div class="form-section">
+      <h5 class="section-title">Calon Mempelai Pria</h5>
+      <div class="image-upload">
+        <div class="image-box">
+          <img [src]="imagePreviews['photo_pria'] || 'https://via.placeholder.com/100'" alt="Groom Profile">
+        </div>
+        <input type="file" (change)="onFileSelected($event, 'photo_pria')" accept="image/*">
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="namaLengkapPria">Nama Lengkap</label>
+        <input type="text" class="form-control" id="namaLengkapPria" placeholder="contoh: jasonnlom" formControlName="name_lengkap_pria">
+      </div>
+      <div class="form-group">
+        <label for="namaPanggilanPria">Nama Panggilan</label>
+        <input type="text" class="form-control" id="namaPanggilanPria" placeholder="yan" formControlName="name_panggilan_pria">
+      </div>
+      <div class="form-group">
+        <label for="namaAyahPria">Nama Ayah</label>
+        <input type="text" class="form-control" id="namaAyahPria" placeholder="Nama Ayah" formControlName="ayah_pria">
+      </div>
+      <div class="form-group">
+        <label for="namaIbuPria">Nama Ibu</label>
+        <input type="text" class="form-control" id="namaIbuPria" placeholder="Nama Ibu" formControlName="ibu_pria">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h5 class="section-title">Calon Mempelai Wanita</h5>
+      <div class="image-upload">
+        <div class="image-box">
+          <img [src]="imagePreviews['photo_wanita'] || 'https://via.placeholder.com/100'" alt="Bride Profile">
+        </div>
+        <input type="file" (change)="onFileSelected($event, 'photo_wanita')" accept="image/*">
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="namaLengkapWanita">Nama Lengkap</label>
+        <input type="text" class="form-control" id="namaLengkapWanita" placeholder="contoh: jasonnlom" formControlName="name_lengkap_wanita">
+      </div>
+      <div class="form-group">
+        <label for="namaPanggilanWanita">Nama Panggilan</label>
+        <input type="text" class="form-control" id="namaPanggilanWanita" placeholder="yan" formControlName="name_panggilan_wanita">
+      </div>
+      <div class="form-group">
+        <label for="namaAyahWanita">Nama Ayah</label>
+        <input type="text" class="form-control" id="namaAyahWanita" placeholder="Nama Ayah" formControlName="ayah_wanita">
+      </div>
+      <div class="form-group">
+        <label for="namaIbuWanita">Nama Ibu</label>
+        <input type="text" class="form-control" id="namaIbuWanita" placeholder="Nama Ibu" formControlName="ibu_wanita">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h5 class="section-title">Foto Sampul</h5>
+      <div class="image-upload">
+        <div class="image-box">
+          <img [src]="imagePreviews['cover_photo'] || 'https://via.placeholder.com/100'" alt="Cover Photo">
+        </div>
+        <input type="file" (change)="onFileSelected($event, 'cover_photo')" accept="image/*">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn-back" (click)="onBack()">Kembali</button>
+      <button class="btn-next" [disabled]="formGroup.invalid" (click)="onNextClicked()">Lanjut</button>
+    </div>
+  </form>
+</div>

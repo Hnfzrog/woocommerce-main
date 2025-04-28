@@ -1,14 +1,22 @@
 <div class="container mt-4">
   <h3 class="text-center text-primary">{{ title }}</h3>
-  <p class="text-center">Hai kak isi dulu datanya</p>
+  <p class="text-center">Hai kak, isi dulu datanya</p>
 
   <div class="progress mb-4">
-    <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="step * 50" aria-valuenow="50"
-      aria-valuemin="0" aria-valuemax="100">{{ step * 50 }}%</div>
+    <div 
+      class="progress-bar bg-primary" 
+      role="progressbar" 
+      [style.width.%]="progress"
+      [attr.aria-valuenow]="progress" 
+      aria-valuemin="0" 
+      aria-valuemax="100">
+      {{ progress }}%
+    </div>
   </div>
+  
 
-  <wc-data-registrasi *ngIf="step === 1" (next)="nextStep()"></wc-data-registrasi>
-  <wc-informasi-mempelai *ngIf="step === 2" (prev)="prevStep()" (next)="nextStep()"></wc-informasi-mempelai>
-  <wc-regis-cerita *ngIf="step === 3" (prev)="prevStep()" (next)="nextStep()"></wc-regis-cerita>
-  <wc-regis-pembayaran *ngIf="step === 4" (prev)="prevStep()"></wc-regis-pembayaran>
+  <wc-data-registrasi *ngIf="step === 1" [formData]="formData" (next)="nextStep($event)"></wc-data-registrasi>
+  <wc-informasi-mempelai *ngIf="step === 2" [formData]="formData" (formDataChange)="formData = $event" (prev)="prevStep()" (next)="nextStep($event)"></wc-informasi-mempelai>
+  <wc-regis-cerita *ngIf="step === 3" [formData]="formData" (prev)="prevStep()" (next)="nextStep($event)"></wc-regis-cerita>
+  <wc-regis-pembayaran *ngIf="step === 4" [formData]="formData" (prev)="prevStep()"></wc-regis-pembayaran>
 </div>

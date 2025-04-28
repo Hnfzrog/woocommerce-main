@@ -9,7 +9,7 @@
                         <div class="left-border green"></div>
                         <div class="card-details">
                             <span class="title">Total Keuntungan</span>
-                            <span class="amount text-green">Rp. 120.000</span>
+                            <span class="amount text-green">Rp. {{ salary || '0'}}</span>
                         </div>
                         <i class="fas fa-wallet icon text-green"></i>
                     </div>
@@ -23,7 +23,7 @@
                         <div class="left-border orange"></div>
                         <div class="card-details">
                             <span class="title">Total Pengguna</span>
-                            <span class="amount text-orange">11</span>&nbsp;
+                            <span class="amount text-orange">{{ total_users || '0'}}</span>&nbsp;
                             <small>pengguna terdaftar</small>
                         </div>
                         <i class="fas fa-users icon text-orange"></i>
@@ -38,7 +38,7 @@
                         <div class="left-border pink"></div>
                         <div class="card-details">
                             <span class="title">Pending Request</span>
-                            <span class="amount text-pink">1</span>
+                            <span class="amount text-pink">{{ pending_req }}</span>
                         </div>
                         <i class="fas fa-power-off icon text-pink"></i>
                     </div>

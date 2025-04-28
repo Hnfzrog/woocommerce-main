@@ -44,7 +44,25 @@ export enum DashboardServiceType {
   ACARA_SUBMIT_DYNAMIC,
 
   //SETTINGS ADMIN BUNDLE
-  ST_BUNDLE_ADMIN
+  ST_BUNDLE_ADMIN,
+
+  //MANUAL REGIS 
+  MNL_STEP_ONE,
+  MNL_STEP_THREE,
+  MNL_STEP_FOUR,
+  MNL_STEP_TWO,
+  MNL_MD_METHOD,
+
+  //ADMIN
+  ADM_TESTI,
+  ADM_TESTI_DELETE_ALL,
+
+  ADM_IDX_DASHBOARD,
+  MNL_MD_METHOD_DETAIL,
+  MD_RGS_PAYMENT,
+  ADM_MANUAL_PAYMENT,
+  ADM_TRIPAY_PAYMENT,
+  ADM_MIDTRANS_PAYMENT
 }
 
 @Injectable({
@@ -64,9 +82,29 @@ export class DashboardService {
 
       case DashboardServiceType.USER_LOGOUT:
         return `${this.BASE_URL_API}/v1/logout`;
-
+        
       case DashboardServiceType.USER_REGISTER:
         return `${this.BASE_URL_API}/v1/register`;
+          
+      //MANUAL REGIS
+      case DashboardServiceType.MNL_STEP_ONE:
+        return `${this.BASE_URL_API}/v1/one-step`;
+
+      case DashboardServiceType.MNL_STEP_TWO:
+        return `${this.BASE_URL_API}/v1/two-step`;
+
+      case DashboardServiceType.MNL_STEP_THREE:
+        return `${this.BASE_URL_API}/v1/three-step`;
+
+      case DashboardServiceType.MNL_STEP_FOUR:
+        return `${this.BASE_URL_API}/v1/for-step`;
+
+      case DashboardServiceType.MNL_MD_METHOD:
+        return `${this.BASE_URL_API}//v1/master-tagihan`;
+
+      case DashboardServiceType.MNL_MD_METHOD_DETAIL:
+        return `${this.BASE_URL_API}/v1/list-methode-transaction/all`;
+
 
       //testemoni
       case DashboardServiceType.USER_TESTEMONI:
@@ -142,6 +180,28 @@ export class DashboardService {
       //SETTINGS BUNDLE ADMIN
       case DashboardServiceType.ST_BUNDLE_ADMIN:
               return `${this.BASE_URL_API}/v1/admin/paket-undangan`;
+
+      
+      //TESTIMONI ADMIN
+      case DashboardServiceType.ADM_TESTI:
+              return `${this.BASE_URL_API}/v1/admin/testimoni`;
+      case DashboardServiceType.ADM_TESTI_DELETE_ALL:
+              return `${this.BASE_URL_API}/v1/admin/testimoni/delete-all`;
+
+      //ADMIN GET USER DATA
+      case DashboardServiceType.ADM_IDX_DASHBOARD:
+              return `${this.BASE_URL_API}/v1/admin/get-users`;
+
+      //master payment
+      case DashboardServiceType.MD_RGS_PAYMENT:
+              return `${this.BASE_URL_API}/v1/master-tagihan`;
+
+      //PEMBAYARAN ADMIN
+
+      case DashboardServiceType.ADM_TRIPAY_PAYMENT:
+              return `${this.BASE_URL_API}/v1/user/send-tripayn`;
+      case DashboardServiceType.ADM_MIDTRANS_PAYMENT:
+              return `${this.BASE_URL_API}/v1/admin/send-midtrans`;
       
 
         default:
@@ -225,6 +285,14 @@ export class DashboardService {
         localStorage.setItem('access_token', response.access_token);
       })
     );
+  }
+}
+
+export class QueryService {
+  constructor() { }
+
+  convert(params:any) {
+    return '?' + new URLSearchParams(params).toString();
   }
 }
 

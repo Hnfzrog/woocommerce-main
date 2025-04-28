@@ -1,0 +1,90 @@
+.container {
+    margin: auto;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    // max-width: 500px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  .btn-back, .btn-next {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  .btn-back {
+    background: #ffe0e6;
+    color: #ff6680;
+  }
+  .btn-next {
+    background: #ff6680;
+    color: white;
+  }
+  .btn-back:hover {
+    background: #ff6680;
+    color: white;
+  }
+  .btn-next:hover {
+    background: #cc5566;
+  }
+
+.manual-payment {
+    .label-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+  
+    .text-muted {
+      color: #9e9e9e;
+    }
+  
+    .form-control.account-number {
+      border: 2px solid #a855f7;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 16px;
+      width: 100%;
+      color: #333;
+    }
+  
+    .amount-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+  
+    .amount-label {
+      font-weight: bold;
+      font-size: 18px;
+    }
+  
+    .amount {
+      font-weight: bold;
+      font-size: 18px;
+    }
+  
+    .instructions {
+      font-size: 14px;
+      color: #333;
+    }
+  }
+  
+  .btn-custom {
+    width: 100px;
+    border-radius: 20px;
+}
+.btn-cancel {
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+}
+.btn-next {
+    background-color: #ff6b6b;
+    color: #fff;
+}

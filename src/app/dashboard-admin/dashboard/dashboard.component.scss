@@ -101,3 +101,38 @@ body {
 .btn-lihat:hover {
     background-color: #ff85c1;
 }
+
+.status-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+    
+    &::before {
+      content: "●";
+      font-size: 12px;
+      margin-right: 8px;
+    }
+  
+    &.expired {
+      background-color: #4A4A4A; // Abu-abu
+    }
+  
+    &.aktif {
+      background-color: #2E7D32; // Hijau
+    }
+  
+    &.menunggu-konfirmasi {
+      background-color: #FBB040; // Orange
+      color: white;
+    }
+  
+    &.belum-lunas {
+      background-color: #4AC3E3; // Biru
+    }
+  }
+  

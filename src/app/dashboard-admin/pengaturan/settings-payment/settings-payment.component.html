@@ -1,1 +1,147 @@
-<p>settings-payment works!</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      
+      <div class="col-lg-6 col-md-6">
+        <div class="card">
+          <div class="card-header">Metode Pembayaran Tagihan</div>
+          <div class="card-body">
+            <label for="paket_undangan_id">Metode pembayaran</label>
+            <ngx-select
+              [items]="selectOptions.payment.items"
+              [optionTextField]="'name'"
+              [optionValueField]="'id'"
+              placeholder="Pilih metode pembayaran"
+              (select)="onMetodeSelect($event)"
+            ></ngx-select>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="methodSelected === 1">
+          <div class="col-lg-6 col-md-6">
+            <div class="card">
+              <div class="card-header">Pengaturan Pembayaran Manual</div>
+              <div class="card-body">
+                <form [formGroup]="formPayment">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Bank</label>
+                        <ngx-select 
+                        [items]="listBank" 
+                        [optionTextField]="'name'" 
+                        [optionValueField]="'id'" 
+                        placeholder="Pilih Bank" 
+                        formControlName="kode_bank"
+                        (change)="onBankSelect($event)">
+                      </ngx-select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">No Rekening</label>
+                        <input type="number" class="form-control" formControlName="nomor_rekening" >
+                      </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nama Pemilik</label>
+                        <input type="text" class="form-control" formControlName="nama_pemilik" >
+                    </div>
+                    <div class="text-right">
+                        <button
+                          type="button"
+                          class="btn"
+                          (click)="onSubmitPayment()"
+                          [disabled]="formPayment.invalid"
+                          style="background: #4bd0f1; color: white;"
+                        >
+                          Simpan 
+                        </button>
+                      </div>
+                </form>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+      <ng-container *ngIf="methodSelected === 2">
+          <div class="col-lg-6 col-md-6">
+            <div class="card">
+              <div class="card-header">Pengaturan Pembayaran Tripay</div>
+              <div class="card-body">
+                <form [formGroup]="formPayment">
+                    <div class="mb-3">
+                        <label class="form-label">Kode Merchant</label>
+                        <input type="text" class="form-control" formControlName="kode_merchant" >
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">API Key</label>
+                        <input type="text" class="form-control" formControlName="api_key" >
+                      </div>
+                    <div class="mb-3">
+                        <label class="form-label">Private Key</label>
+                        <input type="text" class="form-control" formControlName="private_key" >
+                      </div>
+                    <div class="mb-3">
+                        <label class="form-label">URL Transaksi Tripay</label>
+                        <input type="text" class="form-control" formControlName="url_tripay" >
+                      </div>
+                      <div class="text-right">
+                        <button
+                          type="button"
+                          class="btn"
+                          (click)="onSubmitPayment()"
+                          [disabled]="formPayment.invalid"
+                          style="background: #4bd0f1; color: white;"
+                        >
+                          Simpan 
+                        </button>
+                      </div>
+                </form>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+      <ng-container *ngIf="methodSelected === 3">
+          <div class="col-lg-6 col-md-6">
+            <div class="card">
+              <div class="card-header">Pengaturan Pembayaran Midtrans</div>
+              <div class="card-body">
+                <form [formGroup]="formPayment">
+                    <div class="mb-3">
+                        <label class="form-label">URL Midtrans</label>
+                        <input type="text" class="form-control" formControlName="url" >
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">ServerKey Midtrans</label>
+                        <input type="number" class="form-control" formControlName="servery_key" >
+                      </div>
+                    <div class="mb-3">
+                        <label class="form-label">Clientkey Midtrans</label>
+                        <input type="text" class="form-control" formControlName="client_key" >
+                      </div>
+                    <div class="mb-3">
+                        <label class="form-label">Metode Production</label>
+                        <input type="text" class="form-control" formControlName="metode_production" >
+                      </div>
+                      <div class="text-right">
+                        <button
+                          type="button"
+                          class="btn"
+                          (click)="onSubmitPayment()"
+                          [disabled]="formPayment.invalid"
+                          style="background: #4bd0f1; color: white;"
+                        >
+                          Simpan 
+                        </button>
+                      </div>
+                </form>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+      <ng-container *ngIf="methodSelected === 4">
+          <div class="col-lg-6 col-md-6">
+            <div class="card">
+              <div class="card-header">Pengaturan Pembayaran Manual</div>
+              <div class="card-body">
+                
+              </div>
+            </div>
+          </div>
+      </ng-container>
+    </div>
+  </div>

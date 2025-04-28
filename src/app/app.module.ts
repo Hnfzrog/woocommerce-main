@@ -66,6 +66,8 @@ import { DataRegistrasiComponent } from './generate-undangan/data-registrasi/dat
 import { InformasiMempelaiComponent } from './generate-undangan/informasi-mempelai/informasi-mempelai.component';
 import { RegisCeritaComponent } from './generate-undangan/regis-cerita/regis-cerita.component';
 import { RegisPembayaranComponent } from './generate-undangan/regis-pembayaran/regis-pembayaran.component';
+import { ModalUploadGaleriComponent } from './generate-undangan/modal-upload-galeri/modal-upload-galeri.component';
+import { QueryService } from './dashboard.service';
 
 @NgModule({
   declarations: [
@@ -121,6 +123,7 @@ import { RegisPembayaranComponent } from './generate-undangan/regis-pembayaran/r
     InformasiMempelaiComponent,
     RegisCeritaComponent,
     RegisPembayaranComponent,
+    ModalUploadGaleriComponent,
   ],
   imports: [
     BrowserModule,

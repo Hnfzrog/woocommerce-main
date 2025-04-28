@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Notyf } from 'notyf';
+import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
+import { ModalComponent } from 'src/app/shared/modal/modal.component';
 
 @Component({
   selector: 'wc-data-registrasi',
@@ -7,16 +11,93 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./data-registrasi.component.scss']
 })
 export class DataRegistrasiComponent implements OnInit {
-  @Input() formData!: FormGroup;
-  @Output() next = new EventEmitter<void>();
+  @Input() formData: any = {};
+  @Output() next = new EventEmitter<any>();
 
-  constructor() {}
+  formRegis!: FormGroup;
+  private notyf: Notyf;
+  modalRef?: BsModalRef;
 
-  ngOnInit(): void {}
+  constructor(
+    private fb: FormBuilder,
+    private modalSvc: BsModalService,
+    private dashboardSvc: DashboardService
+  ) {
+    this.notyf = new Notyf({
+      duration: 3000,
+      position: {
+        x: 'right',
+        y: 'top'
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.formRegis = this.fb.group({
+      paket_undangan_id: ['', Validators.required],
+      domain: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
+    });
+
+    if (this.formData) {
+      this.formRegis.patchValue(this.formData);
+    }
+  }
 
   submit(): void {
-    if (this.formData.valid) {
-      this.next.emit();
+    if (this.formRegis.valid) {
+      const initialState = {
+        message: 'Apakah anda ingin menyimpan data registrasi?',
+        cancelClicked: () => this.handleCancelClicked(),
+        submitClicked: () => this.saveRegistration(),
+        submitMessage: 'Simpan',
+      };
+
+      this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+
+      if (this.modalRef?.content) {
+        this.modalRef.content.onClose.subscribe((res: any) => {
+          if (res?.state === 'delete') {
+            console.log('Delete action triggered');
+          } else if (res?.state === 'cancel') {
+            console.log('Action canceled');
+          }
+          this.modalRef?.hide();
+        });
+      }
+    } else {
+      this.formRegis.markAllAsTouched();
     }
+  }
+
+  saveRegistration(): void {
+    const payload = new FormData();
+    
+    Object.keys(this.formRegis.value).forEach((key) => {
+      payload.append(key, this.formRegis.get(key)?.value);
+    });
+  
+    console.log('Data Registrasi:', this.formRegis.value);
+    
+    this.dashboardSvc.create(DashboardServiceType.MNL_STEP_ONE, payload).subscribe({
+      next: (res) => {
+        this.modalRef?.hide();
+        localStorage.setItem('access_token', res.token);
+        this.next.emit(res)
+        this.notyf.success(res?.message || 'Data berhasil disimpan.');
+      },
+      error: (err) => {
+        this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
+        console.error('Error while submitting data:', err);
+      }
+    })
+  }
+  
+
+  handleCancelClicked(): void {
+    console.log('Modal cancelled');
+    this.modalRef?.hide();
   }
 }
