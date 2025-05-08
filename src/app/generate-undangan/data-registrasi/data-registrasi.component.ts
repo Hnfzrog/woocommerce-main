@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Notyf } from 'notyf';
@@ -11,17 +11,22 @@ import { ModalComponent } from 'src/app/shared/modal/modal.component';
   styleUrls: ['./data-registrasi.component.scss']
 })
 export class DataRegistrasiComponent implements OnInit {
+
   @Input() formData: any = {};
   @Output() next = new EventEmitter<any>();
+  @Output() prev = new EventEmitter<void>();
 
   formRegis!: FormGroup;
   private notyf: Notyf;
   modalRef?: BsModalRef;
+  paketOptions: any;
+  selectedPrice: string = '';
 
   constructor(
     private fb: FormBuilder,
     private modalSvc: BsModalService,
-    private dashboardSvc: DashboardService
+    private dashboardSvc: DashboardService,
+
   ) {
     this.notyf = new Notyf({
       duration: 3000,
@@ -33,17 +38,60 @@ export class DataRegistrasiComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initMasterDataPaket();
+
     this.formRegis = this.fb.group({
       paket_undangan_id: ['', Validators.required],
+      price: [this.selectedPrice],
       domain: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+      kode_pemesanan: [null],
     });
 
-    if (this.formData) {
-      this.formRegis.patchValue(this.formData);
+    if (this.formData && Object.keys(this.formData).length > 0) {
+      this.formRegis.patchValue(this.formData.formData);
+      localStorage.setItem('formData', JSON.stringify(this.formData));
     }
+    const savedFormData = localStorage.getItem('formRegis');
+    if (savedFormData) {
+      this.formRegis.patchValue(JSON.parse(savedFormData));
+    }
+    this.formRegis.valueChanges.subscribe((value) => {
+      localStorage.setItem('formRegis', JSON.stringify(value));
+    });
+    const savedData = localStorage.getItem('formData');
+
+    if (savedData) {
+      this.formData = JSON.parse(savedData);
+      this.formRegis.patchValue(this.formData.formData);
+      this.formRegis.patchValue({
+        kode_pemesanan: JSON.parse(savedData).response.user.kode_pemesanan,
+      });
+    }
+
+  }
+
+
+  initMasterDataPaket(): void {
+    this.dashboardSvc.list(DashboardServiceType.MNL_MD_PACK_INVITATION).subscribe({
+      next: (res) => {
+        this.paketOptions = res.data;
+      },
+    });
+  }
+
+  onPaketSelect(event: any): void {
+    const selectedPaket = this.paketOptions.find((paket: any) => paket.id === event);
+    if (selectedPaket) {
+      this.selectedPrice = selectedPaket.price || '';
+    } else {
+      this.selectedPrice = '';
+    }
+    this.formRegis.patchValue({
+      price: this.selectedPrice
+    });
   }
 
   submit(): void {
@@ -54,9 +102,7 @@ export class DataRegistrasiComponent implements OnInit {
         submitClicked: () => this.saveRegistration(),
         submitMessage: 'Simpan',
       };
-
       this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-
       if (this.modalRef?.content) {
         this.modalRef.content.onClose.subscribe((res: any) => {
           if (res?.state === 'delete') {
@@ -74,30 +120,27 @@ export class DataRegistrasiComponent implements OnInit {
 
   saveRegistration(): void {
     const payload = new FormData();
-    
     Object.keys(this.formRegis.value).forEach((key) => {
       payload.append(key, this.formRegis.get(key)?.value);
     });
-  
-    console.log('Data Registrasi:', this.formRegis.value);
-    
+    localStorage.setItem('formData', JSON.stringify(this.formData));
+
     this.dashboardSvc.create(DashboardServiceType.MNL_STEP_ONE, payload).subscribe({
       next: (res) => {
         this.modalRef?.hide();
         localStorage.setItem('access_token', res.token);
-        this.next.emit(res)
+        this.next.emit({ response: res, formData: this.formRegis.value, step: 2 });
+        this.formRegis.patchValue(this.formData);
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-        console.error('Error while submitting data:', err);
       }
     })
   }
-  
+
 
   handleCancelClicked(): void {
-    console.log('Modal cancelled');
     this.modalRef?.hide();
   }
 }

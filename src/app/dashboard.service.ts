@@ -37,6 +37,9 @@ export enum DashboardServiceType {
   MEMPELAI_SUBMIT_COVER,
   MEMPELAI_UPDATE,
 
+  //konfirmasi pembayaran
+  RDM_CONFIRM_PAYMENT,
+
   //ACARA
   ACARA_DATA,
   ACARA_SUBMIT_COUNTDOWN,
@@ -46,12 +49,13 @@ export enum DashboardServiceType {
   //SETTINGS ADMIN BUNDLE
   ST_BUNDLE_ADMIN,
 
-  //MANUAL REGIS 
+  //MANUAL REGIS
   MNL_STEP_ONE,
   MNL_STEP_THREE,
   MNL_STEP_FOUR,
   MNL_STEP_TWO,
   MNL_MD_METHOD,
+  MNL_MD_PACK_INVITATION,
 
   //ADMIN
   ADM_TESTI,
@@ -61,8 +65,9 @@ export enum DashboardServiceType {
   MNL_MD_METHOD_DETAIL,
   MD_RGS_PAYMENT,
   ADM_MANUAL_PAYMENT,
+  ADM_ADD_REKENING,
   ADM_TRIPAY_PAYMENT,
-  ADM_MIDTRANS_PAYMENT
+  ADM_MIDTRANS_PAYMENT,
 }
 
 @Injectable({
@@ -82,10 +87,10 @@ export class DashboardService {
 
       case DashboardServiceType.USER_LOGOUT:
         return `${this.BASE_URL_API}/v1/logout`;
-        
+
       case DashboardServiceType.USER_REGISTER:
         return `${this.BASE_URL_API}/v1/register`;
-          
+
       //MANUAL REGIS
       case DashboardServiceType.MNL_STEP_ONE:
         return `${this.BASE_URL_API}/v1/one-step`;
@@ -105,6 +110,8 @@ export class DashboardService {
       case DashboardServiceType.MNL_MD_METHOD_DETAIL:
         return `${this.BASE_URL_API}/v1/list-methode-transaction/all`;
 
+      case DashboardServiceType.MNL_MD_PACK_INVITATION:
+        return `${this.BASE_URL_API}/v1/paket-undangan`;
 
       //testemoni
       case DashboardServiceType.USER_TESTEMONI:
@@ -139,73 +146,77 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/user/get-rekening`;
       case DashboardServiceType.UPDATE_REKENING:
         return `${this.BASE_URL_API}/v1/user/update-rekening`;
-        
+
       //CERITA
       case DashboardServiceType.CERITA_SUBMIT:
         return `${this.BASE_URL_API}/v1/user/send-cerita`;
-      
-    
+
+
       // Quote
       case DashboardServiceType.QUOTE_SUBMIT:
-              return `${this.BASE_URL_API}/v1/user/send-qoute`;
-      
+        return `${this.BASE_URL_API}/v1/user/send-qoute`;
+
       //GALERY
       case DashboardServiceType.GALERY_SUBMIT:
-              return `${this.BASE_URL_API}/v1/user/submission-galery`;
+        return `${this.BASE_URL_API}/v1/user/submission-galery`;
 
       // Settings
       case DashboardServiceType.SETTINGS_SUBMIT:
-              return `${this.BASE_URL_API}/v1/user/settings/`;
+        return `${this.BASE_URL_API}/v1/user/settings/`;
       case DashboardServiceType.SETTINGS_GET_FILTER:
-              return `${this.BASE_URL_API}/v1/user/submission-filter`;
+        return `${this.BASE_URL_API}/v1/user/submission-filter`;
 
-      //MEMPELAI 
+      //MEMPELAI
       case DashboardServiceType.MEMPELAI_DATA:
-              return `${this.BASE_URL_API}/v1/user/get-mempelai`;
+        return `${this.BASE_URL_API}/v1/user/get-mempelai`;
       case DashboardServiceType.MEMPELAI_SUBMIT:
-              return `${this.BASE_URL_API}/v1/user/submission-mempelai`;
+        return `${this.BASE_URL_API}/v1/user/submission-mempelai`;
       case DashboardServiceType.MEMPELAI_SUBMIT_COVER:
-              return `${this.BASE_URL_API}/v1/user/submission-cover-mempelai`;
+        return `${this.BASE_URL_API}/v1/user/submission-cover-mempelai`;
       case DashboardServiceType.MEMPELAI_UPDATE:
-              return `${this.BASE_URL_API}/v1/user/submission-update`;
-              
+        return `${this.BASE_URL_API}/v1/user/submission-update`;
+
       //ACARA
       case DashboardServiceType.ACARA_DATA:
-              return `${this.BASE_URL_API}/v1/user/acara`;
+        return `${this.BASE_URL_API}/v1/user/acara`;
       case DashboardServiceType.ACARA_SUBMIT_COUNTDOWN:
-              return `${this.BASE_URL_API}/v1/user/submission-countdown`;
+        return `${this.BASE_URL_API}/v1/user/submission-countdown`;
       case DashboardServiceType.ACARA_SUBMIT_DYNAMIC:
-              return `${this.BASE_URL_API}/v1/user/submission-acara`;
+        return `${this.BASE_URL_API}/v1/user/submission-acara`;
 
       //SETTINGS BUNDLE ADMIN
       case DashboardServiceType.ST_BUNDLE_ADMIN:
-              return `${this.BASE_URL_API}/v1/admin/paket-undangan`;
+        return `${this.BASE_URL_API}/v1/admin/paket-undangan`;
 
-      
+
       //TESTIMONI ADMIN
       case DashboardServiceType.ADM_TESTI:
-              return `${this.BASE_URL_API}/v1/admin/testimoni`;
+        return `${this.BASE_URL_API}/v1/admin/testimoni`;
       case DashboardServiceType.ADM_TESTI_DELETE_ALL:
-              return `${this.BASE_URL_API}/v1/admin/testimoni/delete-all`;
+        return `${this.BASE_URL_API}/v1/admin/testimoni/delete-all`;
 
       //ADMIN GET USER DATA
       case DashboardServiceType.ADM_IDX_DASHBOARD:
-              return `${this.BASE_URL_API}/v1/admin/get-users`;
+        return `${this.BASE_URL_API}/v1/admin/get-users`;
 
       //master payment
       case DashboardServiceType.MD_RGS_PAYMENT:
-              return `${this.BASE_URL_API}/v1/master-tagihan`;
+        return `${this.BASE_URL_API}/v1/master-tagihan`;
 
       //PEMBAYARAN ADMIN
 
       case DashboardServiceType.ADM_TRIPAY_PAYMENT:
-              return `${this.BASE_URL_API}/v1/user/send-tripayn`;
+        return `${this.BASE_URL_API}/v1/admin/send-tripay`;
       case DashboardServiceType.ADM_MIDTRANS_PAYMENT:
-              return `${this.BASE_URL_API}/v1/admin/send-midtrans`;
-      
+        return `${this.BASE_URL_API}/v1/admin/send-midtrans`;
+      case DashboardServiceType.ADM_ADD_REKENING:
+        return `${this.BASE_URL_API}/v1/admin/send-rekening`;
+      case DashboardServiceType.RDM_CONFIRM_PAYMENT:
+        return `${this.BASE_URL_API}/v1/update/status-bayar`;
 
-        default:
-          return '';
+
+      default:
+        return '';
 
     }
   }
@@ -227,8 +238,8 @@ export class DashboardService {
     const url = id !== undefined ? `${baseUrl}/${id}` : baseUrl; // Append the ID if provided
     return this.httpSvc.delete(url, { params });
   }
-  
-  
+
+
 
   detail(serviceType: DashboardServiceType, params: string = ''): Observable<any> {
     return this.httpSvc.get(`${this.getUrl(serviceType)}${params}`);
@@ -291,7 +302,7 @@ export class DashboardService {
 export class QueryService {
   constructor() { }
 
-  convert(params:any) {
+  convert(params: any) {
     return '?' + new URLSearchParams(params).toString();
   }
 }

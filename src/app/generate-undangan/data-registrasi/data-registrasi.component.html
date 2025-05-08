@@ -1,15 +1,14 @@
 <form [formGroup]="formRegis" (ngSubmit)="submit()">
   <div class="form-group">
     <label for="paket_undangan_id">Paket Undangan</label>
-    <select class="form-control" id="paket_undangan_id" formControlName="paket_undangan_id">
-      <option value="">Pilih Paket</option>
-      <option value="1">Silver</option>
-      <option value="2">Gold</option>
-      <option value="3">Platinum</option>
-    </select>
-    <small class="text-danger" *ngIf="formRegis.get('paket_undangan_id')?.invalid && formRegis.get('paket_undangan_id')?.touched">
+    <ngx-select id="paket_undangan_id" [items]="paketOptions" [optionTextField]="'name_paket'" [optionValueField]="'id'"
+      formControlName="paket_undangan_id" placeholder="Pilih Paket" (select)="onPaketSelect($event)">
+    </ngx-select>
+    <small class="text-danger"
+      *ngIf="formRegis.get('paket_undangan_id')?.invalid && formRegis.get('paket_undangan_id')?.touched">
       Paket undangan wajib dipilih.
     </small>
+
   </div>
 
   <div class="form-group">

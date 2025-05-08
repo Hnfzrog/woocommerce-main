@@ -1,63 +1,134 @@
 <!-- <form [formGroup]="formRegis" (ngSubmit)="submit()"> -->
-    <div class="container mt-5">
+<div class="container mt-5">
 
-        <div class="form-group">
-          <label for="paket_undangan_id">Metode pembayaran</label>
-          <ngx-select
-            [items]="selectOptions.payment.items"
-            [optionTextField]="'name'"
-            [optionValueField]="'id'"
-            placeholder="Pilih metode pembayaran"
-            (select)="onMetodeSelect($event)"
-          ></ngx-select>
+  <div class="form-group">
+    <label for="paket_undangan_id">Metode pembayaran</label>
+    <ngx-select [items]="selectOptions.payment.items" [optionTextField]="'name'" [optionValueField]="'id'"
+      placeholder="Pilih metode pembayaran" (select)="onMetodeSelect($event)"></ngx-select>
+  </div>
+  <ng-container *ngIf="selectedMethod === 1">
+    <div *ngFor="let rekening of bill" class="manual-payment card-payment">
+      <div class="form-group">
+        <label class="label-title">Nama Bank Tujuan</label>
+        <p class="text-muted">{{ rekening.nama_bank }}</p>
+      </div>
+
+      <div class="form-group position-relative">
+        <label class="label-title">Nomer Rekening</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ rekening.nomor_rekening }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyToClipboard(rekening.nomor_rekening)"
+            title="Salin ke clipboard"></i>
         </div>
-       
-        <ng-container *ngIf="selectedMethod === 'Manual'">
-                <div class="manual-payment">
-                  <div class="form-group">
-                    <label class="label-title">Nama Bank Tujuan</label>
-                    <p class="text-muted">BCA</p>
-                  </div>
-              
-                  <div class="form-group">
-                    <label class="label-title">Nomer Rekening</label>
-                    <p class="text-muted">0123456789</p>
-                  </div>
-              
-                  <div class="form-group">
-                    <label class="label-title">Nama Pemilik</label>
-                    <p class="text-muted">Zayyin Al Farizi</p>
-                  </div>
-              
-                  <div class="form-group amount-container">
-                    <label class="amount-label">Nominal yang harus dibayarkan:</label>
-                    <p class="amount">Rp. 999.999</p>
-                  </div>                  
-              
-                  <p class="instructions">
-                    Setelah melakukan pembayaran, pastikan Anda klik "Lanjut" untuk langkah selanjutnya. 
-                    Mohon untuk menyimpan bukti pembayaran.
-                  </p>
-                </div>
-        </ng-container>
-    
-        <ng-container *ngIf="selectedMethod === 'Tripay'">
-            <p>INI Tripay</p>
-        </ng-container>
-    
-        <ng-container *ngIf="selectedMethod === 'Midtrans'">
-            <p>INI Midtrans</p>
-        </ng-container>
-    
-        <ng-container *ngIf="selectedMethod === 'Trial'">
-            <p>INI Trial</p>
-        </ng-container>
+      </div>
 
-        <div class="button-group">
-            <button class="btn-back" (click)="onBack()">Kembali</button>
-            <button class="btn-next" (click)="onNextClicked()">Lanjut</button>
-          </div>
+      <div class="form-group">
+        <label class="label-title">Nama Pemilik</label>
+        <p class="text-muted">{{ rekening.nama_pemilik }}</p>
+      </div>
+
+      <div class="form-group amount-container">
+        <label class="amount-label">Nominal yang harus dibayarkan:</label>
+        <p class="amount">Rp. {{manualBill}}</p>
+      </div>
+
+      <p class="instructions">
+        <strong style="color: blue;">
+          Pilih salah satu rekening.
+        </strong>
+      </p>
+      <p class="instructions">
+        Setelah melakukan pembayaran, pastikan Anda klik "Lanjut" untuk langkah selanjutnya.
+        Mohon untuk menyimpan bukti pembayaran.
+      </p>
     </div>
-  
-    <!-- <button type="submit" class="btn btn-primary w-100" [disabled]="formRegis.invalid">Lanjut</button> -->
-  
+  </ng-container>
+
+  <ng-container *ngIf="selectedMethod === 2">
+    <div *ngFor="let tripayData of bill" class="card shadow-sm p-3 mb-4">
+      <h5 class="mb-3">Metode Pembayaran: {{ tripayData.methode_pembayaran }}</h5>
+
+      <div class="form-group position-relative">
+        <label class="label-title">API Key</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ tripayData.api_key }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyTripayToClipboard(tripayData.api_key)" title="Salin API Key"></i>
+        </div>
+      </div>
+
+      <div class="form-group position-relative">
+        <label class="label-title">Private Key</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ tripayData.private_key }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyTripayToClipboard(tripayData.private_key)"
+            title="Salin Private Key"></i>
+        </div>
+      </div>
+
+      <div class="form-group position-relative">
+        <label class="label-title">Kode Merchant</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ tripayData.kode_merchant }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyTripayToClipboard(tripayData.kode_merchant)"
+            title="Salin Kode Merchant"></i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="label-title">URL Tripay</label>
+        <a [href]="tripayData.url_tripay" target="_blank">{{ tripayData.url_tripay }}</a>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="selectedMethod === 3">
+    <div *ngFor="let midtransData of bill" class="card shadow-sm p-3 mb-4">
+      <h5 class="mb-3">Metode Pembayaran: {{ midtransData.methode_pembayaran }}</h5>
+
+      <div class="form-group position-relative">
+        <label class="label-title">Server Key</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ midtransData.server_key }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyMidtrans(midtransData.server_key)" title="Salin Server Key"></i>
+        </div>
+      </div>
+
+      <div class="form-group position-relative">
+        <label class="label-title">Client Key</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ midtransData.client_key }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyMidtrans(midtransData.client_key)" title="Salin Client Key"></i>
+        </div>
+      </div>
+
+      <div class="form-group position-relative">
+        <label class="label-title">Metode Production</label>
+        <div class="rekening-container">
+          <p class="text-muted mb-0">{{ midtransData.metode_production }}</p>
+          <i class="fa fa-copy copy-icon" (click)="copyMidtrans(midtransData.metode_production)"
+            title="Salin Tipe Mode"></i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="label-title">URL Setting</label>
+        <a [href]="midtransData.url" target="_blank">{{ midtransData.url }}</a>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="selectedMethod === 4">
+    <p style="text-align: center; padding: 24px;">Anda memilih metode “Trial dulu” sehingga masa uji coba hanya
+      berlangsung selama 3 hari. Beberapa fitur tidak akan
+      tersedia di akun Anda. Setelah masa uji coba habis, Anda tidak dapat lagi mengakses undangan yang Anda buat.</p>
+  </ng-container>
+
+  <div class="button-group">
+    <button class="btn-back" (click)="onBack()">Kembali</button>
+    <button class="btn-next" (click)="onNextClicked()" [disabled]="!selectedMethod">Lanjut</button>
+  </div>
+</div>
+
+<!-- <button type="submit" class="btn btn-primary w-100" [disabled]="formRegis.invalid">Lanjut</button> -->

@@ -12,7 +12,6 @@ import { Notyf } from 'notyf';
 })
 export class InformasiMempelaiComponent implements OnInit {
   @Input() formData: any = {};
-  @Output() formDataChange = new EventEmitter<any>();
   @Output() next = new EventEmitter<any>();
   @Output() prev = new EventEmitter<void>();
 
@@ -20,15 +19,16 @@ export class InformasiMempelaiComponent implements OnInit {
   modalRef?: BsModalRef;
   private notyf: Notyf;
 
-  // Menyimpan preview gambar
+
   imagePreviews: { [key: string]: string | null } = {
     photo_pria: null,
     photo_wanita: null,
     cover_photo: null
   };
+  userId: any;
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private modalSvc: BsModalService,
     private dashboardSvc: DashboardService
   ) {
@@ -48,14 +48,39 @@ export class InformasiMempelaiComponent implements OnInit {
       name_panggilan_wanita: ['', Validators.required],
       ayah_wanita: ['', Validators.required],
       ibu_wanita: ['', Validators.required],
-      photo_pria: [null], 
+      user_id: ['', Validators.required],
+      photo_pria: [null],
       photo_wanita: [null],
       cover_photo: [null]
     });
 
-    this.formGroup.valueChanges.subscribe((value) => {
-      this.formDataChange.emit(value);
-    });
+    const step1LocalStorage = localStorage.getItem('formData');
+    if (step1LocalStorage) {
+      const allDataFromSteps = JSON.parse(step1LocalStorage);
+      const userID = allDataFromSteps?.registrasi?.response?.user?.id;
+      this.userId = userID;
+      this.formGroup.patchValue({
+        user_id: userID
+      });
+    }
+
+    const existingFormData = JSON.parse(localStorage.getItem('formData') || '{}');
+    if (existingFormData.informasiMempelai) {
+      this.formGroup.patchValue(existingFormData.informasiMempelai.updatedData);
+    }
+    this.imagePreviews = {
+      photo_pria: existingFormData?.informasiMempelai?.updatedData?.photo_pria
+        ? 'data:image/jpeg;base64,' + existingFormData?.informasiMempelai?.updatedData?.photo_pria
+        : null,
+      photo_wanita: existingFormData?.informasiMempelai?.updatedData?.photo_wanita
+        ? 'data:image/jpeg;base64,' + existingFormData?.informasiMempelai?.updatedData?.photo_wanita
+        : null,
+      cover_photo: existingFormData?.informasiMempelai?.updatedData?.cover_photo
+        ? 'data:image/jpeg;base64,' + existingFormData?.informasiMempelai?.updatedData.cover_photo
+        : null
+    };
+
+
   }
 
   onFileSelected(event: any, controlName: string) {
@@ -78,15 +103,21 @@ export class InformasiMempelaiComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = reader.result as string;
-      
-      // Simpan preview tanpa mengubah nilai di formGroup
       this.imagePreviews[controlName] = base64String;
-
-      // Simpan base64 (tanpa prefix) di formGroup untuk dikirim ke backend
-      this.formGroup.patchValue({ [controlName]: base64String.split(',')[1] }); 
+      this.formGroup.patchValue({ [controlName]: base64String.split(',')[1] });
+      const existingFormData = JSON.parse(localStorage.getItem('formData') || '{}');
+      const updatedFormData = {
+        ...existingFormData,
+        informasiMempelai: {
+          ...existingFormData.informasiMempelai,
+          ...this.formGroup.value
+        }
+      };
+      localStorage.setItem('formData', JSON.stringify(updatedFormData));
     };
     reader.readAsDataURL(file);
   }
+
 
   onNext() {
     this.modalRef = this.modalSvc.show(ModalUploadGaleriComponent, {
@@ -96,8 +127,14 @@ export class InformasiMempelaiComponent implements OnInit {
 
     this.modalRef.content?.formDataChange.subscribe((updatedData: any) => {
       this.formGroup.patchValue(updatedData);
-      this.formDataChange.emit(updatedData);
-      this.next.emit(updatedData);
+      const data = {
+        updatedData: updatedData,
+      };
+      const existingFormData = JSON.parse(localStorage.getItem('formData') || '{}');
+      existingFormData.informasiMempelai = this.formGroup.value;
+      existingFormData.step = 3;
+      localStorage.setItem('formData', JSON.stringify(existingFormData));
+      this.next.emit(data);
     });
   }
 
@@ -110,7 +147,7 @@ export class InformasiMempelaiComponent implements OnInit {
 
     Object.keys(this.formGroup.value).forEach((key) => {
       const value = this.formGroup.get(key)?.value;
-      
+
       if (key.includes('photo') && typeof value === 'string') {
         const byteCharacters = atob(value);
         const byteNumbers = new Array(byteCharacters.length);
@@ -125,14 +162,13 @@ export class InformasiMempelaiComponent implements OnInit {
       }
     });
 
-    this.dashboardSvc.create(DashboardServiceType.MNL_STEP_TWO, payload).subscribe({
+    this.dashboardSvc.create(DashboardServiceType.MNL_STEP_TWO, payload,).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
-        setTimeout(() => this.onNext(), 3000);
+        setTimeout(() => this.onNext(), 1000);
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-        console.error('Error while submitting data:', err);
       }
     });
   }

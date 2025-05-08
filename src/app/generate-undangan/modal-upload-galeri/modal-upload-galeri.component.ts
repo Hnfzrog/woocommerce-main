@@ -1,6 +1,8 @@
-import { Component, Input, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component, Input, OnInit, Output, EventEmitter, ViewChild, ElementRef
+} from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService, DashboardServiceType } from '../../dashboard.service';
 import { Notyf } from 'notyf';
 
@@ -10,14 +12,13 @@ import { Notyf } from 'notyf';
   styleUrls: ['./modal-upload-galeri.component.scss']
 })
 export class ModalUploadGaleriComponent implements OnInit {
-  @Input() formData: any = {}; 
+  @Input() formData: any = {};
   @Output() formDataChange = new EventEmitter<any>();
   @Output() next = new EventEmitter<any>();
 
   uploadForm!: FormGroup;
-  imagePreviews: { [key: string]: string } = {}; 
-
-  private notyf : Notyf
+  imagePreviews: { [key: string]: string } = {};
+  private notyf: Notyf;
 
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
@@ -33,72 +34,30 @@ export class ModalUploadGaleriComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Inisialisasi FormGroup dengan field baru
+    const existingFormData = JSON.parse(localStorage.getItem('formData') || '{}');
+    const galeriData = existingFormData.informasiMempelai.updatedData || this.formData;
+
     this.uploadForm = this.fb.group({
-      photo: [this.formData.photo || ''],
-      status: [this.formData.status ? 1 : 0]
+      photo: [galeriData.photo || ''],
+      status: [galeriData.status ? 1 : 0],
+      user_id: ['',Validators.required]
     });
 
-    // Jika sudah ada photo, buat preview gambar
-    if (this.formData.photo) {
-      this.imagePreviews['photo'] = `data:image/png;base64,${this.formData.photo}`;
+    if (galeriData.photo) {
+      this.imagePreviews['photo'] = `data:image/png;base64,${galeriData.photo}`;
+    }
+    const step1LocalStorage = localStorage.getItem('formData');
+    if (step1LocalStorage) {
+      const allDataFromSteps = JSON.parse(step1LocalStorage);
+      const userID = allDataFromSteps?.registrasi?.response?.user?.id;
+      this.uploadForm.patchValue({
+        user_id: userID
+      });
     }
   }
 
   closeModal(): void {
     this.bsModalRef.hide();
-  }
-
-  onSubmitModal() {
-    if (this.uploadForm.valid) {
-      const payload = new FormData();
-  
-      Object.keys(this.uploadForm.value).forEach((key) => {
-        const value = this.uploadForm.get(key)?.value;
-  
-        if (key.includes('photo') && typeof value === 'string') {
-          const byteCharacters = atob(value);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { type: 'image/png' });
-          payload.append(key, blob, `${key}.png`);
-        } else if (key === 'status') {
-          // Konversi boolean ke angka (1 atau 0)
-          payload.append(key, value ? '1' : '0');
-        } else {
-          payload.append(key, value);
-        }
-      });
-  
-      this.dashboardSvc.create(DashboardServiceType.MNL_STEP_THREE, payload).subscribe({
-        next: (res) => {
-          this.notyf.success(res?.message || 'Data berhasil disimpan.');
-          setTimeout(() => this.nextStep(), 3000);
-        },
-        error: (err) => {
-          this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-          console.error('Error while submitting data:', err);
-        }
-      });
-  
-    } else {
-      this.notyf.error('Harap isi foto terlebih dahulu');
-    }
-  }  
-
-  nextStep(): void {
-    const updatedData = { 
-      ...this.formData, 
-      ...this.uploadForm.value,
-      status: this.uploadForm.value.status ? 1 : 0
-    };
-
-    this.formDataChange.emit(updatedData);
-    this.next.emit(updatedData);
-    this.closeModal();
   }
 
   browseFiles(): void {
@@ -125,13 +84,68 @@ export class ModalUploadGaleriComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = reader.result as string;
-
-      // Simpan preview tanpa mengubah nilai di formGroup
       this.imagePreviews[controlName] = base64String;
-
-      // Simpan base64 (tanpa prefix) di formGroup
       this.uploadForm.patchValue({ [controlName]: base64String.split(',')[1] });
     };
     reader.readAsDataURL(file);
+  }
+
+  onSubmitModal() {
+    if (this.uploadForm.valid) {
+      const payload = new FormData();
+
+      Object.keys(this.uploadForm.value).forEach((key) => {
+        const value = this.uploadForm.get(key)?.value;
+        if (key.includes('photo') && typeof value === 'string') {
+          const byteCharacters = atob(value);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: 'image/png' });
+          payload.append(key, blob, `${key}.png`);
+        } else if (key === 'status') {
+          payload.append(key, value ? '1' : '0');
+        } else {
+          payload.append(key, value);
+        }
+      });
+
+      this.dashboardSvc.create(DashboardServiceType.MNL_STEP_THREE, payload).subscribe({
+        next: (res) => {
+          this.notyf.success(res?.message || 'Data berhasil disimpan.');
+          setTimeout(() => this.nextStep(), 1000);
+        },
+        error: (err) => {
+          this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
+        }
+      });
+    } else {
+      this.notyf.error('Harap isi foto terlebih dahulu');
+    }
+  }
+
+  removePhoto(controlName: string): void {
+    delete this.imagePreviews[controlName];
+    this.uploadForm.patchValue({ [controlName]: '' });
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+
+  nextStep(): void {
+    const updatedData = {
+      ...this.formData,
+      ...this.uploadForm.value,
+      status: this.uploadForm.value.status ? 1 : 0
+    };
+    this.closeModal();
+    this.next.emit(updatedData);
+    this.formDataChange.emit(updatedData);
+    const existingFormData = JSON.parse(localStorage.getItem('formData') || '{}');
+    existingFormData.informasiMempelai.updateData = { updatedData };
+    localStorage.setItem('formData', JSON.stringify(existingFormData));
   }
 }

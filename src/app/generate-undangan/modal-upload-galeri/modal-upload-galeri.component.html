@@ -7,6 +7,7 @@
     <div class="file-upload" (drop)="onFileSelected($event, 'photo')" (dragover)="$event.preventDefault()">
       <ng-container *ngIf="imagePreviews['photo']; else defaultUpload">
         <img [src]="imagePreviews['photo']" alt="Preview Gambar" class="preview-image">
+        <button type="button" class="remove-photo-btn" (click)="removePhoto('photo')">Hapus Foto</button>
       </ng-container>
       <ng-template #defaultUpload>
         <img src="assets/upload-icon.svg" alt="upload icon" class="upload-icon" />

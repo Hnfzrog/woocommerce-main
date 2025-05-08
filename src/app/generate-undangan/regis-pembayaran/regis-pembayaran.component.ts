@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Notyf } from 'notyf';
 import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { PaymentConfirmComponent } from 'src/app/shared/payment-confirm/payment-confirm.component';
 
 @Component({
   selector: 'wc-regis-pembayaran',
@@ -10,11 +13,16 @@ import { DashboardService, DashboardServiceType } from 'src/app/dashboard.servic
 export class RegisPembayaranComponent implements OnInit {
 
   @Input() formData: any;
+
   @Output() prev = new EventEmitter<void>();
 
-  events :any = [];
+
+  events: any = [];
   selectedMethod: any;
-  user: any;
+  bill: any;
+  manualBill: any;
+  private notyf: Notyf
+
 
   selectOptions: any = {
     payment: {
@@ -23,35 +31,50 @@ export class RegisPembayaranComponent implements OnInit {
       FormControl: new FormControl(),
     }
   };
+  userId: any;
 
   constructor(
-    private dashboardSvc : DashboardService,
-  ) {}
+    private dashboardSvc: DashboardService,
+    private modalService: BsModalService,
+  ) {
+    this.notyf = new Notyf({
+      duration: 1000,
+      position: {
+        x: 'right',
+        y: 'top'
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.getMasterPayment()
+    const allDataFromStepsStr = localStorage.getItem('formData');
+    if (allDataFromStepsStr) {
+      const allDataFromSteps = JSON.parse(allDataFromStepsStr);
+      if (allDataFromSteps?.registrasi?.formData) {
+        this.manualBill = allDataFromSteps.registrasi.formData.price;
+      }
+      const userId = allDataFromSteps?.registrasi?.response?.user?.id;
+      this.userId = userId;
+    }
   }
 
-  getMasterPayment(){
+  getMasterPayment() {
     this.dashboardSvc.getParam(DashboardServiceType.MD_RGS_PAYMENT, '').subscribe((response) => {
-        this.selectOptions.payment.items = response["data"];
-        this.selectOptions.payment.items.unshift({
-          id: "",
-          name: "Semua kelompok pegawai",
-        });
-      });
+      this.selectOptions.payment.items = response["data"];
+    });
   }
 
-  getMasterMethod(){
+  getMasterMethod() {
     this.dashboardSvc.getParam(DashboardServiceType.MNL_MD_METHOD, '').subscribe(res => {
       this.events = res?.data;
     })
   }
 
-  getDetailMethod(){
-    const query = `?methode_pembayaran=${this.selectedMethod}`
+  getDetailMethod() {
+    const query = `?id_methode_pembayaran=${this.selectedMethod}`
     this.dashboardSvc.getParam(DashboardServiceType.MNL_MD_METHOD_DETAIL, query).subscribe(res => {
-      this.user = res?.data;
+      this.bill = res?.data;
     })
   }
 
@@ -61,12 +84,39 @@ export class RegisPembayaranComponent implements OnInit {
     this.getDetailMethod();
   }
 
-    onBack(){
-      this.prev.emit()
-    }
+  onBack() {
+    this.prev.emit()
+  }
 
-    onNextClicked(){
-      console.log('ini next');
-      
-    }
+  onNextClicked() {
+    this.modalService.show(PaymentConfirmComponent, {
+      initialState: {
+        userId: this.userId
+      }
+    });
+  }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      this.notyf.success('Nomor rekening disalin!');
+    }).catch(() => {
+      this.notyf.error('Gagal menyalin.');
+    });
+  }
+
+  copyTripayToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      this.notyf.success('Kode Tripay disalin!');
+    }).catch(() => {
+      this.notyf.error('Gagal menyalin.');
+    });
+  }
+
+  copyMidtrans(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      this.notyf.success('Kode Midtrans disalin!');
+    }).catch(() => {
+      this.notyf.error('Gagal menyalin.');
+    });
+  }
 }

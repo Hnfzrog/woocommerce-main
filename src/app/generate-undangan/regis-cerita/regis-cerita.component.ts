@@ -26,7 +26,7 @@ export class RegisCeritaComponent implements OnInit {
     clearBtn: true
   };
 
-  private notyf : Notyf
+  private notyf: Notyf
 
   private modalRef?: BsModalRef
 
@@ -42,13 +42,29 @@ export class RegisCeritaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const local = this.getLocalStorageData();
+    if (Array.isArray(local?.cerita)) {
+      this.formData = {
+        title: local.cerita.map((c: any) => c.title),
+        lead_cerita: local.cerita.map((c: any) => c.lead_cerita),
+        tanggal_cerita: local.cerita.map((c: any) => c.tanggal_cerita),
+        status: local.status || false
+      };
+    }
     this.form = this.fb.group({
       stories: this.fb.array([]),
-      status: new FormControl(this.formData.status || false)
+      user_id: ['',Validators.required],
+      status: new FormControl(this.formData?.status || false)
     });
-
-    // Jika data sudah ada, load ke formArray
-    if (this.formData.title && this.formData.title.length) {
+    const step1LocalStorage = localStorage.getItem('formData');
+    if (step1LocalStorage) {
+      const allDataFromSteps = JSON.parse(step1LocalStorage);
+      const userID = allDataFromSteps?.registrasi?.response?.user?.id;
+      this.form.patchValue({
+        user_id: userID
+      });
+    }
+    if (this.formData?.title?.length) {
       for (let i = 0; i < this.formData.title.length; i++) {
         this.addStory({
           title: this.formData.title[i] || '',
@@ -57,25 +73,78 @@ export class RegisCeritaComponent implements OnInit {
         });
       }
     } else {
-      this.addStory(); // default tambah 1 form kosong
+      this.addStory();
     }
+    this.form.valueChanges.subscribe(() => {
+      this.saveFormToLocalStorage();
+    });
+  }
+
+
+  saveFormToLocalStorage() {
+    const local = this.getLocalStorageData();
+
+    const rawStories = this.stories.value;
+    const storiesMapped = rawStories.map((story: any) => {
+      const rawDate = story.tanggal_cerita;
+      console.log(rawDate);
+
+      if (!rawDate) {
+        return {
+          ...story,
+          tanggal_cerita: ''
+        };
+      }
+      const parsedDate = rawDate instanceof Date ? rawDate : new Date(rawDate);
+      return {
+        ...story,
+        tanggal_cerita: isNaN(parsedDate.getTime())
+          ? ''
+          : parsedDate.toISOString().split('T')[0]
+      };
+    });
+
+
+    const updatedData = {
+      ...local,
+      cerita: storiesMapped,
+      status: this.form.get('status')?.value
+    };
+
+    this.setLocalStorageData(updatedData);
+  }
+
+
+
+  getLocalStorageData() {
+    const raw = localStorage.getItem('formData');
+    return raw ? JSON.parse(raw) : {};
+  }
+
+  setLocalStorageData(data: any) {
+    localStorage.setItem('formData', JSON.stringify(data));
   }
 
   get stories(): FormArray {
-    return this.form.get('stories') as FormArray;
+    return (this.form?.get('stories') as FormArray) || this.fb.array([]);
   }
 
   addStory(data: any = { title: '', lead_cerita: '', tanggal_cerita: '' }): void {
     if (this.stories.length < 2) {
+      const parsedDate = data.tanggal_cerita
+        ? new Date(data.tanggal_cerita)
+        : null;
+
       this.stories.push(
         this.fb.group({
           title: [data.title, Validators.required],
           lead_cerita: [data.lead_cerita, [Validators.required, Validators.maxLength(500)]],
-          tanggal_cerita: [data.tanggal_cerita, Validators.required]
+          tanggal_cerita: [parsedDate, Validators.required]
         })
       );
     }
   }
+
 
   removeStory(index: number): void {
     this.stories.removeAt(index);
@@ -107,43 +176,56 @@ export class RegisCeritaComponent implements OnInit {
         });
       }
     }
-  
-  }
-  
-  handleCancelClicked(){
 
   }
-  
-  saveCerita(){
-    const rawStories = this.stories.value; // Ambil array of objects
+
+  handleCancelClicked() {
+
+  }
+
+  saveCerita() {
+    const rawStories = this.stories.value;
     const status = this.form.get('status')?.value;
-  
+    const userId = this.form.get('user_id')?.value;
+
     const payload = new FormData();
-  
+
     rawStories.forEach((item: any, index: number) => {
       payload.append(`title[${index}]`, item.title);
       payload.append(`lead_cerita[${index}]`, item.lead_cerita);
-  
-      // Konversi tanggal ke format YYYY-MM-DD
+
       const date = new Date(item.tanggal_cerita);
-      const year = date.getFullYear();
-      const month = ('0' + (date.getMonth() + 1)).slice(-2);
-      const day = ('0' + date.getDate()).slice(-2);
-      const formattedDate = `${year}-${month}-${day}`;
+      const formattedDate = date.toISOString().split('T')[0];
       payload.append(`tanggal_cerita[${index}]`, formattedDate);
     });
-  
+
+    // Tambahkan user_id dan status
+    payload.append('user_id', userId);
     payload.append('status', status ? '1' : '0');
 
     this.dashboardSvc.create(DashboardServiceType.MNL_STEP_FOUR, payload).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
-        this.next.emit(rawStories)
+        this.next.emit(rawStories);
+
+        const local = this.getLocalStorageData();
+        const updatedLocal = {
+          ...local,
+          cerita: rawStories.map((item: any) => ({
+            ...item,
+            tanggal_cerita: new Date(item.tanggal_cerita).toISOString().split('T')[0]
+          })),
+          status,
+          step: 4
+        };
+        this.setLocalStorageData(updatedLocal);
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
         console.error('Error while submitting data:', err);
       }
-    })
+    });
   }
+
+
 }

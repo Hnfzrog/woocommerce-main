@@ -1,35 +1,67 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-generate-undangan',
+  selector: 'wc-generate-undangan',
   templateUrl: './generate-undangan.component.html',
   styleUrls: ['./generate-undangan.component.scss'],
 })
 export class GenerateUndanganComponent implements OnInit {
-  step = 1;
+
   titles: string[] = ['Isi Data Akun', 'Informasi Mempelai', 'Konfirmasi Data', 'Pembayaran'];
-  formData: any = {}; // Data is passed between steps as a simple object
+
+  formData: any = {
+    registrasi: {},
+    informasiMempelai: {},
+    cerita: {},
+    pembayaran: {},
+    step: 1,
+  };
 
   ngOnInit(): void {
-    console.log('all formdata:',this.formData);
-    
+    const saved = localStorage.getItem('formData');
+    if (saved) {
+      this.formData = JSON.parse(saved);
+    }
+    console.log('all formdata:', this.formData);
   }
 
   get title(): string {
-    return this.titles[this.step - 1] || 'Form';
+    return this.titles[this.formData.step - 1] || 'Form';
   }
 
   get progress(): number {
-    return (this.step / this.titles.length) * 100;
+    return (this.formData.step / this.titles.length) * 100;
   }
+
 
   nextStep(data: any): void {
-    console.log('Data yang diterima:', data);
-    this.formData = { ...this.formData, ...data }; // Gabungkan data baru dengan yang lama
-    if (this.step < this.titles.length) this.step++;
-  }  
+    this.formData = {
+      ...this.formData,
+      registrasi: data?.formData || this.formData?.registrasi,
+    };
+    const step = this.formData.step;
+
+    if (step === 1) {
+      this.formData.registrasi = data;
+    } else if (step === 2) {
+      this.formData.informasiMempelai = data;
+    } else if (step === 3) {
+      this.formData.cerita = data;
+    }
+
+    // Naikkan step
+    this.formData.step = step + 1;
+    localStorage.setItem('formData', JSON.stringify(this.formData));
+  }
+
 
   prevStep(): void {
-    if (this.step > 1) this.step--;
+    if (this.formData.step > 1) {
+      this.formData.step--;
+      localStorage.setItem('formData', JSON.stringify(this.formData));
+
+    }
   }
+
+
 }
