@@ -52,7 +52,7 @@ export class TestimoniesComponent implements OnInit {
   getDataUser(){
     this.dashboardSvc.getParam(DashboardServiceType.ADM_TESTI, '').subscribe(res => {
       this.data = res?.data;
-  
+
       this.rows = this.data.map((item: any, index: number) => ({
         number: index + 1,
         name: item?.user?.name,
@@ -63,16 +63,15 @@ export class TestimoniesComponent implements OnInit {
         status_bol: item?.status,
         status: this.setStatusLabelTabel(item?.status), // Ubah status sesuai aturan
         auth: {
-          canUpdate: true,
           canDelete: true
         }
       }));
-  
+
       this.filteredRows = [...this.rows];
     });
   }
-  
-  
+
+
 
   onSearch(event: any) {
     const query = event.target.value.toLowerCase();

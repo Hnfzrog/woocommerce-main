@@ -32,41 +32,39 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  getDetailUser(){
+  getDetailUser() {
     this.dashboardSvc.getParam(DashboardServiceType.ADM_IDX_DASHBOARD, '').subscribe(res => {
-      this.user = res?.users?.data;
+      const users = res?.users?.data ?? [];
 
-      this.salary = res?.total_keuntungan;
-      this.total_users = res?.total_users;
-      this.pending_req = res?.jumlah_belum_lunas_dan_pending?.BL + res?.jumlah_belum_lunas_dan_pending?.MK
+      this.salary = res?.total_keuntungan ?? 0;
+      this.total_users = res?.total_users ?? 0;
+      this.pending_req = (res?.jumlah_belum_lunas_dan_pending?.BL ?? 0) +
+        (res?.jumlah_belum_lunas_dan_pending?.MK ?? 0);
 
-      this.rows = this.user.map((item: any) => {
-        let obj = {
-            invoice: item?.kode_pemesanan,
-            pengguna: item?.email,
-            domain: item?.domain,
-            status: item?.kd_status
-        }
-
-        return obj;
-      });
-    })
+      this.rows = users.map((user: any) => ({
+        invoice: user.kode_pemesanan ?? '–',
+        pengguna: user.email ?? '–',
+        domain: user.domain ?? '–',
+        status: this.getStatusLabel(user.kd_status),
+        konfirmasiAktif: user.kd_status === 'SB'
+      }));
+    });
   }
 
-  public setStatusLabelTabel(val: string): string {
-    switch (val) {
-      case 'e':
-        return '<label class="status-label expired">Proses Konseling</label>';
-      case 'SDN':
-        return '<label class="status-label aktif">Sudah dinilai</label>';
-      case 'DIA':
-        return '<label class="status-label menunggu-konfirmasi">Diajukan</label>';
-      case 'RPKD':
-        return '<label class="status-label belum-lunas">Rapat DKKED</label>';
+  getStatusLabel(code: string | null): string {
+    switch (code) {
+      case 'SB':
+        return `<span class="status-badge aktif" aria-label="Status Aktif"><span class="dot"></span>Aktif</span>`;
+      case 'MK':
+        return `<span class="status-badge waiting" aria-label="Status Menunggu Konfirmasi"><span class="dot"></span>Menunggu Konfirmasi</span>`;
+      case 'BL':
+        return `<span class="status-badge unpaid" aria-label="Status Belum Lunas"><span class="dot"></span>Belum Lunas</span>`;
+      case 'EX':
+        return `<span class="status-badge expired" aria-label="Status Expired"><span class="dot"></span>Expired</span>`;
       default:
-        return '<label class="status-label label-gray">Tidak Diketahui</label>';
+        return `<label class="status-badge pending">Belum selesai</label>`;
     }
-  }  
+  }
 
   onConfirmClicked(row: any) {
     console.log('Confirm action:', row);

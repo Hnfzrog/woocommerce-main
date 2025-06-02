@@ -8,7 +8,8 @@ import { OverviewComponent } from './dashboard/overview/overview.component';
 import { HubungiKamiComponent } from './dashboard/hubungi-kami/hubungi-kami.component';
 import { PengunjungComponent } from './dashboard/pengunjung/pengunjung.component';
 import { TestimoniComponent } from './dashboard/testimoni/testimoni.component';
-import { WebsiteComponent } from './dashboard/website/website.component';
+import { WebsiteComponent } from './dashboard-admin/website/website.component';
+import { WebsiteUserComponent } from './dashboard/website/website.component';
 import { TampilanComponent } from './dashboard/website/tampilan/tampilan.component';
 import { PengaturanComponent } from './dashboard/website/pengaturan/pengaturan.component';
 import { DataWebsiteComponent } from './dashboard/website/data-website/data-website.component';
@@ -47,7 +48,7 @@ const routes: Routes = [
       { path: 'overview', component: OverviewComponent },
       {
         path: 'website',
-        component: WebsiteComponent,
+        component: WebsiteUserComponent,
         children: [
           { path: 'tampilan', component: TampilanComponent },
           { path: 'pengaturan', component: PengaturanComponent },

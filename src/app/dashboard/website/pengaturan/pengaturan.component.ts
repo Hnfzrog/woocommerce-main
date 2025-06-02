@@ -15,7 +15,7 @@ export class PengaturanComponent implements OnInit {
   salamForm: FormGroup;
   formData?: FormData;
 
-  // List of filters with multiple select functionality
+
   filters = [
     { name: 'Halaman sampul', active: false },
     { name: 'Halaman Mempelai', active: false },
@@ -63,7 +63,7 @@ export class PengaturanComponent implements OnInit {
       this.getMasterFilter()
     }else{
       console.log(this.dataFilter);
-      
+
     }
   }
 
@@ -77,25 +77,25 @@ export class PengaturanComponent implements OnInit {
     })
   }
 
-  // Save domain and token data
+
   saveDomainToken() {
     if (this.domainTokenForm.valid) {
-      
+
       const domain = this.domainTokenForm.value;
       const formData = new FormData();
 
       formData.append('domain', domain?.domain);
       formData.append('token', domain?.token)
-        
+
       const initialState = {
         message: 'Apakah anda ingin menyimpan semua data domain and token?',
         cancelClicked: () => this.modalRef?.hide(),
         submitClicked: () => this.onSubmitForm(formData, 'domain'),
         submitMessage: 'Simpan',
       };
-        
+
       this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-          
+
       console.log('domains', domain);
     } else {
       console.error('Domain and Token form is invalid.');
@@ -104,60 +104,60 @@ export class PengaturanComponent implements OnInit {
 
   uploadMusic(event: any) {
     const file = event.target.files[0];
-    const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg']; // Allowed MIME types
-    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
-  
+    const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg'];
+    const maxSizeInBytes = 5 * 1024 * 1024;
+
     if (file) {
       if (!allowedTypes.includes(file.type)) {
         this.notyf.error('Jenis file tidak didukung. Hanya file musik (MP3, WAV, OGG) yang diperbolehkan.');
         return;
       }
-  
+
       if (file.size > maxSizeInBytes) {
         this.notyf.error('Ukuran file terlalu besar. Maksimal 5 MB.');
         return;
       }
-  
+
       const reader = new FileReader();
-  
-      // Callback setelah file dibaca sebagai base64
+
+
       reader.onload = () => {
         const base64String = reader.result as string;
-  
-        // Simpan FormData untuk digunakan di submitMusic
+
+
         this.formData = new FormData();
         this.formData.append('musik', file);
-        // this.formData.append('musikBase64', base64String);
-  
+
+
         this.notyf.success('File musik berhasil diproses. Klik "Simpan" untuk melanjutkan.');
       };
-  
-      // Baca file sebagai data URL (base64)
+
+
       reader.readAsDataURL(file);
     } else {
       this.notyf.error('Tidak ada file yang dipilih.');
     }
   }
-  
-  // Submit uploaded music
+
+
   submitMusic() {
     if (!this.formData) {
       this.notyf.error('Tidak ada file musik yang diproses. Silakan unggah file terlebih dahulu.');
       return;
     }
-  
-    // Show modal for confirmation
+
+
     const initialState = {
       message: 'Apakah anda ingin menyimpan file musik ini?',
       cancelClicked: () => this.modalRef?.hide(),
       submitClicked: () => this.onSubmitForm(this.formData as FormData, 'musik'),
       submitMessage: 'Simpan',
     };
-  
-    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-  }  
 
-  // Save Salam text inputs
+    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+  }
+
+
   saveSalam() {
     if (this.salamForm.valid) {
       const salam = this.salamForm.value;
@@ -166,23 +166,23 @@ export class PengaturanComponent implements OnInit {
       formData.append('salam_pembuka', salam?.salam_pembuka);
       formData.append('salam_tengah', salam?.salam_tengah);
       formData.append('salam_bawah', salam?.salam_bawah);
-        
+
       const initialState = {
         message: 'Apakah anda ingin menyimpan semua data salam?',
         cancelClicked: () => this.modalRef?.hide(),
         submitClicked: () => this.onSubmitForm(formData, 'salam'),
         submitMessage: 'Simpan',
       };
-        
+
       this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-          
+
       console.log('domains', salam);
     } else {
       console.error('Salam form is invalid.');
     }
   }
 
-  // Apply selected filters
+
   applyFilters() {
     const selectedFilters = this.filters.filter(filter => filter.active).map(filter => filter.name);
     console.log('Selected filters:', selectedFilters);

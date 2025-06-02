@@ -23,7 +23,8 @@ import { DashboardUserComponent } from './dashboard/dashboard-user/dashboard-use
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { OverviewComponent } from './dashboard/overview/overview.component';
 import { SettingsComponent } from './dashboard/settings/settings.component';
-import { WebsiteComponent } from './dashboard/website/website.component';
+import { WebsiteComponent } from './dashboard-admin/website/website.component';
+import { WebsiteUserComponent } from './dashboard/website/website.component';
 import { PengunjungComponent } from './dashboard/pengunjung/pengunjung.component';
 import { TestimoniComponent } from './dashboard/testimoni/testimoni.component';
 import { HubungiKamiComponent } from './dashboard/hubungi-kami/hubungi-kami.component';
@@ -107,6 +108,7 @@ import { SuccessConfirmPaymentComponent } from './shared/success-confirm-payment
     RiwayatComponent,
     UcapanComponent,
     GenerateUndanganComponent,
+    WebsiteUserComponent,
     RegisterComponent,
     ToastComponent,
     TableComponent,

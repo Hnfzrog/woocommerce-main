@@ -1,1 +1,39 @@
-<p>pembayaran works!</p>
+<body>
+  <div class="invoice-container shadow-sm" role="region" aria-label="Invoice table container">
+    <div class="invoice-header">
+      <h2>Invoice</h2>
+      <!-- <button class="btn-see-more" type="button" aria-label="Lihat Selebihnya">
+        Lihat Selebihnya <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button> -->
+    </div>
+    <table role="table" aria-label="Invoice data table">
+      <thead>
+        <tr>
+          <th scope="col">No Invoice</th>
+          <th scope="col">Pengguna</th>
+          <th scope="col">Domain</th>
+          <th scope="col">Status</th>
+          <th scope="col">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows">
+          <td>{{ row.invoice }}</td>
+          <td>{{ row.pengguna }}</td>
+          <td>
+            <a href="#" tabindex="-1" [attr.aria-label]="'Domain ' + row.domain">{{ row.domain }}</a>
+          </td>
+          <td [innerHTML]="row.status"></td>
+          <td>
+            <button class="btn-konfirmasi" [disabled]="!row.konfirmasiAktif"
+              [attr.aria-disabled]="!row.konfirmasiAktif" [ngClass]="{ 'active': row.konfirmasiAktif }"
+              [attr.aria-pressed]="row.konfirmasiAktif ? 'true' : null">
+              Konfirmasi
+            </button>
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+</body>

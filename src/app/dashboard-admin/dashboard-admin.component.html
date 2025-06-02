@@ -3,17 +3,17 @@
     <button class="menu-toggle" (click)="toggleSidebar()">
       <i class="fas fa-bars"></i>
     </button>
-  
+
     <!-- Sidebar -->
     <div class="sidebar" [ngClass]="{'open': isSidebarOpen}">
       <div class="logo">
-        <img 
-          alt="Company Logo" 
-          src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg" 
+        <img
+          alt="Company Logo"
+        src="assets/logos.png"
         />
         <h1>Horuzt Invitation</h1>
       </div>
-  
+
       <div class="menu">
         <a class="menu-item" routerLink="dashboard" routerLinkActive="active">
           <i class="fas fa-th"></i> <span>Dashboard</span>
@@ -50,12 +50,12 @@
         </a>
       </div>
       <hr>
-  
+
        <div class="menu">
         <div class="menu-item" [ngClass]="{'active': isActiveRoute('pengaturan')}" (click)="toggleWebsiteSubmenu()">
           <i class="fas fa-globe"></i> <span>Pengaturan</span>
         </div>
-        <div *ngIf="isWebsiteSubmenuOpen" class="submenu">  
+        <div *ngIf="isWebsiteSubmenuOpen" class="submenu">
           <a class="submenu-item" routerLink="pengaturan/aplikasi" routerLinkActive="active">Aplikasi</a>
           <a class="submenu-item" routerLink="pengaturan/paket" routerLinkActive="active">Paket</a>
           <a class="submenu-item" routerLink="pengaturan/pembayaran" routerLinkActive="active">Pembayaran</a>
@@ -63,7 +63,7 @@
       </div>
       <hr>
     </div>
-  
+
     <!-- Main Content -->
     <div class="content">
       <!-- Header -->
@@ -72,17 +72,17 @@
           <span class="route-name">{{ currentRouteName }}</span>
           <span class="route-path">{{ routePath }}</span>
         </div>
-  
+
         <!-- User Profile Section -->
         <div class="user-profile" (click)="toggleDropdown($event)">
           <img
             class="user-avatar"
-            src="https://storage.googleapis.com/a1aa/image/3lMhvkODpObAApNq1gZ6G4zIY09YVt32Vur5v7J35MFbKZ8E.jpg"
+            src="assets/logos.png"
             alt="User Avatar"
           />
           <span class="user-name">Sheraphine Alana</span>
           <i class="fas fa-caret-down"></i>
-  
+
           <!-- Dropdown Menu -->
           <div class="dropdown-menu" *ngIf="isDropdownOpen">
             <a class="dropdown-item" routerLink="profile" (click)="selectMenu()">Profile</a>
@@ -90,19 +90,18 @@
           </div>
         </div>
       </div>
-  
+
       <!-- Content Area -->
       <div class="well">
         <router-outlet></router-outlet>
       </div>
-  
+
       <!-- Footer -->
       <div class="footer">
         <p>Copyright &#64; Horuzt Invitation 2024</p>
       </div>
     </div>
   </div>
-  
+
   <!-- Toast Notifications -->
   <wc-toast></wc-toast>
-  

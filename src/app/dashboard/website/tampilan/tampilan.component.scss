@@ -1,109 +1,112 @@
-body {
-    background: radial-gradient(circle, #ffeccc, #f9c4ff, #ffeccc);
-  }
-  
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); // 3 items per row
-    gap: 20px;
-    justify-items: center; // Center the cards horizontally
-  }
-  
-  .grid-item {
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  .custom-card {
-    position: relative;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    z-index: 1; // Ensure card content stays above pseudo-elements
-    overflow: hidden; // Hide the circle edges outside the card boundaries
-  
-    // Circle backgrounds using pseudo-elements
-    &::before, &::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%; // Make them circles
-      filter: blur(80px); // Use filter blur instead of backdrop-filter
-      z-index: -1; // Position behind the card content
-      opacity: 0.6; // Add transparency for better visuals
-    }
-  
-    // First circle (top-right, middle-ish)
-    &::before {
-      width: 300px;
-      height: 300px;
-      background: rgba(255, 229, 146, 0.35); // Replace hex with rgba
-      top: -100px; // Slightly above the card
-      right: -120px; // Positioned toward the top-right corner
-    }
-  
-    // Second circle (bottom-left, middle-ish)
-    &::after {
-      width: 300px;
-      height: 300px;
-      background: rgba(249, 108, 179, 0.13); // Replace hex with rgba
-      bottom: -100px; // Slightly below the card
-      left: -120px; // Positioned toward the bottom-left corner
-    }
-  
-    .label {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: orange;
-      color: #fff;
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 4px 8px;
-      border-radius: 4px;
-    }
-  
-    .card-image {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 20px;
-    }
-  
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-  
-    .btn-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-  
-      .btn {
-        font-size: 0.9rem;
-        padding: 8px 16px;
-        border-radius: 6px;
-  
-        &.btn-outline-primary {
-          color: #007bff;
-          border: 1px solid #007bff;
-        }
-  
-        &.btn-primary {
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-        }
-  
-        &.btn-disabled {
-          background-color: #ccc;
-          color: #fff;
-          cursor: not-allowed;
-          pointer-events: none;
-        }
-      }
-    }
-  }
-  
+.card-custom {
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+  padding: 1.5rem 1.5rem 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+.card-custom .side-bar {
+  position: absolute;
+  top: 1.5rem;
+  left: 0;
+  width: 6px;
+  height: 2.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  background-color: #f97316; /* orange-400 */
+}
+.card-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+::ng-deep.card-header {
+  background-color: #00000000 !important;
+  border-bottom: none !important;
+}
+
+.card-header h3 {
+  color: #f97316;
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin: 0;
+}
+.card-header i {
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: black;
+}
+.card-img-container {
+  width: 100%;
+  max-width: 200px;
+  height: 250px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card-img-container img {
+  // max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+.card-title {
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin-bottom: 1.25rem;
+  color: black;
+  text-align: center;
+}
+.btn-demo {
+  border: 1.5px solid #22d3ee; /* cyan-400 */
+  color: black;
+  font-weight: 500;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 1.25rem;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  transition: background-color 0.15s ease-in-out;
+}
+.btn-demo:hover {
+  background-color: #cffafe; /* cyan-50 */
+  color: black;
+}
+.btn-nonaktifkan {
+  background-color: #166534; /* green-700 */
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 1.25rem;
+  border-radius: 0.375rem;
+  border: none;
+  transition: background-color 0.15s ease-in-out;
+}
+.btn-nonaktifkan:hover {
+  background-color: #14532d; /* green-800 */
+  color: white;
+}
+/* Background gradients for each card */
+.bg-scroll {
+  background: radial-gradient(circle at bottom right, #ffe59259, #ffffff);
+}
+.bg-slide {
+  background: radial-gradient(circle at bottom left, #f9e9ff, #ffffff);
+}
+.bg-mobile {
+  background: radial-gradient(circle at bottom right, #ffe9f0, #ffffff);
+}
