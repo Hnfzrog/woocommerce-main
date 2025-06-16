@@ -145,7 +145,7 @@ thead th {
   white-space: nowrap;
 }
 tbody tr {
-  background: #fafafa;
+  // background: #fafafa;
   border-radius: 12px;
 }
 tbody tr td {
@@ -176,7 +176,6 @@ tbody tr td a:hover {
   justify-content: center;
   white-space: nowrap;
   // background-color: #5a5a5a;
-
 }
 ::ng-deep.status-badge .dot {
   width: 10px;
@@ -212,7 +211,7 @@ tbody tr td a:hover {
 ::ng-deep.pending .dot {
   background-color: #5a5a5a;
 }
-::ng-deep.pending  {
+::ng-deep.pending {
   background-color: #868484;
 }
 .btn-konfirmasi {

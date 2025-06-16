@@ -1,7 +1,3 @@
-body {
-  font-family: "Poppins", sans-serif;
-  background-color: #f9f9f9;
-}
 .tab-active {
   border-bottom: 4px solid #22d3ee !important; /* cyan-400 */
   color: black !important;
@@ -49,11 +45,12 @@ body {
   filter: brightness(1.1);
   color: white;
 }
+
 .table thead {
-  background-color: #fafafa;
   color: #3a1a0a;
   font-weight: 600;
 }
+
 .table td,
 .table th {
   vertical-align: middle;
@@ -106,7 +103,7 @@ body {
 
 .nav-tabs {
   border-bottom: none;
-  padding: 0 20px;
+  margin: 0 17px;
 }
 
 .nav-link {
@@ -146,7 +143,6 @@ body {
   font-size: 1.7rem;
   font-weight: 600;
 }
-
 
 .card-custom {
   border-radius: 1rem;

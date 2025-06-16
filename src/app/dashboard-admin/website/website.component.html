@@ -1,8 +1,9 @@
-<ul class="nav nav-tabs d-flex justify-content-between mb-3" id="myTab" role="tablist">
+<ul class="nav nav-tabs d-flex justify-content-between mb-3" id="myTab" role="tablist"
+  style="background-color: #fff; border-color: #dee2e6 #dee2e6 #fff; ">
   <li class="nav-item" role="presentation">
     <button class="nav-link active" id="kategori-tab" data-bs-toggle="tab" data-bs-target="#kategori" type="button"
       role="tab" aria-controls="kategori" aria-selected="true">
-     <i class="fa-solid fa-folder-open" style="margin-right: 10px;"></i>Kategori
+      <i class="fa-solid fa-folder-open" style="margin-right: 10px;"></i>Kategori
     </button>
   </li>
   <li class="nav-item" role="presentation">
@@ -20,13 +21,14 @@
       <div class="bg-white rounded-3 p-4 shadow-sm" style="box-shadow: 0 0 20px rgb(255 182 215 / 0.3);">
         <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
           <h2 class="border-left-pink mb-0">Data Kategori Undangan Web</h2>
-          <button type="button" class="btn btn-pink d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-pink d-flex align-items-center gap-2" (click)="openModalAdd()">
             <i class="fas fa-plus"></i> Tambah Kategori
           </button>
         </div>
 
         <div class="d-flex justify-content-between align-items-center flex-wrap mb-3 gap-3">
-          <button type="button" class="btn btn-outline-pink d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-pink d-flex align-items-center gap-2"
+            (click)="openModalDeleteAll()">
             <i class="fas fa-trash-alt"></i> Hapus Semua
           </button>
           <form class="d-flex align-items-center gap-2 mb-0" role="search" onsubmit="return false;">
@@ -38,46 +40,24 @@
 
         <div class="table-responsive">
           <table class="table align-middle mb-0 table-borderless">
-            <thead>
+            <thead class="thead-light">
               <tr>
+                <th scope="col">No</th>
                 <th scope="col">Nama Kategori</th>
                 <th scope="col">Slug</th>
                 <th scope="col" class="text-end">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Mobile</td>
-                <td>Filtered</td>
+              <tr *ngFor="let item of displayedData; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.slug }}</td>
                 <td class="text-end">
-                  <button type="button" class="btn btn-cyan rounded-3 me-2" aria-label="Edit Mobile category">
+                  <button type="button" class="btn btn-cyan rounded-3 me-2" (click)="openEditModal(item)">
                     <i class="fas fa-paint-brush"></i>
                   </button>
-                  <button type="button" class="btn btn-pink-icon rounded-3" aria-label="Delete Mobile category">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>Parallax</td>
-                <td>Animation</td>
-                <td class="text-end">
-                  <button type="button" class="btn btn-cyan rounded-3 me-2" aria-label="Edit Parallax category">
-                    <i class="fas fa-paint-brush"></i>
-                  </button>
-                  <button type="button" class="btn btn-pink-icon rounded-3" aria-label="Delete Parallax category">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>Scroll</td>
-                <td>Scroll</td>
-                <td class="text-end">
-                  <button type="button" class="btn btn-cyan rounded-3 me-2" aria-label="Edit Scroll category">
-                    <i class="fas fa-paint-brush"></i>
-                  </button>
-                  <button type="button" class="btn btn-pink-icon rounded-3" aria-label="Delete Scroll category">
+                  <button type="button" class="btn btn-pink-icon rounded-3" (click)="openDeleteModal(item)">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
@@ -86,149 +66,156 @@
           </table>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3"
-          style="color: #3a1a0a; font-size: 0.875rem;">
+        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
           <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span>Menampilkan</span>
-            <select class="form-select form-select-sm" style="width: 70px;">
-              <option selected>10</option>
-              <option>20</option>
-              <option>30</option>
+            <span><strong>Menampilkan</strong></span>
+            <select class="form-select form-select-sm" [(ngModel)]="pageSize" (change)="onPageChange(1)">
+              <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
             </select>
-            <span>Data</span>
+            <span><strong>Data</strong></span>
           </div>
+
           <div class="d-flex gap-3">
-            <button type="button" class="pagination-btn" aria-label="Previous page">
+            <button type="button" class="pagination-btn" (click)="onPageChange(currentPage - 1)"
+              [disabled]="currentPage === 1">
               <i class="fas fa-chevron-left"></i>
             </button>
-            <button type="button" class="pagination-btn" aria-label="Next page">
+            <button type="button" class="pagination-btn" (click)="onPageChange(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
               <i class="fas fa-chevron-right"></i>
             </button>
           </div>
         </div>
+
       </div>
     </div>
 
   </div>
   <div class="tab-pane fade" id="tema" role="tabpanel" aria-labelledby="tema-tab">
-   <div class="container">
-  <div class="row g-4 justify-content-center">
-    <!-- Scroll Card -->
-    <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
-      <div class="card-custom bg-scroll w-100">
-        <div class="side-bar"></div>
-        <div class="card-header">
-          <h3>Scroll</h3>
-          <i class="fas fa-trash-alt" title="Delete"></i>
-        </div>
-        <div class="card-img-container">
-          <img src="assets/themas2.png"
-            alt="Three modern smartphones showing scroll app screens with wedding event details and photos" />
-        </div>
-        <h4 class="card-title">Modern</h4>
-        <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
-          <button type="button" class="btn-demo">
-            <i class="far fa-eye"></i> Demo
-          </button>
-          <button type="button" class="btn-nonaktifkan">
-            <i class="fas fa-file-alt"></i> Nonaktifkan
-          </button>
-        </div>
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        <h2 class="border-left-pink mb-0">Thema</h2>
+        <button type="button" class="btn btn-pink d-flex align-items-center gap-2">
+          <i class="fas fa-plus"></i> Tambah thema
+        </button>
       </div>
-    </div>
-    <!-- Slide Card -->
-    <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
-      <div class="card-custom bg-slide w-100">
-        <div class="side-bar"></div>
-        <div class="card-header">
-          <h3>Slide</h3>
-          <i class="fas fa-trash-alt" title="Delete"></i>
+      <div class="row g-4 justify-content-center">
+        <!-- Scroll Card -->
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
+          <div class="card-custom bg-scroll w-100">
+            <div class="side-bar"></div>
+            <div class="card-header">
+              <h3>Scroll</h3>
+              <i class="fas fa-trash-alt" title="Delete"></i>
+            </div>
+            <div class="card-img-container">
+              <img src="assets/themas2.png"
+                alt="Three modern smartphones showing scroll app screens with wedding event details and photos" />
+            </div>
+            <h4 class="card-title">Modern</h4>
+            <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
+              <button type="button" class="btn-demo">
+                <i class="far fa-eye"></i> Demo
+              </button>
+              <button type="button" class="btn-nonaktifkan">
+                <i class="fas fa-file-alt"></i> Nonaktifkan
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="card-img-container">
-          <img src="assets/themas1.png" style="height: 160px;width: 460px;"
-            alt="Three smartphones showing slide app screens with wedding invitation and couple photos" />
+        <!-- Slide Card -->
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
+          <div class="card-custom bg-slide w-100">
+            <div class="side-bar"></div>
+            <div class="card-header">
+              <h3>Slide</h3>
+              <i class="fas fa-trash-alt" title="Delete"></i>
+            </div>
+            <div class="card-img-container">
+              <img src="assets/themas1.png" style="height: 160px;width: 460px;"
+                alt="Three smartphones showing slide app screens with wedding invitation and couple photos" />
+            </div>
+            <h4 class="card-title">Pinky</h4>
+            <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
+              <button type="button" class="btn-demo">
+                <i class="far fa-eye"></i> Demo
+              </button>
+              <button type="button" class="btn-nonaktifkan">
+                <i class="fas fa-file-alt"></i> Nonaktifkan
+              </button>
+            </div>
+          </div>
         </div>
-        <h4 class="card-title">Pinky</h4>
-        <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
-          <button type="button" class="btn-demo">
-            <i class="far fa-eye"></i> Demo
-          </button>
-          <button type="button" class="btn-nonaktifkan">
-            <i class="fas fa-file-alt"></i> Nonaktifkan
-          </button>
+        <!-- Mobile Card -->
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
+          <div class="card-custom bg-mobile w-100">
+            <div class="side-bar"></div>
+            <div class="card-header">
+              <h3>Mobile</h3>
+              <i class="fas fa-trash-alt" title="Delete"></i>
+            </div>
+            <div class="card-img-container">
+              <img src="assets/themas3.png"
+                alt="Three smartphones showing mobile app screens with wedding photos and RSVP details" />
+            </div>
+            <h4 class="card-title">Minimalist</h4>
+            <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
+              <button type="button" class="btn-demo">
+                <i class="far fa-eye"></i> Demo
+              </button>
+              <button type="button" class="btn-nonaktifkan">
+                <i class="fas fa-file-alt"></i> Nonaktifkan
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <!-- Mobile Card -->
-    <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
-      <div class="card-custom bg-mobile w-100">
-        <div class="side-bar"></div>
-        <div class="card-header">
-          <h3>Mobile</h3>
-          <i class="fas fa-trash-alt" title="Delete"></i>
-        </div>
-        <div class="card-img-container">
-          <img src="assets/themas3.png"
-            alt="Three smartphones showing mobile app screens with wedding photos and RSVP details" />
-        </div>
-        <h4 class="card-title">Minimalist</h4>
-        <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
-          <button type="button" class="btn-demo">
-            <i class="far fa-eye"></i> Demo
-          </button>
-          <button type="button" class="btn-nonaktifkan">
-            <i class="fas fa-file-alt"></i> Nonaktifkan
-          </button>
-        </div>
-      </div>
-    </div>
 
-    <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
-      <div class="card-custom bg-slide w-100">
-        <div class="side-bar"></div>
-        <div class="card-header">
-          <h3>Slide</h3>
-          <i class="fas fa-trash-alt" title="Delete"></i>
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
+          <div class="card-custom bg-slide w-100">
+            <div class="side-bar"></div>
+            <div class="card-header">
+              <h3>Slide</h3>
+              <i class="fas fa-trash-alt" title="Delete"></i>
+            </div>
+            <div class="card-img-container">
+              <img src="assets/themas4.png" style="height: 160px;width: 460px;"
+                alt="Three smartphones showing slide app screens with wedding invitation and couple photos" />
+            </div>
+            <h4 class="card-title">Blue</h4>
+            <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
+              <button type="button" class="btn-demo">
+                <i class="far fa-eye"></i> Demo
+              </button>
+              <button type="button" class="btn-nonaktifkan">
+                <i class="fas fa-file-alt"></i> Nonaktifkan
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="card-img-container">
-          <img src="assets/themas4.png" style="height: 160px;width: 460px;"
-            alt="Three smartphones showing slide app screens with wedding invitation and couple photos" />
-        </div>
-        <h4 class="card-title">Blue</h4>
-        <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
-          <button type="button" class="btn-demo">
-            <i class="far fa-eye"></i> Demo
-          </button>
-          <button type="button" class="btn-nonaktifkan">
-            <i class="fas fa-file-alt"></i> Nonaktifkan
-          </button>
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
+          <div class="card-custom bg-scroll w-100">
+            <div class="side-bar"></div>
+            <div class="card-header">
+              <h3>Scroll</h3>
+              <i class="fas fa-trash-alt" title="Delete"></i>
+            </div>
+            <div class="card-img-container">
+              <img src="assets/themas2.png"
+                alt="Three modern smartphones showing scroll app screens with wedding event details and photos" />
+            </div>
+            <h4 class="card-title">Elegant</h4>
+            <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
+              <button type="button" class="btn-demo">
+                <i class="far fa-eye"></i> Demo
+              </button>
+              <button type="button" class="btn-nonaktifkan">
+                <i class="fas fa-file-alt"></i> Nonaktifkan
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-     <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex">
-      <div class="card-custom bg-scroll w-100">
-        <div class="side-bar"></div>
-        <div class="card-header">
-          <h3>Scroll</h3>
-          <i class="fas fa-trash-alt" title="Delete"></i>
-        </div>
-        <div class="card-img-container">
-          <img src="assets/themas2.png"
-            alt="Three modern smartphones showing scroll app screens with wedding event details and photos" />
-        </div>
-        <h4 class="card-title">Elegant</h4>
-        <div class="d-flex justify-content-center gap-3 flex-wrap w-100">
-          <button type="button" class="btn-demo">
-            <i class="far fa-eye"></i> Demo
-          </button>
-          <button type="button" class="btn-nonaktifkan">
-            <i class="fas fa-file-alt"></i> Nonaktifkan
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 
   </div>

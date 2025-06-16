@@ -71,6 +71,10 @@ import { QueryService } from './dashboard.service';
 import { InvitationSectionComponent } from './home/features/feature-footer/invitation-section/invitation-section.component';
 import { PaymentConfirmComponent } from './shared/payment-confirm/payment-confirm.component';
 import { SuccessConfirmPaymentComponent } from './shared/success-confirm-payment/success-confirm-payment.component';
+import { ModalAddCategoryAdminComponent } from './shared/modal/modal-add-category-admin/modal-add-category-admin.component';
+import { ModalEditCategoryAdminComponent } from './shared/modal/modal-edit-category-admin/modal-edit-category-admin.component';
+import { ModalDeleteCategoryAdminComponent } from './shared/modal/modal-delete-category-admin/modal-delete-category-admin.component';
+import { ModalDeleteAllCategoryComponent } from './shared/modal/modal-delete-all-category/modal-delete-all-category.component';
 
 @NgModule({
   declarations: [
@@ -131,6 +135,10 @@ import { SuccessConfirmPaymentComponent } from './shared/success-confirm-payment
     InvitationSectionComponent,
     PaymentConfirmComponent,
     SuccessConfirmPaymentComponent,
+    ModalAddCategoryAdminComponent,
+    ModalEditCategoryAdminComponent,
+    ModalDeleteCategoryAdminComponent,
+    ModalDeleteAllCategoryComponent
   ],
   imports: [
     BrowserModule,

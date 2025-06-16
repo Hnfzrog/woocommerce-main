@@ -68,6 +68,12 @@ export enum DashboardServiceType {
   ADM_ADD_REKENING,
   ADM_TRIPAY_PAYMENT,
   ADM_MIDTRANS_PAYMENT,
+
+  ADM_ADD_CATEGORY,
+  ADM_EDIT_CATEGORY,
+  ADM_DELETE_CATEGORY,
+  ADM_DELETE_ALL_CATEGORY,
+  ADM_GET_CATEGORY,
 }
 
 @Injectable({
@@ -213,6 +219,18 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/admin/send-rekening`;
       case DashboardServiceType.RDM_CONFIRM_PAYMENT:
         return `${this.BASE_URL_API}/v1/update/status-bayar`;
+
+        // Kategori
+      case DashboardServiceType.ADM_ADD_CATEGORY:
+          return `${this.BASE_URL_API}/v1/admin/add-categorys`;
+      case DashboardServiceType.ADM_EDIT_CATEGORY:
+          return `${this.BASE_URL_API}/v1/admin/update-categorys`;
+      case DashboardServiceType.ADM_DELETE_CATEGORY:
+          return `${this.BASE_URL_API}/v1/admin/delete-categorys`;
+      case DashboardServiceType.ADM_DELETE_ALL_CATEGORY:
+          return `${this.BASE_URL_API}/v1/admin/delete-all-categorys`;
+      case DashboardServiceType.ADM_GET_CATEGORY:
+          return `${this.BASE_URL_API}/v1/admin/categorys`;
 
 
       default:

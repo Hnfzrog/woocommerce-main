@@ -110,3 +110,24 @@
 .bg-mobile {
   background: radial-gradient(circle at bottom right, #ffe9f0, #ffffff);
 }
+
+.btn-pink {
+  background-color: #f472b6;
+  color: white;
+  box-shadow: 0 10px 20px rgb(255 182 215 / 0.3);
+}
+.btn-pink:hover {
+  filter: brightness(1.1);
+  color: white;
+}
+.btn-outline-pink {
+  border-color: #f472b6;
+  color: #f472b6;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgb(255 182 215 / 0.3);
+}
+.btn-outline-pink:hover {
+  filter: brightness(1.1);
+  color: #f472b6;
+  background-color: #fff0f6;
+}
