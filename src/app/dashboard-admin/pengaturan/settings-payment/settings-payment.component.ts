@@ -18,12 +18,17 @@ export class SettingsPaymentComponent implements OnInit {
     }
   };
 
+  rows: Array<any> = [];
+
+
   methodSelected: any;
 
   formPayment!: FormGroup;
   listBank: any[] = [];
 
   private notyf: Notyf
+  idPayment: any;
+  namePayment: any;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +42,8 @@ export class SettingsPaymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMasterPayment();
+    this.getRekeningAdmin();
+
   }
 
   getListBank() {
@@ -53,7 +60,16 @@ export class SettingsPaymentComponent implements OnInit {
 
   onMetodeSelect(data: any) {
     this.methodSelected = data;
-
+    const selectedPaymentMethod = this.selectOptions.payment.items.find((item: any) => item.id === data);
+    if (selectedPaymentMethod) {
+      const paymentInfo = {
+        id: selectedPaymentMethod.id,
+        name: selectedPaymentMethod.name
+      };
+      this.idPayment = paymentInfo.id;
+      this.namePayment = paymentInfo.name;
+      this.getRekeningAdmin();
+    }
     if (this.methodSelected === 1) {
       this.getListBank()
     }
@@ -64,7 +80,7 @@ export class SettingsPaymentComponent implements OnInit {
   initForm() {
     if (this.methodSelected === 1) {
       this.formPayment = this.fb.group({
-        kode_bank: [ '', Validators.required],
+        kode_bank: ['', Validators.required],
         nomor_rekening: ['', Validators.required],
         nama_pemilik: ['', Validators.required],
         photo_rek: [''],
@@ -123,6 +139,7 @@ export class SettingsPaymentComponent implements OnInit {
       this.dashboardSvc.create(DashboardServiceType.ADM_ADD_REKENING, formData).subscribe({
         next: (res) => {
           this.notyf.success(res?.message || 'Data berhasil disimpan.');
+          this.getRekeningAdmin();
         },
         error: (err) => {
           this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
@@ -131,7 +148,7 @@ export class SettingsPaymentComponent implements OnInit {
       });
 
     } else if (this.methodSelected === 2) {
-      // Tripay
+
       for (const key in formValues) {
         if (formValues.hasOwnProperty(key)) {
           formData.append(key, formValues[key]);
@@ -141,6 +158,7 @@ export class SettingsPaymentComponent implements OnInit {
       this.dashboardSvc.create(DashboardServiceType.ADM_TRIPAY_PAYMENT, formData).subscribe({
         next: (res) => {
           this.notyf.success(res?.message || 'Data berhasil disimpan.');
+          this.getRekeningAdmin();
         },
         error: (err) => {
           this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
@@ -149,7 +167,7 @@ export class SettingsPaymentComponent implements OnInit {
       });
 
     } else if (this.methodSelected === 3) {
-      // Midtrans
+
       for (const key in formValues) {
         if (formValues.hasOwnProperty(key)) {
           formData.append(key, formValues[key]);
@@ -159,6 +177,7 @@ export class SettingsPaymentComponent implements OnInit {
       this.dashboardSvc.create(DashboardServiceType.ADM_MIDTRANS_PAYMENT, formData).subscribe({
         next: (res) => {
           this.notyf.success(res?.message || 'Data berhasil disimpan.');
+          this.getRekeningAdmin();
         },
         error: (err) => {
           this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
@@ -166,5 +185,106 @@ export class SettingsPaymentComponent implements OnInit {
         }
       });
     }
+    this.formPayment.reset();
   }
+
+
+
+
+
+  getRekeningAdmin() {
+    const params = {
+      id_methode_pembayaran: this.idPayment || 0,
+      name_methode_pembayaran: this.namePayment || ''
+    }
+    this.dashboardSvc.list(DashboardServiceType.MNL_MD_METHOD_DETAIL, params).subscribe(res => {
+      const paymentList = res?.data ?? [];
+      this.rows = [];
+      this.rows = paymentList.map((item: any) => {
+        let rowData: any = {
+          id: item.id,
+          metodePembayaran: item.methode_pembayaran,
+          idMetodePembayaran: item.id_methode_pembayaran,
+          userId: item.user_id,
+          createdAt: item.created_at,
+          updatedAt: item.updated_at
+        };
+        if (item.id_methode_pembayaran === "1" || item.methode_pembayaran === "Manual") {
+          rowData = {
+            ...rowData,
+            pengguna: item.nama_pemilik || item.email || '-',
+            email: item.email || '-',
+            noRekening: item.nomor_rekening || '-',
+            namaBank: item.nama_bank || '-',
+            kodeBank: item.kode_bank || '-',
+            namaPemilik: item.nama_pemilik || '-',
+            photoRek: item.photo_rek || null
+          };
+        }
+        else if (item.id_methode_pembayaran === "2" || item.methode_pembayaran === "Tripay") {
+          rowData = {
+            ...rowData,
+            urlTripay: item.url_tripay || '-',
+            privateKey: item.private_key || '-',
+            apiKey: item.api_key || '-',
+            kodeMerchant: item.kode_merchant || '-'
+          };
+        }
+        else if (item.id_methode_pembayaran === "3" || item.methode_pembayaran === "Midtrans") {
+          rowData = {
+            ...rowData,
+            url: item.url || '-',
+            serverKey: item.server_key || '-',
+            clientKey: item.client_key || '-',
+            metodeProduction: item.metode_production || '-'
+          };
+        }
+        else if (item.id_methode_pembayaran === "4" || item.methode_pembayaran === "Trial") {
+          rowData = {
+            ...rowData,
+
+            trialInfo: 'Trial Mode Active'
+          };
+        }
+        return rowData;
+      });
+    });
+  }
+
+
+  getTableColumns(): string[] {
+    if (!this.idPayment) return [];
+    switch (this.idPayment.toString()) {
+      case "1":
+        return ['pengguna', 'email', 'noRekening', 'namaBank', 'metodePembayaran'];
+      case "2":
+        return ['urlTripay', 'apiKey', 'kodeMerchant', 'metodePembayaran'];
+      case "3":
+        return ['url', 'serverKey', 'clientKey', 'metodePembayaran'];
+      case "4":
+        return ['trialInfo', 'metodePembayaran'];
+      default:
+        return ['metodePembayaran'];
+    }
+  }
+
+
+  getColumnHeader(column: string): string {
+    const headers: { [key: string]: string } = {
+      pengguna: 'Pengguna',
+      email: 'Email',
+      noRekening: 'No Rekening',
+      namaBank: 'Bank',
+      urlTripay: 'URL Tripay',
+      apiKey: 'API Key',
+      kodeMerchant: 'Kode Merchant',
+      url: 'URL',
+      serverKey: 'Server Key',
+      clientKey: 'Client Key',
+      metodePembayaran: 'Metode Pembayaran',
+      trialInfo: 'Trial Info'
+    };
+    return headers[column] || column;
+  }
+
 }
