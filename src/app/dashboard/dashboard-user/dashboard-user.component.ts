@@ -14,9 +14,10 @@ export class DashboardUserComponent implements OnInit {
   isPengunjungSubmenuOpen: boolean = false;
   isDropdownOpen = false;
   isSidebarOpen = false;
+  userData: any;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private DashBoardSvc: DashboardService
   ) {}
@@ -29,6 +30,15 @@ export class DashboardUserComponent implements OnInit {
 
     this.setRouteName();
     this.setRoutePath();
+    this.getUserProfile();
+  }
+
+  getUserProfile(): void {
+    this.DashBoardSvc.list(DashboardServiceType.USER_PROFILE, '').subscribe(
+      (res) => {
+        this.userData = res.data;
+      },
+    );
   }
 
   toggleSidebar() {
@@ -42,13 +52,13 @@ export class DashboardUserComponent implements OnInit {
 
   private setRoutePath(): void {
     this.routePath = this.getFullRoutePath(this.activatedRoute);
-    
+
     // Ambil segmen terakhir dari path
     const segments = this.routePath.split('/');
     this.routePath = `/${segments[segments.length - 1]}`;
-    
+
   }
-  
+
   private getFullRoutePath(route: ActivatedRoute | null): string {
     let path = '';
     while (route) {
@@ -71,18 +81,13 @@ export class DashboardUserComponent implements OnInit {
 
   logout(): void {
     this.DashBoardSvc.create(DashboardServiceType.USER_LOGOUT, '').subscribe(
-      (res) => {
+      () => {
         localStorage.removeItem('access_token')
-        alert(res.message);
-        this.router.navigate(['/']); // Redirect to root path '/'
+        this.router.navigate(['']);
       },
-      (error) => {
-        // Handle error if needed
-        console.error('Logout error:', error);
-      }
     );
   }
-  
+
 
   isActiveRoute(route: string): boolean {
     return this.router.url.includes(route);
@@ -98,12 +103,12 @@ export class DashboardUserComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
-    const target = event.target as HTMLElement; 
+    const target = event.target as HTMLElement;
     if (target && !target.closest('.user-profile')) {
       this.isDropdownOpen = false;
     }
   }
-  
+
   selectMenu(): void {
     this.isDropdownOpen = false;
   }

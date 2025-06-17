@@ -7,6 +7,7 @@ export enum DashboardServiceType {
   USER_LOGIN,
   USER_LOGOUT,
   USER_REGISTER,
+  USER_PROFILE,
 
   //TESTEMONI
   USER_TESTEMONI,
@@ -96,6 +97,9 @@ export class DashboardService {
 
       case DashboardServiceType.USER_REGISTER:
         return `${this.BASE_URL_API}/v1/register`;
+
+      case DashboardServiceType.USER_PROFILE:
+        return `${this.BASE_URL_API}/v1/user-profile`;
 
       //MANUAL REGIS
       case DashboardServiceType.MNL_STEP_ONE:

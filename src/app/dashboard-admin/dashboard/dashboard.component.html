@@ -7,7 +7,7 @@
             <div class="left-border green"></div>
             <div class="card-details">
               <span class="title">Total Keuntungan</span>
-              <span class="amount text-green">Rp. {{ salary || '0'}}</span>
+                <span class="amount text-green">Rp {{ salary | number:'1.0-0':'en-US' }}</span>
             </div>
             <i class="fas fa-wallet icon text-green"></i>
           </div>

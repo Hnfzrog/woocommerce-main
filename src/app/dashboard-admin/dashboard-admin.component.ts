@@ -14,9 +14,10 @@ currentRouteName: string = '';
   isPengunjungSubmenuOpen: boolean = false;
   isDropdownOpen = false;
   isSidebarOpen = false;
+  dataAdmin: any;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private DashBoardSvc: DashboardService
   ) {}
@@ -29,6 +30,14 @@ currentRouteName: string = '';
 
     this.setRouteName();
     this.setRoutePath();
+    this.getAdminProfile();
+  }
+
+   getAdminProfile() {
+    this.DashBoardSvc.list(DashboardServiceType.ADM_IDX_DASHBOARD).subscribe(res => {
+      const admin = res?.admin?.data[0] ?? [];
+      this.dataAdmin = admin;
+    });
   }
 
   toggleSidebar() {
@@ -42,13 +51,13 @@ currentRouteName: string = '';
 
   private setRoutePath(): void {
     this.routePath = this.getFullRoutePath(this.activatedRoute);
-    
+
     // Ambil segmen terakhir dari path
     const segments = this.routePath.split('/');
     this.routePath = `/${segments[segments.length - 1]}`;
-    
+
   }
-  
+
   private getFullRoutePath(route: ActivatedRoute | null): string {
     let path = '';
     while (route) {
@@ -71,18 +80,13 @@ currentRouteName: string = '';
 
   logout(): void {
     this.DashBoardSvc.create(DashboardServiceType.USER_LOGOUT, '').subscribe(
-      (res) => {
+      () => {
         localStorage.removeItem('access_token')
-        alert(res.message);
-        this.router.navigate(['/']); // Redirect to root path '/'
+        this.router.navigate(['']);
       },
-      (error) => {
-        // Handle error if needed
-        console.error('Logout error:', error);
-      }
     );
   }
-  
+
 
   isActiveRoute(route: string): boolean {
     return this.router.url.includes(route);
@@ -98,12 +102,12 @@ currentRouteName: string = '';
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
-    const target = event.target as HTMLElement; 
+    const target = event.target as HTMLElement;
     if (target && !target.closest('.user-profile')) {
       this.isDropdownOpen = false;
     }
   }
-  
+
   selectMenu(): void {
     this.isDropdownOpen = false;
   }

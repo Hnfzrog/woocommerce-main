@@ -10,6 +10,8 @@ export class DashboardComponent implements OnInit {
 
   rows: Array<any> = [];
   columns: Array<any> = [];
+  paketList: any[] = [];
+
 
   user: any
   salary: any;
@@ -22,8 +24,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.getDetailUser();
-
+    this.getPaketUndangan();
     this.columns = [
       { name: 'No Invoice', prop: 'invoice' },
       { name: 'Pengguna', prop: 'pengguna' },
@@ -32,11 +33,23 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
+  getPaketUndangan() {
+    this.dashboardSvc.list(DashboardServiceType.MNL_MD_PACK_INVITATION,).subscribe(res => {
+      this.paketList = res?.data ?? [];
+      this.getDetailUser();
+    });
+  }
+
   getDetailUser() {
     this.dashboardSvc.getParam(DashboardServiceType.ADM_IDX_DASHBOARD, '').subscribe(res => {
       const users = res?.users?.data ?? [];
+      const activeUsers = users.filter((user: any) => user.kd_status === 'SB');
+      this.salary = activeUsers.reduce((total: number, user: any) => {
+        const paket = this.paketList.find(p => p.id == user.paket_undangan_id);
+        const harga = paket ? parseFloat(paket.price) : 0;
+        return total + harga;
+      }, 0);
 
-      this.salary = res?.total_keuntungan ?? 0;
       this.total_users = res?.total_users ?? 0;
       this.pending_req = (res?.jumlah_belum_lunas_dan_pending?.BL ?? 0) +
         (res?.jumlah_belum_lunas_dan_pending?.MK ?? 0);
@@ -50,6 +63,7 @@ export class DashboardComponent implements OnInit {
       }));
     });
   }
+
 
   getStatusLabel(code: string | null): string {
     switch (code) {
