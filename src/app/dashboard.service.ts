@@ -75,6 +75,17 @@ export enum DashboardServiceType {
   ADM_DELETE_CATEGORY,
   ADM_DELETE_ALL_CATEGORY,
   ADM_GET_CATEGORY,
+
+  // setting user
+  USER_SETTINGS_SUBMIT_DOMAIN,
+  USER_SETTINGS_SUBMIT_MUSIC,
+  USER_SETTINGS_SUBMIT_SALAM,
+  USER_SETTINGS_SUBMIT_MUSIC_DOWNLOAD,
+  USER_SETTINGS_SUBMIT_MUSIC_GET,
+  USER_SETTINGS_SUBMIT_FILTER,
+  USER_SETTINGS_SUBMIT_FILTER_UPDATE,
+  USER_SETTINGS_SUBMIT_LIST_FILTER,
+  USER_SETTINGS_DELETE_MUSIC
 }
 
 @Injectable({
@@ -174,7 +185,7 @@ export class DashboardService {
       case DashboardServiceType.SETTINGS_SUBMIT:
         return `${this.BASE_URL_API}/v1/user/settings/`;
       case DashboardServiceType.SETTINGS_GET_FILTER:
-        return `${this.BASE_URL_API}/v1/user/submission-filter`;
+        return `${this.BASE_URL_API}/v1/user/list-data-setting`;
 
       //MEMPELAI
       case DashboardServiceType.MEMPELAI_DATA:
@@ -224,17 +235,38 @@ export class DashboardService {
       case DashboardServiceType.RDM_CONFIRM_PAYMENT:
         return `${this.BASE_URL_API}/v1/update/status-bayar`;
 
-        // Kategori
+      // Kategori
       case DashboardServiceType.ADM_ADD_CATEGORY:
-          return `${this.BASE_URL_API}/v1/admin/add-categorys`;
+        return `${this.BASE_URL_API}/v1/admin/add-categorys`;
       case DashboardServiceType.ADM_EDIT_CATEGORY:
-          return `${this.BASE_URL_API}/v1/admin/update-categorys`;
+        return `${this.BASE_URL_API}/v1/admin/update-categorys`;
       case DashboardServiceType.ADM_DELETE_CATEGORY:
-          return `${this.BASE_URL_API}/v1/admin/delete-categorys`;
+        return `${this.BASE_URL_API}/v1/admin/delete-categorys`;
       case DashboardServiceType.ADM_DELETE_ALL_CATEGORY:
-          return `${this.BASE_URL_API}/v1/admin/delete-all-categorys`;
+        return `${this.BASE_URL_API}/v1/admin/delete-all-categorys`;
       case DashboardServiceType.ADM_GET_CATEGORY:
-          return `${this.BASE_URL_API}/v1/admin/categorys`;
+        return `${this.BASE_URL_API}/v1/admin/categorys`;
+
+
+      // User Settings
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_DOMAIN:
+        return `${this.BASE_URL_API}/v1/user/settings/domain`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_MUSIC:
+        return `${this.BASE_URL_API}/v1/user/settings/music`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_SALAM:
+        return `${this.BASE_URL_API}/v1/user/settings/salam`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_MUSIC_DOWNLOAD:
+        return `${this.BASE_URL_API}/v1/user/music/download`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_MUSIC_GET:
+        return `${this.BASE_URL_API}/v1/user/music/stream`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_FILTER:
+        return `${this.BASE_URL_API}/v1/user/submission-filter`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_FILTER_UPDATE:
+        return `${this.BASE_URL_API}/v1/user/submission-filter-update`;
+      case DashboardServiceType.USER_SETTINGS_SUBMIT_LIST_FILTER:
+        return `${this.BASE_URL_API}/v1/user/list-data-setting`;
+      case DashboardServiceType.USER_SETTINGS_DELETE_MUSIC:
+        return `${this.BASE_URL_API}/v1/user/music/delete`;
 
 
       default:

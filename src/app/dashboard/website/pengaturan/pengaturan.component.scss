@@ -1,113 +1,146 @@
-/* General container styling */
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  background-color: #f9f9f9;
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  padding: 1.5rem 2rem 4rem 2rem;
+  min-height: 320px;
 }
-
-/* Row styling */
-.form-row {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+.card .section-bar {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  width: 4px;
+  height: 1.75rem;
+  background-color: #f472b6; /* pink-400 */
+  border-radius: 0 0.375rem 0.375rem 0;
 }
-
-/* Card styling */
-.form-card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  flex: 1 1 calc(50% - 20px);
-}
-
-.form-card h3 {
-  font-size: 18px;
+.card h2 {
+  color: #f472b6;
   font-weight: 600;
-  color: #e91e63;
-  margin-bottom: 15px;
+  font-size: 1.25rem;
+  padding-left: 1.25rem;
+  margin-bottom: 1.5rem;
 }
-
-/* Form group styling */
-.form-group {
-  margin-bottom: 20px;
-
-  label {
-    display: block;
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 8px;
-  }
-
-  input,
-  textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-  }
-
-  input[type="file"] {
-    padding: 8px;
-  }
-
-  textarea {
-    resize: none;
-  }
+.input-group-text.pink-bg {
+  background-color: #f472b6;
+  color: white;
+  font-weight: 500;
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+  border: 1px solid #ced4da;
+  border-right: none;
+  white-space: nowrap;
 }
-
-/* Button styling */
-.btn {
-  background: #00bcd4;
-  color: #fff;
+.form-control:focus {
+  box-shadow: none;
+  border-color: #f472b6;
+}
+.btn-sky {
+  background-color: #38bdf8;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.375rem 1.5rem;
+  box-shadow: 0 4px 6px rgb(56 189 248 / 0.5);
   border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s;
-  font-weight: bold;
-
-  &:hover {
-    background: #008c9e;
-  }
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap;
 }
-
-/* Checkbox group styling */
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-
-  label {
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  input[type="checkbox"] {
-    margin-right: 10px;
-    width: 18px;
-    height: 18px;
-  }
+.btn-sky:hover,
+.btn-sky:focus {
+  background-color: #0ea5e9;
+  color: white;
+  outline: none;
+  box-shadow: 0 6px 8px rgb(14 165 233 / 0.7);
+}
+textarea.form-control {
+  font-size: 0.75rem;
+  color: #6b7280;
+  resize: none;
+}
+.form-text a {
+  font-style: italic;
+  text-decoration: underline;
+  color: #2563eb;
+}
+input[type="file"] {
+  background-color: #f472b6;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  padding: 0.375rem 1.5rem;
+  border: none;
+  cursor: pointer;
+}
+input[type="file"]::-webkit-file-upload-button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  color: white;
+}
+/* Toggle switch styling */
+.form-switch .form-check-input {
+  width: 2.25rem;
+  height: 1.25rem;
+  // margin-left: 0;
+  cursor: pointer;
+}
+.form-switch .form-check-input:focus {
+  box-shadow: none;
+}
+.form-switch .form-check-input:checked {
+  background-color: #007AFF;
+  border-color: #007AFF;
+}
+.form-switch .form-check-input:checked:focus {
+  box-shadow: 0 0 0 0.25rem rgb(156 163 175 / 0.5);
+}
+.form-switch .form-check-label {
+  font-weight: 400;
+  font-size: 0.875rem;
+  cursor: pointer;
+  margin-left: 0.75rem;
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
+@media (max-width: 575.98px) {
+  body {
+    padding: 1rem 0.75rem 2rem 0.75rem;
   }
-
-  .form-card {
-    flex: 1 1 100%;
+  .card {
+    padding: 1.25rem 1.25rem 4rem 1.25rem;
+    min-height: auto;
+  }
+  .btn-sky {
+    position: static;
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+    white-space: normal;
+    text-align: center;
+  }
+  .card form {
+    padding-bottom: 0;
+  }
+  .input-group-text.pink-bg {
+    font-size: 0.875rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  textarea.form-control {
+    font-size: 0.8rem;
+  }
+  .form-switch .form-check-label {
+    font-size: 0.9rem;
+  }
+  .form-switch .form-check-input {
+    width: 2rem;
+    height: 1.1rem;
   }
 }
