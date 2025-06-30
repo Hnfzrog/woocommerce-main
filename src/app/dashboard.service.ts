@@ -46,6 +46,9 @@ export enum DashboardServiceType {
   ACARA_SUBMIT_COUNTDOWN,
   SETTINGS_GET_FILTER,
   ACARA_SUBMIT_DYNAMIC,
+  ACARA_SUBMIT_UPDATE_COUNTDOWN,
+  ACARA_SUBMIT_UPDATE_DYNAMIC,
+  ACARA_SUBMIT_DELETE_DYNAMIC,
 
   //SETTINGS ADMIN BUNDLE
   ST_BUNDLE_ADMIN,
@@ -85,7 +88,8 @@ export enum DashboardServiceType {
   USER_SETTINGS_SUBMIT_FILTER,
   USER_SETTINGS_SUBMIT_FILTER_UPDATE,
   USER_SETTINGS_SUBMIT_LIST_FILTER,
-  USER_SETTINGS_DELETE_MUSIC
+  USER_SETTINGS_DELETE_MUSIC,
+
 }
 
 @Injectable({
@@ -204,6 +208,12 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/user/submission-countdown`;
       case DashboardServiceType.ACARA_SUBMIT_DYNAMIC:
         return `${this.BASE_URL_API}/v1/user/submission-acara`;
+      case DashboardServiceType.ACARA_SUBMIT_UPDATE_COUNTDOWN:
+        return `${this.BASE_URL_API}/v1/user/update-countdown/`;
+      case DashboardServiceType.ACARA_SUBMIT_UPDATE_DYNAMIC:
+        return `${this.BASE_URL_API}/v1/user/update-acara`;
+      case DashboardServiceType.ACARA_SUBMIT_DELETE_DYNAMIC:
+        return `${this.BASE_URL_API}/v1/user/delete-countdown`;
 
       //SETTINGS BUNDLE ADMIN
       case DashboardServiceType.ST_BUNDLE_ADMIN:
