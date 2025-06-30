@@ -195,7 +195,7 @@ export class DashboardService {
       case DashboardServiceType.MEMPELAI_SUBMIT_COVER:
         return `${this.BASE_URL_API}/v1/user/submission-cover-mempelai`;
       case DashboardServiceType.MEMPELAI_UPDATE:
-        return `${this.BASE_URL_API}/v1/user/submission-update`;
+        return `${this.BASE_URL_API}/v1/user/update-mempelai`;
 
       //ACARA
       case DashboardServiceType.ACARA_DATA:
