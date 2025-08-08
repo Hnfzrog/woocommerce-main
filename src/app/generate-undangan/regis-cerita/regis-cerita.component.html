@@ -1,29 +1,27 @@
-<div class="container py-4" [formGroup]="form">
+
+<div class="rc-container" [formGroup]="form">
   <!-- Looping Cerita -->
   <div *ngIf="form && stories" formArrayName="stories">
-    <div *ngFor="let story of stories.controls; let i = index" [formGroupName]="i" class="card mb-3 shadow-sm">
-      <div class="card-header d-flex justify-content-between align-items-center bg-light">
-        <h5 class="mb-0">Cerita #{{ i + 1 }}</h5>
-        <button *ngIf="stories.length > 1" class="btn btn-sm btn-danger" (click)="removeStory(i)" title="Hapus Cerita">
+    <div *ngFor="let story of stories.controls; let i = index" [formGroupName]="i" class="rc-card">
+      <div class="rc-card-header">
+        <h5 class="rc-card-title">Cerita #{{ i + 1 }}</h5>
+        <button *ngIf="stories.length > 1" class="rc-btn-remove" (click)="removeStory(i)" title="Hapus Cerita">
           <i class="fas fa-trash-alt"></i>
         </button>
       </div>
-      <div class="card-body">
-        <!-- Tanggal -->
-        <div class="mb-3">
-          <label class="form-label">Tanggal</label>
-          <input type="text" class="form-control" [bsConfig]="bsConfig" bsDatepicker placeholder="Pilih tanggal"
+      <div class="rc-card-body">
+        <div class="rc-form-group">
+          <label>Tanggal</label>
+          <input type="text" class="rc-form-control" [bsConfig]="bsConfig" bsDatepicker placeholder="Pilih tanggal"
             formControlName="tanggal_cerita">
         </div>
-        <!-- Judul -->
-        <div class="mb-3">
-          <label class="form-label">Judul</label>
-          <input type="text" class="form-control" placeholder="Contoh: Pertama Bertemu" formControlName="title">
+        <div class="rc-form-group">
+          <label>Judul</label>
+          <input type="text" class="rc-form-control" placeholder="Contoh: Pertama Bertemu" formControlName="title">
         </div>
-        <!-- Isi Cerita -->
-        <div class="mb-3">
-          <label class="form-label">Isi Cerita</label>
-          <textarea class="form-control" rows="4" placeholder="Maximal 500 karakter" formControlName="lead_cerita"
+        <div class="rc-form-group">
+          <label>Isi Cerita</label>
+          <textarea class="rc-form-control" rows="4" placeholder="Maximal 500 karakter" formControlName="lead_cerita"
             maxlength="500"></textarea>
         </div>
       </div>
@@ -31,21 +29,21 @@
   </div>
 
   <!-- Button Tambah Cerita -->
-  <div class="text-center mb-4" *ngIf="stories.length < 2">
-    <button class="btn btn-primary w-100 rounded-pill" (click)="addStory()">Tambah Cerita</button>
+  <div class="rc-btn-add-wrap" *ngIf="stories.length < 2">
+    <button class="rc-btn rc-btn-add" (click)="addStory()">Tambah Cerita</button>
   </div>
 
   <!-- Checkbox -->
-  <div class="form-check form-switch mb-4">
-    <input class="form-check-input" type="checkbox" formControlName="status" id="status">
-    <label class="form-check-label" for="status">
+  <div class="rc-form-switch">
+    <input class="rc-switch-input" type="checkbox" formControlName="status" id="status">
+    <label class="rc-switch-label" for="status">
       Aktifkan Cerita Ini
     </label>
   </div>
 
   <!-- Footer Buttons -->
-  <div class="d-flex justify-content-between">
-    <button class="btn btn-outline-danger rounded-pill px-4" (click)="prev.emit()">Kembali</button>
-    <button class="btn btn-pink rounded-pill px-4" (click)="submit()">Lanjut</button>
+  <div class="rc-btn-group">
+    <button class="rc-btn rc-btn-back" (click)="prev.emit()">Kembali</button>
+    <button class="rc-btn rc-btn-next" (click)="submit()">Lanjut</button>
   </div>
 </div>

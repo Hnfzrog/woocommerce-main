@@ -1,63 +1,51 @@
 <!-- <form [formGroup]="formRegis" (ngSubmit)="submit()"> -->
-<div class="container mt-5">
-
-  <div class="form-group">
+<div class="rp-container">
+  <div class="rp-form-group">
     <label for="paket_undangan_id">Metode pembayaran</label>
     <ngx-select [items]="selectOptions.payment.items" [optionTextField]="'name'" [optionValueField]="'id'"
       placeholder="Pilih metode pembayaran" (select)="onMetodeSelect($event)"></ngx-select>
   </div>
   <ng-container *ngIf="selectedMethod === 1">
-    <div *ngFor="let rekening of bill" class="manual-payment card-payment">
-      <div class="form-group">
-        <label class="label-title">Nama Bank Tujuan</label>
-        <p class="text-muted">{{ rekening.nama_bank }}</p>
+    <div *ngFor="let rekening of bill" class="rp-card">
+      <div class="rp-form-group">
+        <label>Nama Bank Tujuan</label>
+        <p class="rp-muted">{{ rekening.nama_bank }}</p>
       </div>
-
-      <div class="form-group position-relative">
-        <label class="label-title">Nomer Rekening</label>
-        <div class="rekening-container">
-          <p class="text-muted mb-0">{{ rekening.nomor_rekening }}</p>
-          <i class="fa fa-copy copy-icon" (click)="copyToClipboard(rekening.nomor_rekening)"
-            title="Salin ke clipboard"></i>
+      <div class="rp-form-group rp-rekening-container">
+        <label>Nomer Rekening</label>
+        <div class="rp-rekening-row">
+          <p class="rp-muted mb-0">{{ rekening.nomor_rekening }}</p>
+          <i class="fa fa-copy rp-copy-icon" (click)="copyToClipboard(rekening.nomor_rekening)" title="Salin ke clipboard"></i>
         </div>
       </div>
-
-      <div class="form-group">
-        <label class="label-title">Nama Pemilik</label>
-        <p class="text-muted">{{ rekening.nama_pemilik }}</p>
+      <div class="rp-form-group">
+        <label>Nama Pemilik</label>
+        <p class="rp-muted">{{ rekening.nama_pemilik }}</p>
       </div>
-
-      <div class="form-group amount-container">
-        <label class="amount-label">Nominal yang harus dibayarkan:</label>
-        <p class="amount">Rp. {{manualBill}}</p>
+      <div class="rp-form-group rp-amount-container">
+        <label>Nominal yang harus dibayarkan:</label>
+        <p class="rp-amount">Rp. {{manualBill}}</p>
       </div>
-
-      <p class="instructions">
-        <strong style="color: blue;">
-          Pilih salah satu rekening.
-        </strong>
+      <p class="rp-instructions">
+        <strong>Pilih salah satu rekening.</strong>
       </p>
-      <p class="instructions">
-        Setelah melakukan pembayaran, pastikan Anda klik "Lanjut" untuk langkah selanjutnya.
-        Mohon untuk menyimpan bukti pembayaran.
+      <p class="rp-instructions">
+        Setelah melakukan pembayaran, pastikan Anda klik "Lanjut" untuk langkah selanjutnya. Mohon untuk menyimpan bukti pembayaran.
       </p>
     </div>
   </ng-container>
-
   <ng-container *ngIf="selectedMethod === 2">
-    <div *ngFor="let tripayData of bill" class="card shadow-sm p-3 mb-4">
-      <h5 class="mb-3">Metode Pembayaran: {{ tripayData.methode_pembayaran }}</h5>
-
-      <div class="form-group position-relative">
-        <label class="label-title">API Key</label>
-        <div class="rekening-container">
-          <p class="text-muted mb-0">{{ tripayData.api_key }}</p>
-          <i class="fa fa-copy copy-icon" (click)="copyTripayToClipboard(tripayData.api_key)" title="Salin API Key"></i>
+    <div *ngFor="let tripayData of bill" class="rp-card">
+      <h5 class="rp-card-title">Metode Pembayaran: {{ tripayData.methode_pembayaran }}</h5>
+      <div class="rp-form-group rp-rekening-container">
+        <label>API Key</label>
+        <div class="rp-rekening-row">
+          <p class="rp-muted mb-0">{{ tripayData.api_key }}</p>
+          <i class="fa fa-copy rp-copy-icon" (click)="copyTripayToClipboard(tripayData.api_key)" title="Salin API Key"></i>
         </div>
       </div>
-
-      <div class="form-group position-relative">
-        <label class="label-title">Private Key</label>
+      <div class="rp-form-group rp-rekening-container">
+        <label>Private Key</label>
         <div class="rekening-container">
           <p class="text-muted mb-0">{{ tripayData.private_key }}</p>
           <i class="fa fa-copy copy-icon" (click)="copyTripayToClipboard(tripayData.private_key)"
@@ -126,8 +114,8 @@
   </ng-container>
 
   <div class="button-group">
-    <button class="btn-back" (click)="onBack()">Kembali</button>
-    <button class="btn-next" (click)="onNextClicked()" [disabled]="!selectedMethod">Lanjut</button>
+    <button class="rp-btn btn-back" (click)="onBack()">Kembali</button>
+    <button class="rp-btn btn-next" (click)="onNextClicked()" [disabled]="!selectedMethod">Lanjut</button>
   </div>
 </div>
 

@@ -1,3 +1,38 @@
+@media (max-width: 900px) {
+  .wc__hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  .wc__hero-content {
+    width: 100%;
+    margin-right: 0;
+    h1 {
+      font-size: 48px;
+      line-height: 60px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .wc__hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    margin-top: 1rem;
+  }
+  .wc__hero-content {
+    width: 100%;
+    margin-right: 0;
+    h1 {
+      font-size: 32px;
+      line-height: 40px;
+    }
+    p {
+      font-size: 15px;
+    }
+  }
+}
 @import "../../../styles/variable";
 
 @keyframes fadeInUp {

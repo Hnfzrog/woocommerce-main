@@ -1,15 +1,136 @@
-.btn-pink {
-  background-color: #f06292;
-  color: white;
+
+.rc-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.rc-card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  padding: 0.7rem 1rem 1rem 1rem;
+}
+.rc-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e9ecef;
+  border-radius: 10px 10px 0 0;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+.rc-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+.rc-btn-remove {
+  background: none;
   border: none;
-  transition: background-color 0.3s ease;
+  color: #e74c3c;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
 }
-
-.btn-pink:hover {
-  background-color: #ec407a;
-  color: white;
+.rc-btn-remove:hover {
+  background: #ffeaea;
 }
-
-.btn-pink:focus {
-  box-shadow: 0 0 0 0.25rem rgba(240, 98, 146, 0.5);
+.rc-card-body {
+  padding-top: 0.7rem;
+}
+.rc-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.7rem;
+}
+.rc-form-group label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.rc-form-control {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  transition: border 0.2s;
+}
+.rc-form-control:focus {
+  border: 1.5px solid #f06292;
+  outline: none;
+}
+.rc-btn-add-wrap {
+  margin-bottom: 1.2rem;
+}
+.rc-btn {
+  width: 100%;
+  padding: 0.9rem 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #f06292;
+  color: #fff;
+  transition: background 0.2s;
+  margin-bottom: 0.5rem;
+}
+.rc-btn:disabled {
+  background: #b0b8c1;
+  cursor: not-allowed;
+}
+.rc-btn-add {
+  background: linear-gradient(90deg, #f06292 60%, #ec407a 100%);
+}
+.rc-form-switch {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+.rc-switch-input {
+  margin-right: 0.5rem;
+}
+.rc-btn-group {
+  display: flex;
+  gap: 0.7rem;
+}
+.rc-btn-back {
+  background: #ffe0e6;
+  color: #f06292;
+}
+.rc-btn-next {
+  background: #f06292;
+  color: #fff;
+}
+@media (max-width: 600px) {
+  .rc-container {
+    padding: 10px 2vw;
+    max-width: 100vw;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .rc-card {
+    padding: 0.7rem 0.5rem 1rem 0.5rem;
+  }
+  .rc-card-title {
+    font-size: 0.98rem;
+  }
+  .rc-form-control {
+    font-size: 0.98rem;
+    min-height: 44px;
+  }
+  .rc-btn {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  .rc-btn-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }

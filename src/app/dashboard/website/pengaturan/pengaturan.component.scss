@@ -1,3 +1,28 @@
+/* Responsive improvement for Filter Undangan toggles */
+@media (max-width: 575.98px) {
+  .card form.form-switch-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .form-switch {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .form-switch .form-check-input {
+    flex-shrink: 0;
+  }
+  .form-switch .form-check-label {
+    flex: 1 1 0;
+    min-width: 0;
+    word-break: break-word;
+  }
+}
 .card {
   border-radius: 1rem;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
@@ -111,11 +136,21 @@ input[type="file"]::-webkit-file-upload-button {
 /* Responsive adjustments */
 @media (max-width: 575.98px) {
   body {
-    padding: 1rem 0.75rem 2rem 0.75rem;
+    padding: 0.5rem 0.25rem 1.5rem 0.25rem;
+  }
+  .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+    gap: 1.25rem 0;
   }
   .card {
-    padding: 1.25rem 1.25rem 4rem 1.25rem;
+    padding: 1rem 0.5rem 2rem 0.5rem;
     min-height: auto;
+    box-shadow: 0 0 8px rgba(0,0,0,0.08);
   }
   .btn-sky {
     position: static;
@@ -124,23 +159,39 @@ input[type="file"]::-webkit-file-upload-button {
     margin-top: 1rem;
     white-space: normal;
     text-align: center;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
   }
   .card form {
     padding-bottom: 0;
   }
   .input-group-text.pink-bg {
     font-size: 0.875rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
   textarea.form-control {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    min-height: 80px;
   }
   .form-switch .form-check-label {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    margin-left: 0.5rem;
   }
   .form-switch .form-check-input {
-    width: 2rem;
-    height: 1.1rem;
+    width: 2.2rem;
+    height: 1.2rem;
+  }
+  .d-grid {
+    gap: 0.5rem;
+  }
+  .progress {
+    min-width: 100px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .d-flex {
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 }

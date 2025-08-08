@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'wc-success-confirm-payment',
@@ -12,6 +13,7 @@ export class SuccessConfirmPaymentComponent implements OnInit {
 
   constructor(
     private routeSvc: Router,
+    private modalService: BsModalService
   ) { }
 
   ngOnInit() {
@@ -21,6 +23,7 @@ export class SuccessConfirmPaymentComponent implements OnInit {
 
   onRedirectToDasboard() {
     this.routeSvc.navigate(['/dashboard']);
+    this.modalService.hide();
   }
 
 }

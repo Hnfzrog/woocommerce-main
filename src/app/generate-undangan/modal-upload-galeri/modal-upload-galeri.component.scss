@@ -1,103 +1,150 @@
-.modal-title {
-    font-family: Poppins;
-    font-weight: 400;
-    font-size: 40px;
-    line-height: 60px;
-    color: #4ea0e4;
+// Modal Galeri Responsive & Modern
+.mg-form {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.mg-modal-body {
+  font-family: Poppins, Arial, sans-serif;
+  padding: 1rem 0.5rem 0.5rem 0.5rem;
+}
+.mg-modal-title {
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #4ea0e4;
+  text-align: center;
+  margin-bottom: 0.2rem;
+}
+.mg-subtitle {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+.mg-upload-label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.mg-file-upload {
+  border: 2px dashed #6c757d;
+  border-radius: 10px;
+  text-align: center;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.mg-upload-icon {
+  width: 50px;
+  margin-bottom: 10px;
+}
+.mg-upload-text {
+  color: #6c757d;
+}
+.mg-upload-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.mg-upload-button:hover {
+  background: #0056b3;
+}
+.mg-preview-image {
+  max-width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 0.5rem;
+}
+.mg-remove-photo-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s;
+}
+.mg-remove-photo-btn:hover {
+  background: #c0392b;
+}
+.mg-form-check {
+  display: flex;
+  align-items: center;
+  margin-top: 0.7rem;
+}
+.mg-form-check input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+.mg-modal-footer {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+}
+.mg-btn {
+  width: 100%;
+  padding: 0.9rem 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #3a66c0;
+  color: #fff;
+  transition: background 0.2s;
+  margin-bottom: 0.5rem;
+}
+.mg-btn:disabled {
+  background: #b0b8c1;
+  cursor: not-allowed;
+}
+.mg-btn-back {
+  background: #ffe0e6;
+  color: #3a66c0;
+}
+.mg-btn-next {
+  background: #3a66c0;
+  color: #fff;
+}
+@media (max-width: 600px) {
+  .mg-form {
+    padding: 0 2vw;
+    max-width: 100vw;
   }
-  
-  .modal-body {
-    font-family: Poppins;
-  
-    .subtitle {
-      text-align: center;
-      color: #6c757d;
-    }
-  
-    .file-upload {
-      border: 2px dashed #6c757d;
-      border-radius: 10px;
-      text-align: center;
-      padding: 20px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      min-height: 150px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-  
-      .upload-icon {
-        width: 50px;
-        margin-bottom: 10px;
-      }
-  
-      .upload-text {
-        color: #6c757d;
-      }
-  
-      .upload-button {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-  
-        &:hover {
-          background: #0056b3;
-        }
-      }
-  
-      // Preview Gambar dalam Box Upload
-      .preview-image {
-        max-width: 100%;
-        max-height: 140px;
-        object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-    }
-  
-    .form-check {
-      margin-top: 15px;
-    }
+  .mg-modal-title {
+    font-size: 1.1rem;
   }
-  
-  .modal-footer {
-    font-family: Poppins;
-    display: flex;
-    justify-content: space-between;
-    border-top: 1px solid #dee2e6;
-    padding-top: 15px;
-  
-    .btn-back {
-      background: none;
-      border: 1px solid #dc3545;
-      color: #dc3545;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-  
-      &:hover {
-        background: #dc3545;
-        color: white;
-      }
-    }
-  
-    .btn-next {
-      background: #dc3545;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-  
-      &:hover {
-        background: #a71d2a;
-      }
-    }
+  .mg-upload-label {
+    font-size: 0.98rem;
   }
-  
+  .mg-upload-button {
+    font-size: 0.98rem;
+    min-height: 44px;
+  }
+  .mg-btn {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  .mg-modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+

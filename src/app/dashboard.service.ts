@@ -32,6 +32,7 @@ export enum DashboardServiceType {
   CERITA_SUBMIT,
   QUOTE_SUBMIT,
   GALERY_SUBMIT,
+  GALERY_DATA,
   SETTINGS_SUBMIT,
   MEMPELAI_SUBMIT,
   MEMPELAI_DATA,
@@ -89,6 +90,7 @@ export enum DashboardServiceType {
   USER_SETTINGS_SUBMIT_FILTER_UPDATE,
   USER_SETTINGS_SUBMIT_LIST_FILTER,
   USER_SETTINGS_DELETE_MUSIC,
+  GALERY_DELETE,
 
 }
 
@@ -97,7 +99,7 @@ export enum DashboardServiceType {
 })
 export class DashboardService {
 
-  private BASE_URL_API = 'https://lib.horuzt.com/api';
+  private BASE_URL_API = 'http://127.0.0.1:8000/api';
 
   constructor(private httpSvc: HttpClient) { }
 
@@ -184,6 +186,10 @@ export class DashboardService {
       //GALERY
       case DashboardServiceType.GALERY_SUBMIT:
         return `${this.BASE_URL_API}/v1/user/submission-galery`;
+      case DashboardServiceType.GALERY_DATA:
+        return `${this.BASE_URL_API}/v1/user/list-galery`;
+      case DashboardServiceType.GALERY_DELETE:
+        return `${this.BASE_URL_API}/v1/user/delete-galery`;
 
       // Settings
       case DashboardServiceType.SETTINGS_SUBMIT:

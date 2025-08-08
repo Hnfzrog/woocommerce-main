@@ -4,6 +4,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Notyf } from 'notyf';
 import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'wc-gallery',
@@ -15,6 +16,21 @@ export class GalleryComponent implements OnInit {
   uploadStatus: string | null = null;
   isDraggingOver = false;
   uploadedFiles: { name: string; base64: string; status: string }[] = [];
+  previewUrl: string | ArrayBuffer | null = null;
+
+  // Table properties
+  galleryData: any[] = [];
+  columns: any[] = [];
+  isLoading = false;
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
+  totalItems = 0;
+  from = 0;
+  to = 0;
+
+  // Math reference for template
+  Math = Math;
 
   private notyf: Notyf;
   private modalRef?: BsModalRef;
@@ -29,9 +45,20 @@ export class GalleryComponent implements OnInit {
       photo: new FormControl(null, Validators.required),
       url_video: new FormControl('', Validators.required),
     });
+
+    // Initialize table columns
+    this.columns = [
+      { name: 'No', prop: 'number', type: 'number' },
+      { name: 'Foto', prop: 'photo_url', type: 'image' },
+      { name: 'Video URL', prop: 'url_video' },
+      { name: 'Tanggal Upload', prop: 'created_at', type: 'date' },
+      { name: 'Status', prop: 'status', type: 'badge' }
+    ];
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getGalleryData();
+  }
 
   browseFiles() {
     document.getElementById('fileInput')?.click();
@@ -43,14 +70,14 @@ export class GalleryComponent implements OnInit {
       this.handleFiles(input.files);
     }
   }
-  
+
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
     this.isDraggingOver = true;
   }
 
-  onDragLeave() {
+  onDragLeave(event?: DragEvent) {
     this.isDraggingOver = false;
   }
 
@@ -63,16 +90,29 @@ export class GalleryComponent implements OnInit {
   }
 
   handleFiles(files: FileList) {
-    // Iterate over the FileList directly (it can be indexed like an array)
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];  // file is of type File
-      if (this.validateFile(file)) {
-        this.galleryForm.get('photo')?.setValue(file); // Use the File object directly
-        this.uploadStatus = `File "${file.name}" selected successfully.`;
-      }
+    // Only allow one file for photo
+    const file = files[0];
+    if (this.validateFile(file)) {
+      this.galleryForm.get('photo')?.setValue(file);
+      this.galleryForm.get('photo')?.markAsDirty();
+      this.uploadStatus = `File "${file.name}" selected successfully.`;
+      // Preview image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.previewUrl = e.target?.result ?? null;
+      };
+      reader.readAsDataURL(file);
+      // Reset file input value to allow re-uploading the same file if needed
+      const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    } else {
+      this.previewUrl = null;
+      // Reset file input value on error
+      const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
     }
   }
-  
+
 
   validateFile(file: File): boolean {
     const maxFileSize = 5 * 1024 * 1024; // 5MB
@@ -92,12 +132,15 @@ export class GalleryComponent implements OnInit {
   }
 
   handleCancelClicked() {
-    console.log('Cancel clicked');
+    this.previewUrl = null;
+    this.uploadStatus = null;
+    this.galleryForm.reset();
+    // Reset file input value
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   }
 
   onSubmit() {
-    console.log('Submit clicked');
-
     if (this.galleryForm.valid) {
       const initialState = {
         message: 'Apakah anda ingin menyimpan semua data gallery?',
@@ -105,13 +148,11 @@ export class GalleryComponent implements OnInit {
         submitClicked: () => this.onSubmitForm(),
         submitMessage: 'Simpan',
       };
-
       this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-
       if (this.modalRef?.content) {
         this.modalRef.content.onClose.subscribe((res: any) => {
           if (res?.state === 'delete') {
-            console.log('Delete action triggered');
+            // ...existing code...
           } else if (res?.state === 'cancel') {
             this.modalRef?.hide();
           }
@@ -123,26 +164,168 @@ export class GalleryComponent implements OnInit {
 
   onSubmitForm() {
     const formData = new FormData();
-
     const photoFile = this.galleryForm.get('photo')?.value;
     const urlVideo = this.galleryForm.get('url_video')?.value;
-
-    // Append the actual file (not base64 string)
     if (photoFile) {
-      formData.append('photo', photoFile, photoFile.name); // 'photo' is the field name expected by the backend
+      formData.append('photo', photoFile, photoFile.name);
+      formData.append('nama_foto', photoFile.name);
     }
     formData.append('url_video', urlVideo || '');
-
-    // Submit the form data
     this.dashboardSvc.create(DashboardServiceType.GALERY_SUBMIT, formData).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
         this.galleryForm.reset();
+        this.uploadStatus = null;
+        this.previewUrl = null;
+        // Reset file input value after submit
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        this.getGalleryData();
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
         console.error('Error while submitting data:', err);
       }
     });
+  }
+
+  // Method to fetch gallery data
+  getGalleryData(page: number = this.currentPage, perPage: number = this.pageSize): void {
+    this.isLoading = true;
+    const params: any = { page, per_page: perPage };
+    this.dashboardSvc.list(DashboardServiceType.GALERY_DATA, params).subscribe({
+      next: (res) => {
+        const baseUrl = environment.apiBaseUrl || '';
+        this.galleryData = (res?.data || []).map((item: any) => ({
+          id: item.id,
+          photo_url: item.photo ? (item.photo.startsWith('http') ? item.photo : baseUrl + '/' + item.photo) : '',
+          photo_name: item.nama_foto || (item.photo ? item.photo.split('/').pop() : ''),
+          url_video: item.url_video,
+          created_at: item.created_at ? new Date(item.created_at) : null,
+          status: item.status === 1 ? 'active' : 'inactive',
+        }));
+        this.totalItems = res?.total || this.galleryData.length;
+        this.pageSize = res?.per_page || this.pageSize;
+        this.currentPage = res?.current_page || 1;
+        this.totalPages = res?.last_page || 1;
+        this.from = res?.from || 0;
+        this.to = res?.to || 0;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching gallery data:', err);
+        this.galleryData = [];
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // Dummy data for demonstration
+  private loadDummyData(): void {
+    this.galleryData = [
+      {
+        id: 1,
+        photo_url: 'https://via.placeholder.com/300x200/e91e63/white?text=Photo+1',
+        photo_name: 'Wedding Photo 1.jpg',
+        url_video: '',
+        created_at: new Date('2024-01-15'),
+        status: 'active'
+      },
+      {
+        id: 2,
+        photo_url: '',
+        photo_name: '',
+        url_video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        created_at: new Date('2024-01-16'),
+        status: 'active'
+      },
+      {
+        id: 3,
+        photo_url: 'https://via.placeholder.com/300x200/007bff/white?text=Photo+2',
+        photo_name: 'Wedding Photo 2.jpg',
+        url_video: '',
+        created_at: new Date('2024-01-17'),
+        status: 'active'
+      }
+    ];
+    this.totalPages = Math.ceil(this.galleryData.length / this.pageSize);
+  }
+
+  // Get paginated data
+  get paginatedData(): any[] {
+    return this.galleryData;
+  }
+
+  // Page navigation methods
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.currentPage = page;
+      this.getGalleryData(this.currentPage, this.pageSize);
+    }
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage = 1;
+    this.getGalleryData(this.currentPage, this.pageSize);
+  }
+
+  // Method to delete gallery item
+  onDeleteGallery(item: any): void {
+    const initialState = {
+      message: `Apakah Anda yakin ingin menghapus foto/video ini?`,
+      cancelClicked: () => this.modalRef?.hide(),
+      submitClicked: () => this.deleteGalleryItem(item),
+      submitMessage: 'Hapus',
+    };
+
+    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+  }
+
+  private deleteGalleryItem(item: any): void {
+    console.log('Deleting gallery item:', item);
+    const params = {
+      id: item.id
+    }
+    this.dashboardSvc.delete(DashboardServiceType.GALERY_DELETE, params).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Data galeri berhasil dihapus.');
+        this.getGalleryData();
+        this.modalRef?.hide();
+      },
+      error: (err) => {
+        this.notyf.error(err?.message || 'Gagal menghapus data galeri.');
+        this.modalRef?.hide();
+      }
+    });
+  }
+
+  // Method to view/preview gallery item
+  onPreviewGallery(item: any): void {
+    if (item.photo_url) {
+      window.open(item.photo_url, '_blank');
+    } else if (item.url_video) {
+      window.open(item.url_video, '_blank');
+    }
+  }
+
+  // Helper method to format file size
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Helper method to get file extension
+  getFileExtension(filename: string): string {
+    return filename.split('.').pop()?.toLowerCase() || '';
+  }
+
+  // Helper method to check if file is image
+  isImageFile(filename: string): boolean {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+    return imageExtensions.includes(this.getFileExtension(filename));
   }
 }

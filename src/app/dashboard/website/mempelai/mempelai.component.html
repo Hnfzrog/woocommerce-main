@@ -1,3 +1,4 @@
+
 <div *ngIf="isLoading || isUpdating" class="loader-overlay">
   <div class="loader-container">
     <div class="spinner"></div>
@@ -7,7 +8,7 @@
   </div>
 </div>
 
-<div class="mempelai-container">
+<div class="mempelai-container container-fluid px-2 px-md-4">
   <section class="form-section">
     <div class="border-pink ps-3 mb-3">
       <h2 class="text-pink fs-6 fw-semibold mb-0">
@@ -16,7 +17,7 @@
     </div>
 
     <form [formGroup]="coverPhotoForm" (ngSubmit)="onUpdateCoverPhoto()">
-      <div class="upload-container">
+      <div class="upload-container mx-auto">
         <img
           *ngIf="coverPhotoPreview; else defaultCoverPhoto"
           [src]="coverPhotoPreview"
@@ -46,7 +47,7 @@
       </div>
 
       <div
-        class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 px-2 px-sm-0"
+        class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-3 px-2 px-sm-0"
       >
         <div class="w-100 w-sm-50" style="max-width: 320px">
           <label for="urutan" class="form-label">Urutan Mempelai </label>
@@ -71,7 +72,7 @@
         </div>
         <button
           type="submit"
-          class="btn btn-cyan align-self-end align-self-sm-auto"
+          class="btn btn-cyan align-self-end align-self-sm-auto w-100 w-sm-auto"
           [disabled]="coverPhotoForm.invalid || isUpdating"
         >
           {{ isUpdating ? "Menyimpan..." : "Simpan Cover Photo" }}
@@ -80,7 +81,7 @@
     </form>
   </section>
 
-  <section class="row g-4" style="gap: 10px; justify-content: center">
+  <section class="row g-3 g-md-4" style="gap: 10px; justify-content: center">
     <form
       [formGroup]="dualSectionForm"
       autocomplete="off"
@@ -91,18 +92,18 @@
         <h2 class="text-pink fs-6 fw-semibold mb-0">Data Mempelai Pria</h2>
       </div>
 
-      <div class="d-flex align-items-center gap-3 pt-2">
+      <div class="d-flex flex-column flex-sm-row align-items-center gap-2 gap-sm-3 pt-2">
         <img
           [src]="
             groomPhotoPreview ||
             'https://storage.googleapis.com/a1aa/image/c0debede-8764-4d3f-b3b8-17cb7ae513b7.jpg'
           "
           alt="Foto Mempelai Pria"
-          class="profile-img"
+          class="profile-img mx-auto mx-sm-0"
         />
         <button
           type="button"
-          class="btn btn-pink"
+          class="btn btn-pink w-100 w-sm-auto"
           (click)="triggerFileInput('groomPhotoInput')"
         >
           {{ groomPhotoPreview ? "Ganti Foto" : "Unggah Foto" }}
@@ -223,18 +224,18 @@
         <h2 class="text-pink fs-6 fw-semibold mb-0">Data Mempelai Wanita</h2>
       </div>
 
-      <div class="d-flex align-items-center gap-3 pt-2">
+      <div class="d-flex flex-column flex-sm-row align-items-center gap-2 gap-sm-3 pt-2">
         <img
           [src]="
             bridePhotoPreview ||
             'https://storage.googleapis.com/a1aa/image/c0debede-8764-4d3f-b3b8-17cb7ae513b7.jpg'
           "
           alt="Foto Mempelai Wanita"
-          class="profile-img"
+          class="profile-img mx-auto mx-sm-0"
         />
         <button
           type="button"
-          class="btn btn-pink"
+          class="btn btn-pink w-100 w-sm-auto"
           (click)="triggerFileInput('bridePhotoInput')"
         >
           {{ bridePhotoPreview ? "Ganti Foto" : "Unggah Foto" }}
@@ -346,10 +347,10 @@
     </form>
   </section>
 
-  <div class="d-flex justify-content-center mt-4">
+  <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center mt-4 gap-2 gap-sm-4">
     <button
       type="button"
-      class="btn btn-cyan btn-lg"
+      class="btn btn-cyan btn-lg w-100 w-sm-auto"
       [disabled]="dualSectionForm.invalid || isUpdating"
       (click)="onUpdateDataMempelai()"
     >

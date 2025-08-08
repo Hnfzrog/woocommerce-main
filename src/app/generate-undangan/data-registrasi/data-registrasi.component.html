@@ -1,47 +1,46 @@
-<form [formGroup]="formRegis" (ngSubmit)="submit()">
-  <div class="form-group">
+
+<form [formGroup]="formRegis" (ngSubmit)="submit()" class="dr-form">
+  <div class="dr-form-group">
     <label for="paket_undangan_id">Paket Undangan</label>
     <ngx-select id="paket_undangan_id" [items]="paketOptions" [optionTextField]="'name_paket'" [optionValueField]="'id'"
-      formControlName="paket_undangan_id" placeholder="Pilih Paket" (select)="onPaketSelect($event)">
-    </ngx-select>
-    <small class="text-danger"
+      formControlName="paket_undangan_id" placeholder="Pilih Paket" (select)="onPaketSelect($event)"></ngx-select>
+    <small class="dr-error"
       *ngIf="formRegis.get('paket_undangan_id')?.invalid && formRegis.get('paket_undangan_id')?.touched">
       Paket undangan wajib dipilih.
     </small>
-
   </div>
 
-  <div class="form-group">
+  <div class="dr-form-group">
     <label for="domain">Nama Domain / URL Undangan</label>
-    <input type="text" class="form-control" id="domain" formControlName="domain" placeholder="akudandia.com">
-    <small class="text-danger" *ngIf="formRegis.get('domain')?.invalid && formRegis.get('domain')?.touched">
+    <input type="text" class="dr-form-control" id="domain" formControlName="domain" placeholder="akudandia.com">
+    <small class="dr-error" *ngIf="formRegis.get('domain')?.invalid && formRegis.get('domain')?.touched">
       Nama domain minimal 3 karakter.
     </small>
   </div>
 
-  <div class="form-group">
+  <div class="dr-form-group">
     <label for="email">Email</label>
-    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
-    <small class="text-danger" *ngIf="formRegis.get('email')?.invalid && formRegis.get('email')?.touched">
+    <input type="email" class="dr-form-control" id="email" formControlName="email" placeholder="Email">
+    <small class="dr-error" *ngIf="formRegis.get('email')?.invalid && formRegis.get('email')?.touched">
       Masukkan email yang valid.
     </small>
   </div>
 
-  <div class="form-group">
+  <div class="dr-form-group">
     <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" formControlName="password" placeholder="Password">
-    <small class="text-danger" *ngIf="formRegis.get('password')?.invalid && formRegis.get('password')?.touched">
+    <input type="password" class="dr-form-control" id="password" formControlName="password" placeholder="Password">
+    <small class="dr-error" *ngIf="formRegis.get('password')?.invalid && formRegis.get('password')?.touched">
       Password minimal 6 karakter.
     </small>
   </div>
 
-  <div class="form-group">
+  <div class="dr-form-group">
     <label for="phone">Nomor Hp/WA</label>
-    <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="@08xxxxxx">
-    <small class="text-danger" *ngIf="formRegis.get('phone')?.invalid && formRegis.get('phone')?.touched">
+    <input type="text" class="dr-form-control" id="phone" formControlName="phone" placeholder="@08xxxxxx">
+    <small class="dr-error" *ngIf="formRegis.get('phone')?.invalid && formRegis.get('phone')?.touched">
       Masukkan nomor HP yang valid.
     </small>
   </div>
 
-  <button type="submit" class="btn btn-primary w-100" [disabled]="formRegis.invalid">Lanjut</button>
+  <button type="submit" class="dr-btn dr-btn-primary" [disabled]="formRegis.invalid">Lanjut</button>
 </form>

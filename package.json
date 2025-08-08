@@ -26,6 +26,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@google/gemini-cli": "^0.1.14",
     "@ngx-translate/core": "^13.0.0",
     "bootstrap": "^4.6.2",
     "chart.js": "^4.4.6",

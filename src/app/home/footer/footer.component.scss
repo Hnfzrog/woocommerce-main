@@ -1,3 +1,22 @@
+@media (max-width: 900px) {
+  .footer-section {
+    background-size: cover;
+    padding: 2rem 0.5rem;
+  }
+  .footer-cta img {
+    width: 60%;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-section {
+    background-size: cover;
+    padding: 1rem 0.2rem;
+  }
+  .footer-cta img {
+    width: 90%;
+  }
+}
 @import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 
 $footer-bg: #151414;
@@ -11,7 +30,7 @@ $button-bg: #ff5e14;
 .footer-section {
   position: relative;
   background-image: url("/assets/footer-bg.svg");
-  background-size: contain; 
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom;
 
@@ -70,7 +89,7 @@ $button-bg: #ff5e14;
       margin-right: 20px;
 
       &:last-child {
-        margin-right: 0; 
+        margin-right: 0;
       }
 
       .footer-logo {
@@ -138,12 +157,12 @@ $button-bg: #ff5e14;
       }
 
       .centered-list {
-        list-style: none; 
-        padding: 0; 
-        margin: 0; 
-        display: flex; 
-        flex-direction: column; 
-        
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+
         a {
           color: black;
           transition: color 0.3s; // Transition for link color change
@@ -155,21 +174,21 @@ $button-bg: #ff5e14;
       }
 
       .centered-list li {
-        position: relative; 
-        padding-left: 20px; 
-        margin-bottom: 10px; 
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 10px;
       }
 
       .centered-list li::before {
-        content: ""; 
-        position: absolute; 
-        left: 0; 
-        top: 50%; 
-        transform: translateY(-50%); 
-        width: 10px; 
-        height: 10px; 
-        background-color: black; 
-        border-radius: 50%; 
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-color: black;
+        border-radius: 50%;
       }
 
       .subscribe-form {
@@ -220,7 +239,7 @@ $button-bg: #ff5e14;
     background-size: cover;
   }
   .footer-content {
-    flex-direction: column; 
+    flex-direction: column;
   }
 
   .footer-widget {

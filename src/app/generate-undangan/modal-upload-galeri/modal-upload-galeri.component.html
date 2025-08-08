@@ -1,30 +1,31 @@
-<form [formGroup]="uploadForm">
-  <div class="modal-body">
-    <h4 class="modal-title text-center">Galeri</h4>
-    <p class="subtitle">Hai kak, isi dulu datanya</p>
 
-    <label class="upload-label">Upload Foto Galeri:</label>
-    <div class="file-upload" (drop)="onFileSelected($event, 'photo')" (dragover)="$event.preventDefault()">
+<form [formGroup]="uploadForm" class="mg-form">
+  <div class="mg-modal-body">
+    <h4 class="mg-modal-title">Galeri</h4>
+    <p class="mg-subtitle">Hai kak, isi dulu datanya</p>
+
+    <label class="mg-upload-label">Upload Foto Galeri:</label>
+    <div class="mg-file-upload" (drop)="onFileSelected($event, 'photo')" (dragover)="$event.preventDefault()">
       <ng-container *ngIf="imagePreviews['photo']; else defaultUpload">
-        <img [src]="imagePreviews['photo']" alt="Preview Gambar" class="preview-image">
-        <button type="button" class="remove-photo-btn" (click)="removePhoto('photo')">Hapus Foto</button>
+        <img [src]="imagePreviews['photo']" alt="Preview Gambar" class="mg-preview-image">
+        <button type="button" class="mg-remove-photo-btn" (click)="removePhoto('photo')">Hapus Foto</button>
       </ng-container>
       <ng-template #defaultUpload>
-        <img src="assets/upload-icon.svg" alt="upload icon" class="upload-icon" />
-        <p class="upload-text">Drag and drop files here <br> or</p>
-        <button class="upload-button" type="button" (click)="browseFiles()">Browse Files</button>
+        <img src="assets/upload-icon.svg" alt="upload icon" class="mg-upload-icon" />
+        <p class="mg-upload-text">Drag and drop files here <br> or</p>
+        <button class="mg-upload-button" type="button" (click)="browseFiles()">Browse Files</button>
       </ng-template>
       <input type="file" #fileInput hidden (change)="onFileSelected($event, 'photo')" accept="image/*">
     </div>
 
-    <div class="form-check">
+    <div class="mg-form-check">
       <input type="checkbox" id="status" formControlName="status">
       <label for="status">Jangan Aktifkan Fitur ini</label>
     </div>
   </div>
 
-  <div class="modal-footer">
-    <button class="btn-back" type="button" (click)="closeModal()">Kembali</button>
-    <button class="btn-next" type="button" (click)="onSubmitModal()">Lanjut</button>
+  <div class="mg-modal-footer">
+    <button class="mg-btn mg-btn-back" type="button" (click)="closeModal()">Kembali</button>
+    <button class="mg-btn mg-btn-next" type="button" (click)="onSubmitModal()">Lanjut</button>
   </div>
 </form>
