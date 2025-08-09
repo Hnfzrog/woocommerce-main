@@ -11,13 +11,20 @@ import { ModalComponent } from 'src/app/shared/modal/modal.component';
   templateUrl: './cerita-quote.component.html',
   styleUrls: ['./cerita-quote.component.scss'],
 })
+
 export class CeritaQuoteComponent implements OnInit {
   ceritaForm!: FormGroup;
   quoteForm!: FormGroup;
   bsConfig: Partial<BsDatepickerConfig>;
+  ceritaData: any[] = [];
+  editingCeritaId: number | null = null;
+  editCeritaForm: FormGroup | null = null;
+
+  quoteData: any[] = [];
+  editingQuoteId: number | null = null;
+  editQuoteForm: FormGroup | null = null;
 
   private notyf: Notyf;
-  
   private modalRef? : BsModalRef
 
   constructor(
@@ -25,9 +32,7 @@ export class CeritaQuoteComponent implements OnInit {
     private dashboardSvc: DashboardService,
     private modalSvc: BsModalService
   ) {
-    
     this.notyf = new Notyf({ duration: 3000, position: { x: 'right', y: 'top' } });
-
     this.bsConfig = {
       dateInputFormat: 'DD MMMM YYYY',
       containerClass: 'theme-dark-blue',
@@ -45,7 +50,113 @@ export class CeritaQuoteComponent implements OnInit {
 
     this.quoteForm = this.fb.group({
       name: ['', Validators.required],
-      quote: ['', Validators.required], 
+      quote: ['', Validators.required],
+    });
+
+    this.fetchCeritaData();
+    this.fetchQuoteData();
+  }
+  fetchQuoteData() {
+    this.dashboardSvc.list(DashboardServiceType.QUOTE_DATA).subscribe({
+      next: (res) => {
+        this.quoteData = (res?.data || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          quote: item.qoute || item.quote, // handle typo from backend
+        }));
+      },
+      error: (err) => {
+        this.notyf.error('Gagal memuat data quote.');
+        this.quoteData = [];
+      }
+    });
+  }
+
+  startEditQuote(quote: any) {
+    this.editingQuoteId = quote.id;
+    this.editQuoteForm = this.fb.group({
+      name: [quote.name, Validators.required],
+      quote: [quote.quote, Validators.required],
+    });
+  }
+
+  cancelEditQuote() {
+    this.editingQuoteId = null;
+    this.editQuoteForm = null;
+  }
+
+  submitEditQuote(quote: any) {
+    if (!this.editQuoteForm || this.editQuoteForm.invalid) {
+      this.editQuoteForm?.markAllAsTouched();
+      return;
+    }
+    const payload = {
+      id: quote.id,
+      name: this.editQuoteForm.value.name,
+      qoute: this.editQuoteForm.value.quote,
+    };
+    this.dashboardSvc.update(DashboardServiceType.QUOTE_UPDATE, '', payload).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Quote berhasil diupdate.');
+        this.cancelEditQuote();
+        this.fetchQuoteData();
+      },
+      error: (err) => {
+        this.notyf.error(err?.message || 'Gagal update quote.');
+      }
+    });
+  }
+  fetchCeritaData() {
+    this.dashboardSvc.list(DashboardServiceType.CERITA_DATA).subscribe({
+      next: (res) => {
+        this.ceritaData = (res?.data || []).map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          lead_cerita: item.lead_cerita,
+          tanggal_cerita: item.tanggal_cerita,
+        }));
+      },
+      error: (err) => {
+        this.notyf.error('Gagal memuat data cerita.');
+        this.ceritaData = [];
+      }
+    });
+  }
+
+  startEditCerita(cerita: any) {
+    this.editingCeritaId = cerita.id;
+    this.editCeritaForm = this.fb.group({
+      title: [cerita.title, Validators.required],
+      lead_cerita: [cerita.lead_cerita, Validators.required],
+      tanggal_cerita: [cerita.tanggal_cerita, Validators.required],
+    });
+  }
+
+  cancelEditCerita() {
+    this.editingCeritaId = null;
+    this.editCeritaForm = null;
+  }
+
+  submitEditCerita(cerita: any) {
+    if (!this.editCeritaForm || this.editCeritaForm.invalid) {
+      this.editCeritaForm?.markAllAsTouched();
+      return;
+    }
+    const payload = {
+      id: cerita.id,
+      title: this.editCeritaForm.value.title,
+      lead_cerita: this.editCeritaForm.value.lead_cerita,
+      tanggal_cerita: this.formatDate(this.editCeritaForm.value.tanggal_cerita),
+    };
+    this.dashboardSvc.update(DashboardServiceType.CERITA_UPDATE, '', payload).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Cerita berhasil diupdate.');
+        this.cancelEditCerita();
+        this.fetchCeritaData();
+      },
+      error: (err) => {
+        this.notyf.error(err?.message || 'Gagal update cerita.');
+      }
     });
   }
 
@@ -86,9 +197,9 @@ export class CeritaQuoteComponent implements OnInit {
         submitClicked: () => this.SubmitCerita(),
         submitMessage: 'Simpan',
       };
-    
+
       this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-    
+
       if (this.modalRef?.content) {
         this.modalRef.content.onClose.subscribe((res: any) => {
           if (res?.state === 'delete') {
@@ -106,29 +217,30 @@ export class CeritaQuoteComponent implements OnInit {
 
   SubmitCerita() {
     const formData = new FormData();
-    
+
     this.ceritaFormArray.controls.forEach((control: AbstractControl, index: number) => {
       const group = control as FormGroup;
       const ceritaData = group.value;
-  
+
       const formattedDate = this.formatDate(ceritaData.tanggal) || '';
-  
+
       formData.append(`title[${index}]`, ceritaData.judul);
       formData.append(`lead_cerita[${index}]`, ceritaData.isiCerita);
       formData.append(`tanggal_cerita[${index}]`, formattedDate);
     });
-    
+
     this.dashboardSvc.create(DashboardServiceType.CERITA_SUBMIT, formData).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
         this.ceritaForm.reset();
+        this.fetchCeritaData();
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
         console.error('Error while submitting data:', err);
       }
     });
-  }  
+  }
 
   handleCancelClicked() {
     console.log('Cancel clicked');
@@ -142,9 +254,9 @@ export class CeritaQuoteComponent implements OnInit {
         submitClicked: () => this.SubmitQuote(),
         submitMessage: 'Simpan',
       };
-    
+
       this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-    
+
       if (this.modalRef?.content) {
         this.modalRef.content.onClose.subscribe((res: any) => {
           if (res?.state === 'delete') {
@@ -171,24 +283,50 @@ export class CeritaQuoteComponent implements OnInit {
       next: (res) => {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
         this.quoteForm.reset();
+        this.fetchQuoteData();
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
         console.error('Error while submitting data:', err);
       }
     })
-
   }
 
   formatDate(date: string | Date | null): string | null {
     if (!date) return null;
     const d = new Date(date);
     if (isNaN(d.getTime())) return null;
-    
+
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-based
     const year = d.getFullYear();
 
     return `${year}-${month}-${day}`;
+  }
+
+    deleteCerita(cerita: any) {
+    if (!cerita?.id) return;
+    this.dashboardSvc.delete(DashboardServiceType.CERITA_DELETE, { id: cerita.id }).subscribe({
+      next: (res: any) => {
+        this.notyf.success(res?.message || 'Cerita berhasil dihapus.');
+        this.fetchCeritaData();
+      },
+      error: (err: any) => {
+        this.notyf.error(err?.message || 'Gagal menghapus cerita.');
+      }
+    });
+  }
+
+  deleteQuote(quote: any) {
+    if (!quote?.id) return;
+    this.dashboardSvc.delete(DashboardServiceType.QUOTE_DELETE, { id: quote.id }).subscribe({
+      next: (res: any) => {
+        this.notyf.success(res?.message || 'Quote berhasil dihapus.');
+        this.fetchQuoteData();
+      },
+      error: (err: any) => {
+        this.notyf.error(err?.message || 'Gagal menghapus quote.');
+      }
+    });
   }
 }

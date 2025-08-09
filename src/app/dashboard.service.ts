@@ -91,6 +91,12 @@ export enum DashboardServiceType {
   USER_SETTINGS_SUBMIT_LIST_FILTER,
   USER_SETTINGS_DELETE_MUSIC,
   GALERY_DELETE,
+  CERITA_DATA,
+  CERITA_UPDATE,
+  QUOTE_DATA,
+  QUOTE_UPDATE,
+  CERITA_DELETE,
+  QUOTE_DELETE,
 
 }
 
@@ -177,11 +183,23 @@ export class DashboardService {
       //CERITA
       case DashboardServiceType.CERITA_SUBMIT:
         return `${this.BASE_URL_API}/v1/user/send-cerita`;
+      case DashboardServiceType.CERITA_DATA:
+        return `${this.BASE_URL_API}/v1/user/list-cerita`;
+      case DashboardServiceType.CERITA_UPDATE:
+        return `${this.BASE_URL_API}/v1/user/update-cerita`;
+      case DashboardServiceType.CERITA_DELETE:
+        return `${this.BASE_URL_API}/v1/user/delete-cerita`;
 
 
       // Quote
       case DashboardServiceType.QUOTE_SUBMIT:
         return `${this.BASE_URL_API}/v1/user/send-qoute`;
+      case DashboardServiceType.QUOTE_DATA:
+        return `${this.BASE_URL_API}/v1/user/list-qoute`;
+      case DashboardServiceType.QUOTE_UPDATE:
+        return `${this.BASE_URL_API}/v1/user/update-qoute`;
+      case DashboardServiceType.QUOTE_DELETE:
+        return `${this.BASE_URL_API}/v1/user/delete-qoute`;
 
       //GALERY
       case DashboardServiceType.GALERY_SUBMIT:

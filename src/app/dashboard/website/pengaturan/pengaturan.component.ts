@@ -136,41 +136,30 @@ Kami bermaksud mengundang Bapak/Ibu/Saudara/i, teman sekaligus sahabat, untuk me
   }
 
   private populateFormsWithData(): void {
-
     if (this.settingData) {
       this.domainTokenForm.patchValue({
         domain: this.settingData.domain || '',
         token: this.settingData.token || ''
       });
-
-
       this.salamForm.patchValue({
         salam_pembuka: this.settingData.salam_pembuka || this.salamForm.get('salam_pembuka')?.value,
         salam_atas: this.settingData.salam_atas || this.salamForm.get('salam_atas')?.value,
         salam_bawah: this.settingData.salam_bawah || this.salamForm.get('salam_bawah')?.value
       });
     }
-
-
+    // Patch filterForm with boolean values from backend (0/1 or '0'/'1')
     if (this.filterData) {
       this.isFilterExisting = true;
-      this.filterForm.patchValue({
-        halaman_sampul: this.stringToBoolean(this.filterData.halaman_sampul),
-        halaman_mempelai: this.stringToBoolean(this.filterData.halaman_mempelai),
-        halaman_acara: this.stringToBoolean(this.filterData.halaman_acara),
-        halaman_ucapan: this.stringToBoolean(this.filterData.halaman_ucapan),
-        halaman_galery: this.stringToBoolean(this.filterData.halaman_galery),
-        halaman_cerita: this.stringToBoolean(this.filterData.halaman_cerita),
-        halaman_lokasi: this.stringToBoolean(this.filterData.halaman_lokasi),
-        halaman_prokes: this.stringToBoolean(this.filterData.halaman_prokes),
-        halaman_send_gift: this.stringToBoolean(this.filterData.halaman_send_gift),
-        halaman_qoute: this.stringToBoolean(this.filterData.halaman_qoute)
+      const patchObj: any = {};
+      Object.keys(this.filterForm.controls).forEach(key => {
+        patchObj[key] = this.stringToBoolean(this.filterData[key]);
       });
+      this.filterForm.patchValue(patchObj);
     }
   }
 
-  private stringToBoolean(value: string | null | undefined): boolean {
-    return value === '1' || value === 'true';
+  private stringToBoolean(value: string | number | null | undefined): boolean {
+    return value === '1' || value === 1 || value === 'true';
   }
 
 
@@ -433,42 +422,37 @@ Kami bermaksud mengundang Bapak/Ibu/Saudara/i, teman sekaligus sahabat, untuk me
 
   saveFilter(): void {
     const formValue = this.filterForm.value;
-
-
+    // Kirim 0/1 ke backend
     const filterData: any = {};
     Object.keys(formValue).forEach(key => {
       filterData[key] = formValue[key] ? 1 : 0;
     });
-
     const initialState = {
       message: 'Apakah anda ingin menyimpan pengaturan filter undangan?',
       cancelClicked: () => this.modalRef?.hide(),
       submitClicked: () => this.submitFilter(filterData),
       submitMessage: 'Simpan',
     };
-
     this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
   }
 
   private submitFilter(filterData: any): void {
     this.isLoadingFilter = true;
-
     const endpoint = this.isFilterExisting ?
       (DashboardServiceType.USER_SETTINGS_SUBMIT_FILTER_UPDATE) :
       (DashboardServiceType.USER_SETTINGS_SUBMIT_FILTER);
-
     const method = this.isFilterExisting ? 'update' : 'create';
-
     this.dashboardSvc[method](endpoint, '', filterData).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Pengaturan filter berhasil disimpan');
         this.modalRef?.hide();
         this.isLoadingFilter = false;
         this.isFilterExisting = true;
+        // Refresh data dari backend agar toggle sesuai value terbaru
+        this.loadInitialData();
       },
       error: (err) => {
         this.notyf.error(err?.error?.message || 'Gagal menyimpan pengaturan filter');
-
         this.isLoadingFilter = false;
       }
     });

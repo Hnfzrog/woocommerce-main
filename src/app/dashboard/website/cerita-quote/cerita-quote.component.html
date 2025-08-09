@@ -161,3 +161,89 @@
     </div>
   </div>
 </div>
+
+  <div class="content">
+    <div class="row g-3">
+      <div class="col-12 col-md-6" *ngFor="let cerita of ceritaData">
+        <div class="form-card h-100">
+          <div class="form-card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Data Cerita</h2>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="startEditCerita(cerita)" *ngIf="editingCeritaId !== cerita.id">
+                <i class="fa fa-edit"></i> Edit
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteCerita(cerita)" *ngIf="editingCeritaId !== cerita.id">
+                <i class="fa fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+          <form *ngIf="editingCeritaId === cerita.id && editCeritaForm" [formGroup]="editCeritaForm" (ngSubmit)="submitEditCerita(cerita)">
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="text" class="form-control" formControlName="tanggal_cerita" [bsConfig]="bsConfig" bsDatepicker />
+              <div *ngIf="editCeritaForm.get('tanggal_cerita')?.invalid && editCeritaForm.get('tanggal_cerita')?.touched" class="text-danger">Tanggal is required.</div>
+            </div>
+            <div class="form-group">
+              <label>Judul</label>
+              <input type="text" class="form-control" formControlName="title" />
+              <div *ngIf="editCeritaForm.get('title')?.invalid && editCeritaForm.get('title')?.touched" class="text-danger">Judul is required.</div>
+            </div>
+            <div class="form-group">
+              <label>Isi Cerita</label>
+              <textarea class="form-control" rows="4" formControlName="lead_cerita"></textarea>
+              <div *ngIf="editCeritaForm.get('lead_cerita')?.invalid && editCeritaForm.get('lead_cerita')?.touched" class="text-danger">Isi Cerita is required.</div>
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-secondary me-2" (click)="cancelEditCerita()">Batal</button>
+              <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+          </form>
+          <div *ngIf="editingCeritaId !== cerita.id">
+            <div class="mb-2"><strong>Tanggal:</strong> {{ cerita.tanggal_cerita }}</div>
+            <div class="mb-2"><strong>Judul:</strong> {{ cerita.title }}</div>
+            <div><strong>Isi Cerita:</strong> {{ cerita.lead_cerita }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTE DATA SECTION -->
+    <div class="row g-3 mt-4">
+      <div class="col-12 col-md-6" *ngFor="let quote of quoteData">
+        <div class="form-card h-100">
+          <div class="form-card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Data Quote</h2>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="startEditQuote(quote)" *ngIf="editingQuoteId !== quote.id">
+                <i class="fa fa-edit"></i> Edit
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteQuote(quote)" *ngIf="editingQuoteId !== quote.id">
+                <i class="fa fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+          <form *ngIf="editingQuoteId === quote.id && editQuoteForm" [formGroup]="editQuoteForm" (ngSubmit)="submitEditQuote(quote)">
+            <div class="form-group">
+              <label>Nama Sumber</label>
+              <input type="text" class="form-control" formControlName="name" />
+              <div *ngIf="editQuoteForm.get('name')?.invalid && editQuoteForm.get('name')?.touched" class="text-danger">Nama Sumber is required.</div>
+            </div>
+            <div class="form-group">
+              <label>Quote</label>
+              <textarea class="form-control" rows="3" formControlName="quote"></textarea>
+              <div *ngIf="editQuoteForm.get('quote')?.invalid && editQuoteForm.get('quote')?.touched" class="text-danger">Quote is required.</div>
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-secondary me-2" (click)="cancelEditQuote()">Batal</button>
+              <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+          </form>
+          <div *ngIf="editingQuoteId !== quote.id">
+            <div class="mb-2"><strong>Nama Sumber:</strong> {{ quote.name }}</div>
+            <div><strong>Quote:</strong> {{ quote.quote }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
