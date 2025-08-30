@@ -34,6 +34,7 @@ export class GalleryComponent implements OnInit {
 
   private notyf: Notyf;
   private modalRef?: BsModalRef;
+  userData: any;
 
   constructor(
     private dashboardSvc: DashboardService,
@@ -57,8 +58,22 @@ export class GalleryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getGalleryData();
+    this.initUserProfile();
   }
+
+  initUserProfile(): void {
+    this.dashboardSvc.list(DashboardServiceType.USER_PROFILE, '').subscribe(
+      (res) => {
+        this.userData = res.data;
+        this.getGalleryData();
+      },
+      (error) => {
+        console.error('Error fetching user profile:', error);
+        this.notyf.error('Gagal mengambil data profil pengguna.');
+      }
+    );
+  }
+
 
   browseFiles() {
     document.getElementById('fileInput')?.click();
@@ -191,8 +206,17 @@ export class GalleryComponent implements OnInit {
 
   // Method to fetch gallery data
   getGalleryData(page: number = this.currentPage, perPage: number = this.pageSize): void {
+    // Check if userData is available
+    if (!this.userData?.id) {
+      console.warn('User data not available, initializing user profile first');
+      this.initUserProfile();
+      return;
+    }
+
     this.isLoading = true;
-    const params: any = { page, per_page: perPage };
+    const user_id = this.userData.id;
+    const params: any = { page, per_page: perPage, user_id };
+
     this.dashboardSvc.list(DashboardServiceType.GALERY_DATA, params).subscribe({
       next: (res) => {
         const baseUrl = environment.apiBaseUrl || '';
@@ -216,6 +240,7 @@ export class GalleryComponent implements OnInit {
         console.error('Error fetching gallery data:', err);
         this.galleryData = [];
         this.isLoading = false;
+        this.notyf.error('Gagal mengambil data galeri.');
       }
     });
   }

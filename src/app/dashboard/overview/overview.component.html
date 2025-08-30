@@ -94,7 +94,7 @@
             <div class="row text-center">
               <div class="col-6 col-md-3">
                 <div class="small text-muted">Periode</div>
-                <div class="fw-semibold">30 Hari</div>
+                <div class="fw-semibold">{{ getPeriodLabel() }}</div>
               </div>
               <div class="col-6 col-md-3">
                 <div class="small text-muted">Data Points</div>
@@ -123,21 +123,60 @@
           <div class="data-doa-ucapan flex-grow-1">
             <h3 class="fs-6 fw-semibold mb-3">Data Doa &amp; Ucapan</h3>
             <i class="fas fa-comment-alt"></i>
-            <div class="border-start border-2 border-black ps-3">
-              <p class="name mb-0">John Doe</p>
-              <p class="message mb-3">“Wah semoga dipermudah menjalani rumah tangga ya.”</p>
+            
+            <!-- Loading state -->
+            <div *ngIf="isLoading" class="text-center py-3">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading messages...</span>
+              </div>
+              <div class="small text-muted mt-2">Loading messages...</div>
             </div>
-            <div class="border-start border-2 border-black ps-3">
-              <p class="name mb-0">Fatimah Az Zahra</p>
-              <p class="message mb-3"
-                title="Lorem ipsum dolor sit amet consectetur. Eu vitae amet nulla sapien dolor mi …">“Lorem ipsum dolor
-                sit amet consectetur. Eu vitae amet nulla sapien dolor mi …”</p>
+
+            <!-- Error state -->
+            <div *ngIf="apiError && !isLoading" class="text-center py-3">
+              <div class="text-muted">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="small mt-1">{{ apiError }}</div>
+              </div>
             </div>
-            <div class="border-start border-2 border-black ps-3">
-              <p class="name mb-0">Zainuddin Akbar</p>
-              <p class="message mb-0"
-                title="Lorem ipsum dolor sit amet consectetur. Eu vitae amet nulla sapien dolor mi …">“Lorem ipsum dolor
-                sit amet consectetur. Eu vitae amet nulla sapien dolor mi …”</p>
+
+            <!-- Messages display -->
+            <div *ngIf="!isLoading && !apiError">
+              <div *ngIf="getRecentMessages().length > 0; else noMessages" 
+                   class="messages-container" 
+                   style="max-height: 400px; overflow-y: auto; overflow-x: hidden; padding-right: 8px; 
+                          scrollbar-width: thin; scrollbar-color: #CBD5E0 #F7FAFC;">
+                <div class="border-start border-2 border-black ps-3" 
+                     *ngFor="let message of getRecentMessages(); let last = last"
+                     [class.mb-3]="!last" [class.mb-0]="last"
+                     style="border-left-color: #E5E7EB !important;">
+                  <p class="name mb-1 fw-semibold" style="font-size: 0.9rem;">{{ message.nama }}</p>
+                  <p class="message mb-2" 
+                     [title]="message.pesan"
+                     style="word-wrap: break-word; overflow-wrap: break-word; line-height: 1.4; 
+                            font-size: 0.85rem; color: #4B5563;">
+                    "{{ message.pesan }}"
+                  </p>
+                  <div class="d-flex justify-content-between align-items-center" 
+                       [class.mb-3]="!last" [class.mb-0]="last">
+                    <small class="text-muted" style="font-size: 0.75rem;">
+                      {{ message.created_at_human }}
+                    </small>
+                    <span class="badge rounded-pill px-2 py-1 text-white" 
+                          [style.background-color]="getAttendanceColor(message.kehadiran)"
+                          style="font-size: 0.65rem;">
+                      {{ message.kehadiran_label }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <ng-template #noMessages>
+                <div class="text-center py-3 text-muted">
+                  <i class="fas fa-comment-slash fa-2x mb-2 opacity-25"></i>
+                  <div class="small">Belum ada ucapan yang masuk</div>
+                </div>
+              </ng-template>
             </div>
           </div>
         </div>

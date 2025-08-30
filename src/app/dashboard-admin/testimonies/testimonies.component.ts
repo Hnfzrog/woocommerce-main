@@ -38,7 +38,7 @@ export class TestimoniesComponent implements OnInit {
 
     this.columns = [
       { name: 'No', prop: 'number' },
-      { name: 'Nama', prop: 'name' },
+      { name: 'Nama', prop: 'email' },
       { name: 'Kota', prop: 'kota' },
       { name: 'Provinsi', prop: 'provinsi' },
       { name: 'Ulasan', prop: 'ulasan' },
@@ -55,7 +55,7 @@ export class TestimoniesComponent implements OnInit {
 
       this.rows = this.data.map((item: any, index: number) => ({
         number: index + 1,
-        name: item?.user?.name,
+        email: item?.user?.email,
         kota: item?.kota,
         provinsi: item?.provinsi,
         ulasan: item?.ulasan,

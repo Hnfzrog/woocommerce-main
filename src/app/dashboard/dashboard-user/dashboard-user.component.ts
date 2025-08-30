@@ -37,6 +37,7 @@ export class DashboardUserComponent implements OnInit {
     this.DashBoardSvc.list(DashboardServiceType.USER_PROFILE, '').subscribe(
       (res) => {
         this.userData = res.data;
+        console.log('User profile data:', this.userData);
       },
     );
   }

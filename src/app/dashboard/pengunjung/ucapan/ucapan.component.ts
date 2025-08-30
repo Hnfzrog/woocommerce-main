@@ -1,9 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Notyf } from 'notyf';
-import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
+import { 
+  DashboardService, 
+  DashboardServiceType, 
+  UcapanItem, 
+  UcapanResponse, 
+  UcapanStatisticsResponse,
+  UcapanDeleteResponse 
+} from 'src/app/dashboard.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalComponent } from '../../../shared/modal/modal.component';
+import { catchError, of, forkJoin } from 'rxjs';
 
 
 @Component({
@@ -13,15 +21,18 @@ import { ModalComponent } from '../../../shared/modal/modal.component';
 })
 export class UcapanComponent implements OnInit {
 
-  dataList : Array<any> = [];
+  dataList: UcapanItem[] = [];
+  statistics: UcapanStatisticsResponse['data'] | null = null;
+  isLoading = false;
+  apiError: string | null = null;
 
   private notyf: Notyf
 
   searchQuery = '';
   entriesToShow = 10;
-  data: any;
+  attendanceFilter: 'all' | 'hadir' | 'tidak_hadir' | 'mungkin' = 'all';
 
-  modalRef? :  BsModalRef;
+  modalRef?: BsModalRef;
 
 
   constructor(
@@ -38,15 +49,94 @@ export class UcapanComponent implements OnInit {
      }
 
   ngOnInit(): void {
-    this.showTable();
-    
+    this.loadData();
   }
 
-   get filteredDataList() {
-    // Filters data based on search query
-    return this.dataList.filter((data) =>
-      data.nama.toLowerCase().includes(this.searchQuery.toLowerCase())
+  /**
+   * Load all data including statistics and ucapan list
+   */
+  private loadData(): void {
+    this.isLoading = true;
+    this.apiError = null;
+
+    const ucapanList$ = this.dashBoardSvc.list(DashboardServiceType.UCAPAN_INDEX, '').pipe(
+      catchError(error => {
+        console.error('Error fetching ucapan list:', error);
+        return of(null);
+      })
     );
+
+    const statistics$ = this.dashBoardSvc.list(DashboardServiceType.UCAPAN_STATISTICS, '').pipe(
+      catchError(error => {
+        console.error('Error fetching ucapan statistics:', error);
+        return of(null);
+      })
+    );
+
+    forkJoin({
+      ucapanList: ucapanList$,
+      statistics: statistics$
+    }).subscribe(
+      (results) => {
+        if (results.ucapanList) {
+          const response = results.ucapanList as UcapanResponse;
+          this.dataList = response.data || [];
+        }
+
+        if (results.statistics) {
+          const statsResponse = results.statistics as UcapanStatisticsResponse;
+          this.statistics = statsResponse.data;
+        }
+
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error loading data:', error);
+        this.apiError = 'Failed to load data';
+        this.isLoading = false;
+      }
+    );
+  }
+
+  get filteredDataList(): UcapanItem[] {
+    let filtered = this.dataList;
+
+    // Filter by attendance status
+    if (this.attendanceFilter !== 'all') {
+      filtered = filtered.filter(item => item.kehadiran === this.attendanceFilter);
+    }
+
+    // Filter by search query
+    if (this.searchQuery.trim()) {
+      filtered = filtered.filter(item =>
+        item.nama.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        item.pesan.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }
+
+  /**
+   * Set attendance filter
+   */
+  setAttendanceFilter(filter: 'all' | 'hadir' | 'tidak_hadir' | 'mungkin'): void {
+    this.attendanceFilter = filter;
+  }
+
+  /**
+   * Get count for specific attendance status
+   */
+  getAttendanceCount(status: 'hadir' | 'tidak_hadir' | 'mungkin'): number {
+    if (!this.statistics) return 0;
+    return this.statistics[status] || 0;
+  }
+
+  /**
+   * Get total ucapan count
+   */
+  getTotalCount(): number {
+    return this.statistics?.total_ucapan || 0;
   }
 
   doDelete(event: any): void {
@@ -84,9 +174,7 @@ handleSubmitClicked(data: any, parameterDelete: any) {
     this.deleteEntry(parameterDelete); // Perform the delete operation here
 }
 
-doDeleteAll(): void {
-
-  const initialState = {
+  doDeleteAll(): void {  const initialState = {
       message: `Apakah anda ingin menghapus semua data?`,
       cancelClicked: () => this.handleCancelClicked(),
       submitClicked: (data: any) => this.handleDeleteAllClicked(data)
@@ -115,13 +203,18 @@ handleDeleteAllClicked(data: any) {
 
 
   deleteEntry(id: number | undefined): void {
+    if (!id) {
+      console.error('ID is required for deletion');
+      return;
+    }
+
     console.log('Deleting entry with ID: ', id);
 
-    // Call the delete service with the id
-    this.dashBoardSvc.deleteV2(DashboardServiceType.USER_BUKUTAMU_V2, id).subscribe({
-      next: (response) => {
+    // Call the delete service with the id using the new ucapan endpoint
+    this.dashBoardSvc.deleteV2(DashboardServiceType.UCAPAN_DELETE, id).subscribe({
+      next: (response: UcapanDeleteResponse) => {
         this.notyf.success(response?.message || 'Successfully deleted');
-        this.showTable(); // Refresh the table after a successful deletion
+        this.loadData(); // Refresh the data after a successful deletion
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem');
@@ -130,26 +223,42 @@ handleDeleteAllClicked(data: any) {
     });
   }
 
-  
-
   deleteAll(): void {
-    this.dashBoardSvc.delete(DashboardServiceType.USER_BUKUTAMU_V3).subscribe({
-      next: (res) => {
-        this.notyf.success(res?.message);
-        this.showTable(); // Refresh the table after a successful deletion
-      },
-      error: (err) => {
-        this.notyf.error(err?.message || 'Ada kesalahan dalam sistem');
-        console.error('Error while deleting entry:', err);
-      }
-    })
+    // Note: The API contract doesn't specify a delete all endpoint for ucapan
+    // This functionality may need to be implemented by deleting each item individually
+    console.warn('Delete all functionality not specified in API contract');
+    this.notyf.error('Delete all functionality not available');
   }
 
-  showTable(){
-    this.dashBoardSvc.list(DashboardServiceType.USER_BUKUTAMU).subscribe(res => {
-      console.log(res);
-      this.dataList = res?.data
-      this.data = res
-    })
+  /**
+   * Format date for display
+   */
+  formatDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      });
+    } catch (error) {
+      return dateString;
+    }
+  }
+
+  /**
+   * Get color for attendance badge
+   */
+  getAttendanceColor(kehadiran: string): string {
+    switch (kehadiran) {
+      case 'hadir':
+        return '#10B981'; // Green
+      case 'tidak_hadir':
+        return '#EF4444'; // Red
+      case 'mungkin':
+        return '#F59E0B'; // Orange
+      default:
+        return '#6B7280'; // Gray
+    }
   }
 }

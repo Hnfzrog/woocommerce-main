@@ -26,6 +26,24 @@ interface AttendanceResponse {
   error?: string;
 }
 
+// Settings response interface for domain extraction
+interface SettingsResponse {
+  message: string;
+  setting: {
+    id: number;
+    user_id: number;
+    domain: string;
+    token: string | null;
+    musik: string;
+    salam_pembuka: string;
+    salam_atas: string;
+    salam_bawah: string;
+    created_at: string;
+    updated_at: string;
+  };
+  filter_undangan: any;
+}
+
 declare var bootstrap: any;
 enum ContentView {
   MAIN = 'main',
@@ -57,14 +75,14 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Wedding data properties
   weddingData: WeddingData | null = null;
-  coupleName: string | null = null;
+  domain: string | null = null; // Changed from coupleName to domain
   isLoading: boolean = false;
   errorMessage: string | null = null;
 
   // Subscriptions
   private subscriptions = new Subscription();
 
-  // LocalStorage keys
+  // LocalStorage keys - Updated to use domain instead of couple name
   private readonly STORAGE_KEYS = {
     CURRENT_VIEW: 'wedding_current_view',
     INVITATION_OPENED: 'wedding_invitation_opened',
@@ -72,7 +90,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     IS_PLAYING: 'wedding_is_playing',
     IS_MUTED: 'wedding_is_muted',
     WEDDING_DATA: 'wedding_data',
-    COUPLE_NAME: 'wedding_couple_name'
+    DOMAIN: 'wedding_domain' // Changed from couple_name to domain
   };
 
   constructor(
@@ -121,7 +139,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       const savedSideIconsVisible = localStorage.getItem(this.STORAGE_KEYS.SIDE_ICONS_VISIBLE);
       const savedIsPlaying = localStorage.getItem(this.STORAGE_KEYS.IS_PLAYING);
       const savedIsMuted = localStorage.getItem(this.STORAGE_KEYS.IS_MUTED);
-      const savedCoupleName = localStorage.getItem(this.STORAGE_KEYS.COUPLE_NAME);
+      const savedDomain = localStorage.getItem(this.STORAGE_KEYS.DOMAIN);
       const savedWeddingData = localStorage.getItem(this.STORAGE_KEYS.WEDDING_DATA);
 
       // Restore state if exists
@@ -147,9 +165,9 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isMuted = savedIsMuted === 'true';
       }
 
-      if (savedCoupleName) {
-        this.coupleName = savedCoupleName;
-        console.log('Restored couple name from localStorage:', savedCoupleName);
+      if (savedDomain) {
+        this.domain = savedDomain;
+        console.log('Restored domain from localStorage:', savedDomain);
       }
 
       // Restore wedding data if exists and is valid
@@ -182,8 +200,8 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       localStorage.setItem(this.STORAGE_KEYS.IS_PLAYING, this.isPlaying.toString());
       localStorage.setItem(this.STORAGE_KEYS.IS_MUTED, this.isMuted.toString());
 
-      if (this.coupleName) {
-        localStorage.setItem(this.STORAGE_KEYS.COUPLE_NAME, this.coupleName);
+      if (this.domain) {
+        localStorage.setItem(this.STORAGE_KEYS.DOMAIN, this.domain);
       }
 
       if (this.weddingData) {
@@ -219,9 +237,9 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
   private validateLocalStorageData(): boolean {
     try {
       const savedWeddingData = localStorage.getItem(this.STORAGE_KEYS.WEDDING_DATA);
-      const savedCoupleName = localStorage.getItem(this.STORAGE_KEYS.COUPLE_NAME);
+      const savedDomain = localStorage.getItem(this.STORAGE_KEYS.DOMAIN);
 
-      if (!savedWeddingData || !savedCoupleName) {
+      if (!savedWeddingData || !savedDomain) {
         return false;
       }
 
@@ -247,38 +265,50 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Initialize wedding data from route parameters and API
-   * Always fetch fresh data from API for real-time updates, but check localStorage first
+   * Initialize wedding data using domain-based approach
+   * New implementation: Always gets domain first from SETTINGS_GET_FILTER or route params
    */
   private initializeWeddingData(): void {
-    // Get route params (only couple name needed)
+    console.log('Initializing wedding data with domain-based approach');
+
+    // Get route params first (check if domain is passed via route)
     const routeSubscription = this.route.params.subscribe(params => {
-      const routeCoupleName = params['coupleName'] || null;
+      const routeDomain = params['coupleName'] || params['domain'] || null; // Support both old and new param names
 
-      console.log('Route params:', { coupleName: routeCoupleName });
+      console.log('Route params:', {
+        coupleName: params['coupleName'],
+        domain: params['domain'],
+        routeDomain
+      });
 
-      // Determine couple name: prefer route params, fallback to localStorage
-      if (routeCoupleName) {
-        this.coupleName = routeCoupleName;
-      } else if (!this.coupleName) {
-        // No route param and no localStorage couple name
-        this.loadWeddingDataFromService();
-        return;
-      }
+      // Priority: route domain > localStorage domain > get from settings
+      if (routeDomain) {
+        this.domain = routeDomain;
+        console.log('Using domain from route params:', routeDomain);
 
-      // Check if we have valid wedding data in localStorage for this couple
-      if (this.weddingData && this.coupleName === routeCoupleName) {
-        console.log('Using wedding data from localStorage');
-        this.updateWeddingContent(this.weddingData);
-        // Still fetch fresh data in background for updates
-        if (this.coupleName) {
-          this.loadWeddingDataFromAPI(this.coupleName, true);
+        // Check if we have valid wedding data in localStorage for this domain
+        if (this.weddingData && this.domain === routeDomain) {
+          console.log('Using wedding data from localStorage for domain:', this.domain);
+          this.updateWeddingContent(this.weddingData);
+          // Still fetch fresh data in background for updates
+          this.loadWeddingDataFromAPI(this.domain!, true);
+        } else {
+          // Load fresh data from API using domain
+          this.loadWeddingDataFromAPI(this.domain!);
+        }
+      } else if (this.domain) {
+        console.log('Using domain from localStorage:', this.domain);
+        // Use stored domain
+        if (this.weddingData) {
+          this.updateWeddingContent(this.weddingData);
+          this.loadWeddingDataFromAPI(this.domain!, true);
+        } else {
+          this.loadWeddingDataFromAPI(this.domain!);
         }
       } else {
-        // Load fresh data from API
-        if (this.coupleName) {
-          this.loadWeddingDataFromAPI(this.coupleName);
-        }
+        // No domain available, get it from settings
+        console.log('No domain available, fetching from SETTINGS_GET_FILTER');
+        this.loadDomainFromSettings();
       }
     });
 
@@ -286,20 +316,64 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Load wedding data from API using couple name
-   * @param coupleName - Couple name for API call (e.g., 'anton-keok')
+   * Load domain from SETTINGS_GET_FILTER API
+   * New method to get domain when not available from route or localStorage
+   */
+  private loadDomainFromSettings(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    console.log('Fetching domain from SETTINGS_GET_FILTER API');
+
+    const settingsSubscription = this.dashboardService.list(DashboardServiceType.SETTINGS_GET_FILTER).subscribe({
+      next: (response: SettingsResponse) => {
+        console.log('SETTINGS_GET_FILTER response:', response);
+
+        try {
+          const domain = response?.setting?.domain;
+
+          if (!domain) {
+            console.warn('Domain not found in settings response:', response);
+            this.handleDataNotFound('Domain not found in user settings');
+            return;
+          }
+
+          console.log('Domain extracted from settings:', domain);
+          this.domain = domain;
+
+          // Now load wedding data using the domain
+          this.loadWeddingDataFromAPI(domain);
+
+        } catch (error) {
+          console.error('Error processing domain from settings:', error);
+          this.handleDataNotFound('Error processing domain from settings');
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching settings for domain:', error);
+        this.handleAPIError(error);
+      }
+    });
+
+    this.subscriptions.add(settingsSubscription);
+  }
+
+  /**
+   * Load wedding data from API using domain
+   * Updated to use domain parameter instead of coupleName
+   * @param domain - Domain for API call (e.g., 'domainkuasna')
    * @param isBackgroundUpdate - Whether this is a background update (don't show loading)
    */
-  private loadWeddingDataFromAPI(coupleName: string, isBackgroundUpdate: boolean = false): void {
+  private loadWeddingDataFromAPI(domain: string, isBackgroundUpdate: boolean = false): void {
     if (!isBackgroundUpdate) {
       this.isLoading = true;
       this.errorMessage = null;
     }
 
-    console.log('Loading fresh wedding data from API for couple:', coupleName, isBackgroundUpdate ? '(background)' : '');
+    console.log('Loading fresh wedding data from API for domain:', domain, isBackgroundUpdate ? '(background)' : '');
 
-    // Use the endpoint: v1/wedding-profile/couple/anton-keok
-    const apiSubscription = this.dashboardService.getParam(DashboardServiceType.WEDDING_VIEW_COUPLE, `/${coupleName}`).subscribe({
+    // Use the endpoint: v1/wedding-profile/couple/{domain}
+    const apiSubscription = this.dashboardService.getParam(DashboardServiceType.WEDDING_VIEW_COUPLE, `/${domain}`).subscribe({
       next: (response) => {
         console.log('API Response:', response);
         console.log('API Response (formatted):', JSON.stringify(response, null, 2));
@@ -315,7 +389,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
           // Save to localStorage after successful API call
           this.saveStateToLocalStorage();
 
-          console.log('Fresh wedding data loaded successfully from API');
+          console.log('Fresh wedding data loaded successfully from API using domain:', domain);
         } else {
           if (!isBackgroundUpdate) {
             this.handleDataNotFound('No data returned from API');
@@ -325,8 +399,14 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       error: (error) => {
         console.error('API Error:', error);
         console.error('API Error (formatted):', JSON.stringify(error, null, 2));
+
         if (!isBackgroundUpdate) {
-          this.handleAPIError(error);
+          // Enhanced error handling for domain-based requests
+          if (error.status === 404) {
+            this.handleDataNotFound(`Wedding invitation not found for domain: ${domain}`);
+          } else {
+            this.handleAPIError(error);
+          }
         }
       },
       complete: () => {
@@ -354,14 +434,6 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.subscriptions.add(serviceSubscription);
-  }
-
-  /**
-   * Handle case when no route parameters are available
-   */
-  private handleNoParameters(): void {
-    console.warn('No route parameters available');
-    this.loadWeddingDataFromService(); // Try service as fallback
   }
 
   /**
@@ -398,7 +470,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (error.status === 401) {
       errorMsg = 'Authentication required to access this wedding invitation.';
     } else if (error.status === 404) {
-      errorMsg = 'Wedding invitation not found.';
+      errorMsg = 'Wedding invitation not found. Please check the domain.';
     } else if (error.status === 500) {
       errorMsg = 'Server error occurred. Please try again later.';
     }
@@ -417,7 +489,8 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('Updating wedding content for:', {
         groom: data.mempelai?.pria?.nama_lengkap || 'Unknown',
         bride: data.mempelai?.wanita?.nama_lengkap || 'Unknown',
-        user: data.user_info?.email || 'Unknown'
+        user: data.user_info?.email || 'Unknown',
+        domain: this.domain
       });
 
       // Here you would update component properties based on wedding data
@@ -440,10 +513,11 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
   retryLoadData(): void {
     this.errorMessage = null;
 
-    if (this.coupleName) {
-      this.loadWeddingDataFromAPI(this.coupleName);
+    if (this.domain) {
+      this.loadWeddingDataFromAPI(this.domain);
     } else {
-      this.loadWeddingDataFromService();
+      // Try to get domain from settings first
+      this.loadDomainFromSettings();
     }
   }
 
@@ -451,9 +525,12 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
    * Refresh wedding data - fetch fresh data from API
    */
   refreshWeddingData(): void {
-    if (this.coupleName) {
-      console.log('Refreshing wedding data for couple:', this.coupleName);
-      this.loadWeddingDataFromAPI(this.coupleName);
+    if (this.domain) {
+      console.log('Refreshing wedding data for domain:', this.domain);
+      this.loadWeddingDataFromAPI(this.domain);
+    } else {
+      console.log('No domain available, fetching from settings');
+      this.loadDomainFromSettings();
     }
   }
 
@@ -471,7 +548,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   getCoupleDisplayName(): string {
     if (!this.weddingData?.mempelai) {
-      return this.coupleName?.replace('-', ' & ') || 'Wedding Invitation';
+      return this.domain?.replace('-', ' & ') || 'Wedding Invitation';
     }
 
     const groom = this.weddingData.mempelai.pria?.nama_panggilan ||
@@ -480,6 +557,15 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.weddingData.mempelai.wanita?.nama_lengkap || 'Bride';
 
     return `${groom} & ${bride}`;
+  }
+
+  /**
+   * Get wedding URL for sharing using domain
+   * @returns string - Wedding URL with domain
+   */
+  getWeddingUrl(): string {
+    const baseUrl = window.location.origin;
+    return this.domain ? `${baseUrl}/wedding/${this.domain}` : `${baseUrl}/wedding`;
   }
 
   /**
@@ -546,7 +632,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       user_id: this.weddingData.user_info.id,
       nama: 'View Tracker', // Default name for view tracking
       kehadiran: 'hadir', // Default status for view tracking
-      pesan: 'Undangan telah dilihat' // Default message for view tracking
+      pesan: `Undangan domain ${this.domain} telah dilihat` // Include domain in tracking message
     };
 
     console.log('Tracking invitation view with attendance data:', attendanceData);

@@ -226,9 +226,10 @@ export class WeddingDataService {
   }
 
   /**
-   * Generate wedding URL with couple name parameter
+   * Generate wedding URL with couple name parameter (LEGACY METHOD)
    * @param weddingData - Complete wedding data
    * @returns Full wedding URL with couple name
+   * @deprecated Use generateWeddingUrlWithDomain instead
    */
   generateWeddingUrl(weddingData: WeddingData): string {
     const coupleName = this.generateCoupleName(weddingData.mempelai);
@@ -237,15 +238,62 @@ export class WeddingDataService {
   }
 
   /**
-   * Generate wedding URL with couple name and user_id for sharing
+   * Generate wedding URL with domain parameter (NEW METHOD)
+   * @param domain - Domain from settings
+   * @returns Full wedding URL with domain
+   */
+  generateWeddingUrlWithDomain(domain: string): string {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/wedding/${domain}`;
+  }
+
+  /**
+   * Generate wedding URL with domain from wedding data settings
+   * @param weddingData - Complete wedding data containing settings with domain
+   * @returns Full wedding URL with domain
+   */
+  generateWeddingUrlFromData(weddingData: WeddingData): string {
+    const domain = weddingData.settings?.domain;
+    if (domain) {
+      return this.generateWeddingUrlWithDomain(domain);
+    }
+    
+    // Fallback to old method if domain not available
+    console.warn('Domain not found in wedding data, using fallback couple name method');
+    return this.generateWeddingUrl(weddingData);
+  }
+
+  /**
+   * Generate wedding URL with couple name and user_id for sharing (LEGACY METHOD)
    * @param weddingData - Complete wedding data
    * @param userId - User ID for API call
    * @returns Full wedding URL with couple name and user_id
+   * @deprecated Use generateWeddingUrlWithDomainAndUserId instead
    */
   generateWeddingUrlWithUserId(weddingData: WeddingData, userId: number): string {
     const coupleName = this.generateCoupleName(weddingData.mempelai);
     const baseUrl = window.location.origin;
     return `${baseUrl}/wedding/${coupleName}?user_id=${userId}`;
+  }
+
+  /**
+   * Generate wedding URL with domain and user_id for sharing (NEW METHOD)
+   * @param domain - Domain from settings
+   * @param userId - User ID for API call
+   * @returns Full wedding URL with domain and user_id
+   */
+  generateWeddingUrlWithDomainAndUserId(domain: string, userId: number): string {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/wedding/${domain}?user_id=${userId}`;
+  }
+
+  /**
+   * Extract domain from wedding data settings
+   * @param weddingData - Wedding data
+   * @returns Domain string or null if not found
+   */
+  extractDomain(weddingData: WeddingData): string | null {
+    return weddingData?.settings?.domain || null;
   }
 
   /**
@@ -315,5 +363,32 @@ export class WeddingDataService {
   getFormattedCoupleName(weddingData: WeddingData): string {
     const { groom, bride } = this.extractCoupleNames(weddingData);
     return `${groom} & ${bride}`;
+  }
+
+  /**
+   * Check if wedding data has domain in settings
+   * @param weddingData - Wedding data to check
+   * @returns boolean - Whether domain is available
+   */
+  hasDomain(weddingData: WeddingData): boolean {
+    return !!(weddingData?.settings?.domain);
+  }
+
+  /**
+   * Get sharing URL for wedding invitation
+   * Prefers domain-based URL, falls back to couple name
+   * @param weddingData - Complete wedding data
+   * @returns Shareable wedding URL
+   */
+  getShareableUrl(weddingData: WeddingData): string {
+    const domain = this.extractDomain(weddingData);
+    
+    if (domain) {
+      return this.generateWeddingUrlWithDomain(domain);
+    }
+    
+    // Fallback to couple name approach
+    console.warn('No domain found, using couple name fallback for sharing URL');
+    return this.generateWeddingUrl(weddingData);
   }
 }

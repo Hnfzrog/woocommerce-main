@@ -9,8 +9,12 @@ export enum DashboardServiceType {
   USER_REGISTER,
   USER_PROFILE,
 
-  //TESTEMONI
-  USER_TESTEMONI,
+  //TESTIMONI (Fixed spelling)
+  USER_TESTIMONI,
+  TESTIMONI_ADMIN_LIST,
+  TESTIMONI_ADMIN_UPDATE_STATUS,
+  TESTIMONI_ADMIN_DELETE_ALL,
+  TESTIMONI_ADMIN_DELETE_BY_ID,
 
   //UCAPAN
   USER_BUKUTAMU,
@@ -106,7 +110,17 @@ export enum DashboardServiceType {
 
   WEDDING_VIEW_CORE,
   WEDDING_VIEW_COUPLE,
-  ATTENDANCE
+  ATTENDANCE,
+
+  // Dashboard Analytics API endpoints
+  DASHBOARD_OVERVIEW,
+  DASHBOARD_TRENDS,
+  DASHBOARD_MESSAGES,
+
+  // Ucapan endpoints
+  UCAPAN_INDEX,
+  UCAPAN_DELETE,
+  UCAPAN_STATISTICS,
 
 }
 
@@ -156,9 +170,17 @@ export class DashboardService {
       case DashboardServiceType.MNL_MD_PACK_INVITATION:
         return `${this.BASE_URL_API}/v1/paket-undangan`;
 
-      //testemoni
-      case DashboardServiceType.USER_TESTEMONI:
+      //testimoni (Fixed spelling and added admin endpoints)
+      case DashboardServiceType.USER_TESTIMONI:
         return `${this.BASE_URL_API}/v1/user/post-testimoni`;
+      case DashboardServiceType.TESTIMONI_ADMIN_LIST:
+        return `${this.BASE_URL_API}/v1/admin/testimoni`;
+      case DashboardServiceType.TESTIMONI_ADMIN_UPDATE_STATUS:
+        return `${this.BASE_URL_API}/v1/admin/testimoni`;
+      case DashboardServiceType.TESTIMONI_ADMIN_DELETE_ALL:
+        return `${this.BASE_URL_API}/v1/admin/testimoni/delete-all`;
+      case DashboardServiceType.TESTIMONI_ADMIN_DELETE_BY_ID:
+        return `${this.BASE_URL_API}/v1/admin/testimoni`;
 
       //Ucapan
       case DashboardServiceType.USER_BUKUTAMU:
@@ -332,6 +354,24 @@ export class DashboardService {
       case DashboardServiceType.ATTENDANCE:
         return `${this.BASE_URL_API}/v1/attendance`;
 
+      // Dashboard Analytics API endpoints
+      case DashboardServiceType.DASHBOARD_OVERVIEW:
+        return `${this.BASE_URL_API}/v1/dashboard/overview`;
+      case DashboardServiceType.DASHBOARD_TRENDS:
+        return `${this.BASE_URL_API}/v1/dashboard/trends`;
+      case DashboardServiceType.DASHBOARD_MESSAGES:
+        return `${this.BASE_URL_API}/v1/dashboard/messages`;
+
+      // Ucapan (Wedding Wishes) API endpoints
+      case DashboardServiceType.UCAPAN_INDEX:
+        return `${this.BASE_URL_API}/v1/ucapan`;
+      case DashboardServiceType.UCAPAN_DELETE:
+        return `${this.BASE_URL_API}/v1/ucapan`;
+      case DashboardServiceType.UCAPAN_STATISTICS:
+        return `${this.BASE_URL_API}/v1/ucapan-statistics`;
+
+
+
 
       default:
         return '';
@@ -433,4 +473,234 @@ export interface Page {
 export interface LoginResponse {
   access_token: string;
   token_type: string;
+}
+
+// Dashboard Analytics API interfaces - Updated to match actual API response
+export interface DashboardMetrics {
+  total_pengunjung: {
+    count: number;
+    label: string;
+    change_percentage: number;
+    trending: string;
+  };
+  konfirmasi_kehadiran: {
+    count: string | number;
+    label: string;
+    percentage: number;
+    change_percentage: number;
+    trending: string;
+  };
+  doa_ucapan: {
+    count: number;
+    label: string;
+    change_percentage: number;
+    trending: string;
+  };
+  total_hadiah: {
+    count: number;
+    label: string;
+    note?: string;
+    change_percentage: number;
+    trending: string;
+  };
+}
+
+export interface DashboardOverviewResponse {
+  data: {
+    user_id: number;
+    wedding_owner: string | null;
+    period: {
+      from: string;
+      to: string;
+      days: number;
+    };
+    metrics: DashboardMetrics;
+    breakdown: {
+      kehadiran: {
+        hadir: string;
+        tidak_hadir: string;
+        mungkin: string;
+      };
+      response_rate: {
+        hadir_percentage: number;
+        tidak_hadir_percentage: number;
+        mungkin_percentage: number;
+      };
+    };
+  };
+}
+
+export interface DashboardTrendPoint {
+  period: string;
+  date: string;
+  total_visitors: number;
+  confirmed_attendance: string | number;
+  formatted_date: string;
+}
+
+export interface DashboardTrendsResponse {
+  data: {
+    user_id: number;
+    period: {
+      from: string;
+      to: string;
+      group_by: string;
+    };
+    trends: DashboardTrendPoint[];
+    summary: {
+      total_data_points: number;
+      peak_visitors: number;
+      average_daily_visitors: number;
+    };
+  };
+}
+
+export interface DashboardMessage {
+  id: number;
+  nama: string;
+  kehadiran: string;
+  kehadiran_label: string;
+  pesan: string;
+  pesan_preview: string;
+  created_at: string;
+  created_at_human: string;
+}
+
+export interface DashboardMessagesResponse {
+  data: {
+    user_id: number;
+    wedding_owner: string | null;
+    pagination: {
+      total: number;
+      limit: number;
+      offset: number;
+      has_more: boolean;
+    };
+    messages: DashboardMessage[];
+  };
+}
+
+// Ucapan (Wedding Wishes) API interfaces
+export interface UcapanItem {
+  id: number;
+  nama: string;
+  kehadiran: 'hadir' | 'tidak_hadir' | 'mungkin';
+  kehadiran_label: string;
+  pesan: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UcapanMeta {
+  total: number;
+  hadir_count: number;
+  tidak_hadir_count: number;
+  mungkin_count: number;
+}
+
+export interface UcapanResponse {
+  data: UcapanItem[];
+  meta: UcapanMeta;
+}
+
+export interface UcapanStatisticsResponse {
+  data: {
+    total_ucapan: number;
+    hadir: number;
+    tidak_hadir: number;
+    mungkin: number;
+  };
+}
+
+export interface UcapanDeleteResponse {
+  message: string;
+}
+
+// Riwayat (Visitor History) API interfaces
+export interface RiwayatItem {
+  id: number;
+  nama: string;
+  tanggal: string;
+  ip_address?: string;
+  user_agent?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RiwayatMeta {
+  total: number;
+  today_count: number;
+  this_week_count: number;
+  this_month_count: number;
+}
+
+export interface RiwayatResponse {
+  data: RiwayatItem[];
+  meta: RiwayatMeta;
+}
+
+export interface RiwayatStatisticsResponse {
+  data: {
+    total_pengunjung: number;
+    hari_ini: number;
+    minggu_ini: number;
+    bulan_ini: number;
+  };
+}
+
+export interface RiwayatDeleteResponse {
+  message: string;
+}
+
+// Testimoni (Testimonials) API interfaces
+export interface TestimoniUser {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface TestimoniItem {
+  id: number;
+  user_id: number;
+  kota: string;
+  provinsi: string;
+  ulasan: string;
+  status: boolean;
+  created_at: string;
+  updated_at: string;
+  user?: TestimoniUser;
+}
+
+export interface TestimoniPaginationMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+export interface TestimoniResponse {
+  data: TestimoniItem[];
+  meta?: TestimoniPaginationMeta;
+  links?: any;
+}
+
+export interface TestimoniCreateRequest {
+  kota: string;
+  provinsi: string;
+  ulasan: string;
+}
+
+export interface TestimoniUpdateStatusRequest {
+  status: boolean;
+}
+
+export interface TestimoniCreateResponse {
+  message: string;
+  data?: TestimoniItem;
+}
+
+export interface TestimoniDeleteResponse {
+  message: string;
 }

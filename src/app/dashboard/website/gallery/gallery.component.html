@@ -68,7 +68,7 @@
                     <span class="input-group-text">
                       <i class="fab fa-youtube text-danger"></i>
                     </span>
-                    <input type="url" class="form-control" placeholder="Masukkan URL YouTube..."
+                    <input type="url" class="form-control" placeholder="Masukkan URL video..."
                       formControlName="url_video" />
                   </div>
                 </div>
@@ -185,7 +185,7 @@
                 <td>
                   <a *ngIf="item.url_video" [href]="item.url_video" target="_blank"
                     class="text-decoration-none text-truncate d-inline-block" style="max-width: 200px;">
-                    <i class="fab fa-youtube text-danger me-1"></i>
+                    <!-- <i class="fab fa-youtube text-danger me-1"></i> -->
                     {{ item.url_video }}
                   </a>
                   <span *ngIf="!item.url_video" class="text-muted">
