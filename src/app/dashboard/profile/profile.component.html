@@ -1,1 +1,46 @@
-<p>profile works!</p>
+<div class="profile-card">
+  <div class="d-flex align-items-center mb-4">
+    <div class="pink-bar me-3"></div>
+    <h1 class="text-pink-400 fw-semibold fs-4" style="color:#f472b6;">Data Profil</h1>
+  </div>
+  <div class="d-flex flex-column flex-sm-row align-items-center gap-3 gap-sm-4 mb-4">
+    <div class="profile-photo flex-shrink-0">
+      <img src="https://storage.googleapis.com/a1aa/image/58c34d09-66a2-4379-dafd-cb392659c071.jpg"
+        alt="Profile photo of a young woman with dark hair in a black top and neutral background" />
+    </div>
+    <button type="button" class="btn btn-pink shadow px-4 py-2 fs-5">
+      Unggah Foto
+    </button>
+  </div>
+  <form>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6">
+        <label for="name" class="form-label">Nama</label>
+        <input type="text" class="form-control" id="name" placeholder="Isi di sini" />
+      </div>
+      <div class="col-12 col-sm-6">
+        <label for="password" class="form-label">Kata Sandi</label>
+        <input type="password" class="form-control" id="password" value="**********" />
+      </div>
+      <div class="col-12 col-sm-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control fw-semibold" id="email" placeholder="contoh@email.com" />
+      </div>
+      <div class="col-12 col-sm-6">
+        <label for="phone" class="form-label">Nomer HP</label>
+        <input type="tel" class="form-control" id="phone" value="085123456789" />
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <label for="package" class="form-label">Paket</label>
+        <input type="text" class="form-control fw-semibold" id="package" value="Gold" />
+      </div>
+    </div>
+  </form>
+  <button type="submit" class="btn btn-cyan shadow position-absolute"
+    style="bottom: 1.5rem; right: 1.5rem; font-weight: 600; border-radius: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
+    Simpan
+  </button>
+  <button type="button" aria-label="Edit" class="edit-btn">
+    <i class="fas fa-paint-brush"></i>
+  </button>
+</div>

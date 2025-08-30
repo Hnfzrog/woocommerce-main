@@ -75,6 +75,16 @@ import { ModalAddCategoryAdminComponent } from './shared/modal/modal-add-categor
 import { ModalEditCategoryAdminComponent } from './shared/modal/modal-edit-category-admin/modal-edit-category-admin.component';
 import { ModalDeleteCategoryAdminComponent } from './shared/modal/modal-delete-category-admin/modal-delete-category-admin.component';
 import { ModalDeleteAllCategoryComponent } from './shared/modal/modal-delete-all-category/modal-delete-all-category.component';
+import { WeddingViewComponent } from './dashboard/wedding-view/wedding-view.component';
+import { CoupleViewComponent } from './dashboard/wedding-view/couple-view/couple-view.component';
+import { MessageViewComponent } from './dashboard/wedding-view/message-view/message-view.component';
+import { AkadViewComponent } from './dashboard/wedding-view/akad-view/akad-view.component';
+import { ResepsiViewComponent } from './dashboard/wedding-view/resepsi-view/resepsi-view.component';
+import { StoryViewComponent } from './dashboard/wedding-view/story-view/story-view.component';
+import { GalleryViewComponent } from './dashboard/wedding-view/gallery-view/gallery-view.component';
+import { PresenceViewComponent } from './dashboard/wedding-view/presence-view/presence-view.component';
+import { GiftViewComponent } from './dashboard/wedding-view/gift-view/gift-view.component';
+import { BillUserComponent } from './dashboard/bill-user/bill-user.component';
 
 @NgModule({
   declarations: [
@@ -138,7 +148,17 @@ import { ModalDeleteAllCategoryComponent } from './shared/modal/modal-delete-all
     ModalAddCategoryAdminComponent,
     ModalEditCategoryAdminComponent,
     ModalDeleteCategoryAdminComponent,
-    ModalDeleteAllCategoryComponent
+    ModalDeleteAllCategoryComponent,
+    WeddingViewComponent,
+    CoupleViewComponent,
+    MessageViewComponent,
+    AkadViewComponent,
+    ResepsiViewComponent,
+    StoryViewComponent,
+    GalleryViewComponent,
+    PresenceViewComponent,
+    GiftViewComponent,
+    BillUserComponent
   ],
   imports: [
     BrowserModule,

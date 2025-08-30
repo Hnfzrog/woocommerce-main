@@ -33,9 +33,14 @@ import { TestimoniesComponent } from './dashboard-admin/testimonies/testimonies.
 import { SettingsAplicationComponent } from './dashboard-admin/pengaturan/settings-aplication/settings-aplication.component';
 import { SettingsBundleComponent } from './dashboard-admin/pengaturan/settings-bundle/settings-bundle.component';
 import { SettingsPaymentComponent } from './dashboard-admin/pengaturan/settings-payment/settings-payment.component';
+import { WeddingViewComponent } from './dashboard/wedding-view/wedding-view.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
+import { BillUserComponent } from './dashboard/bill-user/bill-user.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'wedding/:coupleName', component: WeddingViewComponent },
+  { path: 'wedding', component: WeddingViewComponent }, // Fallback route without parameter
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'buat-undangan', component: GenerateUndanganComponent },
@@ -45,6 +50,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'bill', component: BillUserComponent },
       { path: 'overview', component: OverviewComponent },
       {
         path: 'website',

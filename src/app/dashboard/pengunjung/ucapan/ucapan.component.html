@@ -1,65 +1,190 @@
-<div class="container">
-  <!-- Stats Section -->
-  <div class="stats">
-    <div class="stat-card">
-      <p>Doa & Ucapan Hari Ini</p>
-      <h2>{{ data?.today_count_tamu }}</h2>
-      <span>orang memberi ucapan</span>
-    </div>
-    <div class="stat-card">
-      <p>Total Doa & Ucapan</p>
-      <h2> {{data?.all_count_tamu}} </h2>
-      <span>orang memberi ucapan</span>
-    </div>
-  </div>
-
-  <!-- Main Content Section -->
-  <div class="content">
-    <h3>Data Ucapan dan Doa</h3>
-    <button [disabled]="filteredDataList.length === 0" (click)="doDeleteAll()" class="delete-all">Hapus Semua</button>
-
-    <!-- Search Input -->
-    <div class="search-bar">
-      <input type="text" placeholder="Cari" [(ngModel)]="searchQuery" />
+<div class="container py-4">
+  <div class="row g-4 justify-content-start">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+      <div class="card-custom">
+        <div class="side-bar" style="background-color: #c49a4a;"></div>
+        <div class="d-flex justify-content-between align-items-start">
+          <p class="mb-0" style="font-size: 0.875rem; font-weight: 400; color: #000;">
+            Doa &amp; Ucapan Hari Ini
+          </p>
+          <i class="fas fa-envelope" style="color: #0f7f8f; font-size: 1.125rem;"></i>
+        </div>
+        <p class="mt-3 mb-1 text-large" style="color: #c49a4a;">0</p>
+        <p class="mb-0" style="font-size: 0.875rem; font-weight: 400; color: #000;">
+          orang memberi ucapan
+        </p>
+      </div>
     </div>
 
-    <!-- Data Table -->
-    <table>
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Nama</th>
-          <th>Ucapan</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody *ngIf="filteredDataList.length > 0; else noData">
-        <tr *ngFor="let data of filteredDataList; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ data.nama }}</td>
-          <td>{{ data.pesan }}</td>
-          <td><button class="delete" (click)="doDelete(data)">Hapus</button></td>
-        </tr>
-      </tbody>
-
-      <ng-template #noData>
-        <tbody>
-          <tr>
-            <td colspan="4" style="text-align: center;">Tidak ada data.</td>
-          </tr>
-        </tbody>
-      </ng-template>
-    </table>
-
-    <!-- Pagination -->
-    <div class="pagination">
-      <label>
-        Menampilkan
-        <select [(ngModel)]="entriesToShow">
-          <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
-        </select>
-        Data
-      </label>
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+      <div class="card-custom">
+        <div class="side-bar" style="background-color: #0f7f8f;"></div>
+        <div class="d-flex justify-content-between align-items-start">
+          <p class="mb-0" style="font-size: 0.875rem; font-weight: 400; color: #000;">
+            Total Doa &amp; Ucapan
+          </p>
+          <i class="fas fa-envelope" style="color: #0f7f8f; font-size: 1.125rem;"></i>
+        </div>
+        <p class="mt-3 mb-1 text-large" style="color: #0f7f8f;">8</p>
+        <p class="mb-0" style="font-size: 0.875rem; font-weight: 400; color: #000;">
+          orang memberi ucapan
+        </p>
+      </div>
     </div>
   </div>
 </div>
+
+
+  <main class="container py-4">
+
+    <section
+      class="bg-white rounded-3 p-4 mt-4"
+      aria-label="Visitor data table and controls"
+    >
+      <div
+        class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-3 gap-3"
+      >
+        <h2
+          class="text-pink-500 fw-semibold fs-5 border-start border-2 border-pink-400 ps-2 mb-0"
+        >
+          Data Pengunjung
+        </h2>
+        <div class="d-flex align-items-center gap-3 w-100 w-sm-auto">
+          <button type="button" class="btn btn-pink d-flex align-items-center gap-2">
+            <i class="fas fa-trash-alt"></i> Hapus Semua
+          </button>
+          <label for="search" class="fw-semibold small mb-0">Cari</label>
+          <input
+            id="search"
+            type="text"
+            class="form-control form-control-sm"
+            style="max-width: 180px"
+            aria-label="Search visitor data"
+          />
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle text-black mb-0" style="border-spacing: 0 0.25rem; border-collapse: separate;">
+          <thead>
+            <tr>
+              <th style="width: 40px;">No.</th>
+              <th style="width: 180px;">Tanggal</th>
+              <th>Nama</th>
+              <th style="width: 100px;" class="text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>8 Oktober 2024</td>
+              <td>Tamu Undangan</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-outline-pink">Hapus</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4 gap-3 text-black-50 small"
+      >
+        <div class="d-flex align-items-center gap-1">
+          <span>Menampilkan</span>
+          <select
+            aria-label="Select number of data to display"
+            class="form-select form-select-sm"
+            style="width: 70px"
+          >
+            <option>10</option>
+            <option>20</option>
+            <option>50</option>
+          </select>
+          <span>Data</span>
+        </div>
+        <div class="d-flex align-items-center gap-2 pagination-controls">
+          <span>bx:...</span>
+          <button aria-label="Previous page" type="button" title="Previous page">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button aria-label="Next page" type="button" title="Next page">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+

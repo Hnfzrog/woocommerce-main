@@ -111,5 +111,10 @@ export class DashboardUserComponent implements OnInit {
 
   selectMenu(): void {
     this.isDropdownOpen = false;
+    this.router.navigate(['/dashboard/profile']);
+  }
+
+  onClickBill(): void {
+    this.router.navigate(['/dashboard/bill']);
   }
 }

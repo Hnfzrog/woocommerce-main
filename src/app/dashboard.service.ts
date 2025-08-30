@@ -27,6 +27,11 @@ export enum DashboardServiceType {
   MD_LIST_BANK,
   REKENING_DATA,
   UPDATE_REKENING,
+  // New simplified REST endpoints for rekenings (per API spec)
+  REKENINGS_INDEX,
+  REKENINGS_STORE,
+  REKENINGS_UPDATE_JSON,
+  REKENINGS_DELETE_JSON,
 
   //cerita
   CERITA_SUBMIT,
@@ -97,6 +102,11 @@ export enum DashboardServiceType {
   QUOTE_UPDATE,
   CERITA_DELETE,
   QUOTE_DELETE,
+  DELETE_REKENING,
+
+  WEDDING_VIEW_CORE,
+  WEDDING_VIEW_COUPLE,
+  ATTENDANCE
 
 }
 
@@ -179,6 +189,18 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/user/get-rekening`;
       case DashboardServiceType.UPDATE_REKENING:
         return `${this.BASE_URL_API}/v1/user/update-rekening`;
+      case DashboardServiceType.DELETE_REKENING:
+        return `${this.BASE_URL_API}/v1/user/delete-rekening`;
+
+      // New JSON-based CRUD endpoints for /api/rekenings
+      case DashboardServiceType.REKENINGS_INDEX:
+        return `${this.BASE_URL_API}/v1/user/get-rekening`;
+      case DashboardServiceType.REKENINGS_STORE:
+        return `${this.BASE_URL_API}/v1/user/send-rekening`;
+      case DashboardServiceType.REKENINGS_UPDATE_JSON:
+        return `${this.BASE_URL_API}/v1/user/update-rekening`;
+      case DashboardServiceType.REKENINGS_DELETE_JSON:
+        return `${this.BASE_URL_API}/v1/user/delete-rekening`;
 
       //CERITA
       case DashboardServiceType.CERITA_SUBMIT:
@@ -301,6 +323,14 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/user/list-data-setting`;
       case DashboardServiceType.USER_SETTINGS_DELETE_MUSIC:
         return `${this.BASE_URL_API}/v1/user/music/delete`;
+
+      // wedding viewe
+      case DashboardServiceType.WEDDING_VIEW_CORE:
+        return `${this.BASE_URL_API}/v1/wedding-profile/public`;
+      case DashboardServiceType.WEDDING_VIEW_COUPLE:
+        return `${this.BASE_URL_API}/v1/wedding-profile/couple`;
+      case DashboardServiceType.ATTENDANCE:
+        return `${this.BASE_URL_API}/v1/attendance`;
 
 
       default:

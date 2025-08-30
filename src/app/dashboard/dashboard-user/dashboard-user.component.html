@@ -86,7 +86,8 @@
 
         <!-- Dropdown Menu -->
         <div class="dropdown-menu" *ngIf="isDropdownOpen">
-          <a class="dropdown-item" routerLink="profile" (click)="selectMenu()">Profile</a>
+          <a class="dropdown-item" (click)="onClickBill()">Bill</a>
+          <a class="dropdown-item" (click)="selectMenu()">Profile</a>
           <a class="dropdown-item" (click)="logout()">Logout</a>
         </div>
       </div>

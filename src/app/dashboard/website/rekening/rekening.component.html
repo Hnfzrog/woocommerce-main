@@ -1,84 +1,43 @@
-<div class="rekening-container" [formGroup]="rekeningForm">
-  <div formArrayName="accounts" class="accounts-wrapper">
-    <div class="form-card" *ngFor="let account of accounts.controls; let i = index" [formGroupName]="i">
-      <div class="form-header">
-        <h2>Tambah Rekening</h2>
-        <button 
-          type="button" 
-          class="btn btn-danger"
-          (click)="accounts.length === 1 ? addAccount() : removeAccount(i)" 
-          [attr.aria-label]="accounts.length === 1 ? 'Add Account' : 'Remove Account'">
-          <i class="fa" [ngClass]="{'fa-plus': accounts.length === 1, 'fa-trash': accounts.length > 1}"></i>
-        </button>
-      </div>
-      
-      <h3>#{{i + 1}}</h3>
-
-      <!-- Bank Name Input with Auto-Suggest -->
-      <div class="form-group">
-        <label for="namaBank{{i + 1}}">Nama Bank</label>
-        <ngx-select 
-          [items]="listBank" 
-          [optionTextField]="'name'" 
-          [optionValueField]="'id'" 
-          placeholder="Pilih Bank" 
-          formControlName="kode_bank"
-          (change)="onBankSelect(i, $event)">
-        </ngx-select>
-        
-        <div *ngIf="account.get('kode_bank')?.invalid && account.get('kode_bank')?.touched" class="error-message">
-          Nama Bank is required.
+<div class="rekening-container">
+  <!-- Form Tambah Rekening Baru -->
+  <form [formGroup]="rekeningForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="accounts" class="accounts-wrapper">
+      <div class="form-card" *ngFor="let account of accounts.controls; let i = index" [formGroupName]="i">
+        <div class="form-header">
+          <h2>{{ account.get('id')?.value ? (account.get('editMode')?.value ? 'Edit Rekening' : 'Rekening Tersimpan') : 'Tambah Rekening' }}</h2>
+          <div class="header-actions">
+            <button *ngIf="!account.get('id')?.value" type="button" class="btn btn-success" (click)="addAccount()" aria-label="Add Account">
+              <i class="fa fa-plus"></i>
+            </button>
+            <button *ngIf="account.get('id')?.value" type="button" class="btn btn-primary" (click)="onEdit(i)" [disabled]="account.get('editMode')?.value">Edit</button>
+            <button *ngIf="account.get('id')?.value" type="button" class="btn btn-danger" (click)="onDelete(i)">Delete</button>
+          </div>
         </div>
-      </div>      
-
-      <!-- Account Number -->
-      <div class="form-group">
-        <label for="noRekening{{i + 1}}">No Rekening</label>
-        <input type="text" id="noRekening{{i + 1}}" formControlName="nomor_rekening" placeholder="Contoh: 009988112233" />
-        <div *ngIf="account.get('nomor_rekening')?.invalid && account.get('nomor_rekening')?.touched" class="error-message">
-          No Rekening is required.
+        <h3>#{{i + 1}}</h3>
+        <div class="form-group">
+          <label for="namaBank{{i + 1}}">Nama Bank</label>
+          <ngx-select [items]="listBank" [optionTextField]="'name'" [optionValueField]="'kode_bank'" placeholder="Pilih Bank" formControlName="kode_bank" (change)="onBankSelect(i, $event)"></ngx-select>
+          <div *ngIf="account.get('kode_bank')?.invalid && account.get('kode_bank')?.touched" class="error-message">Nama Bank is required.</div>
+        </div>
+        <div class="form-group">
+          <label for="noRekening{{i + 1}}">No Rekening</label>
+          <input type="text" id="noRekening{{i + 1}}" formControlName="nomor_rekening" placeholder="Contoh: 009988112233" />
+          <div *ngIf="account.get('nomor_rekening')?.invalid && account.get('nomor_rekening')?.touched" class="error-message">No Rekening is required.</div>
+        </div>
+        <div class="form-group">
+          <label for="namaPemilik{{i + 1}}">Nama Pemilik</label>
+          <input type="text" id="namaPemilik{{i + 1}}" formControlName="nama_pemilik" placeholder="Contoh: John Doe" />
+          <div *ngIf="account.get('nama_pemilik')?.invalid && account.get('nama_pemilik')?.touched" class="error-message">Nama Pemilik is required.</div>
+        </div>
+        <div class="form-actions" *ngIf="account.get('id')?.value || account.get('editMode')?.value">
+          <button *ngIf="account.get('editMode')?.value" type="button" class="btn btn-success" (click)="onUpdate(i)">Update</button>
+          <button *ngIf="account.get('editMode')?.value" type="button" class="btn btn-secondary" (click)="onCancelEdit(i)">Cancel</button>
         </div>
       </div>
-
-      <!-- Account Owner Name -->
-      <div class="form-group">
-        <label for="namaPemilik{{i + 1}}">Nama Pemilik</label>
-        <input type="text" id="namaPemilik{{i + 1}}" formControlName="nama_pemilik" placeholder="Contoh: John Doe" />
-        <div *ngIf="account.get('nama_pemilik')?.invalid && account.get('nama_pemilik')?.touched" class="error-message">
-          Nama Pemilik is required.
-        </div>
-      </div>
-
-      <!-- File Upload Section -->
-      <div class="form-group file-upload">
-        <!-- Preview Image -->
-        <img 
-          *ngIf="account.get('photo_rek')?.value" 
-          [src]="getPhotoUrl(account.get('photo_rek')?.value)" 
-          alt="Preview" 
-          class="preview-image"
-        />
-      
-        <input 
-          type="file" 
-          id="bankLogo{{ i + 1 }}" 
-          (change)="onFileSelect($event, i)" 
-          accept="image/*"
-        />
-        <label for="bankLogo{{ i + 1 }}" class="file-label">Choose File</label>
-        <span class="file-info">
-          {{ account.get('photo_rek')?.value?.name || 'No file chosen' }}
-        </span>
-      </div>      
-      
     </div>
-  </div>
-  <div class="row" style="padding-top: 10px; width: 15%; margin-left: 0.1%;">
-    <ng-container *ngIf="data; else noData">
-      <button type="button" class="btn btn-primary" (click)="onUpdate()">Update</button>
-    </ng-container>
-    <ng-template #noData>
-      <button type="button" class="btn btn-primary" (click)="onSubmit()">Simpan</button>
-    </ng-template>
-  </div>
+    <div class="row" style="padding-top: 10px; width: 15%; margin-left: 0.1%;">
+      <button type="submit" class="btn btn-primary">Simpan</button>
+    </div>
+  </form>
+
 </div>

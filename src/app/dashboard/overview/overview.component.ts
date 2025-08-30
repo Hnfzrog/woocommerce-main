@@ -1,6 +1,8 @@
-
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
+import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
+import { WeddingDataService } from 'src/app/services/wedding-data.service';
 
 
 Chart.register(...registerables);
@@ -28,7 +30,7 @@ interface ChartDataPoint {
   styleUrls: ['./overview.component.scss']
 })
 
-export class OverviewComponent implements OnInit, AfterViewInit {
+export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
 
   chart: Chart | null = null;
@@ -106,9 +108,51 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     { date: '9 Okt 2024', totalPengunjung: 19, konfirmasiKehadiran: 17, doaUcapan: 3, totalHadiah: 4 },
     { date: '10 Okt 2024', totalPengunjung: 20, konfirmasiKehadiran: 17, doaUcapan: 3, totalHadiah: 4 }
   ];
+  userData: any;
+  weddingDataFromIndex: any;
+
+  constructor(
+    private router: Router,
+    private DashBoardSvc: DashboardService,
+    private weddingDataService: WeddingDataService
+  ) { }
 
   ngOnInit(): void {
+    this.initDataProfile();
+  }
 
+  initDataProfile(): void {
+    this.DashBoardSvc.list(DashboardServiceType.USER_PROFILE, '').subscribe(
+      (res) => {
+        this.userData = res.data;
+        console.log(JSON.stringify(this.userData, null, 2));
+
+        // Check if userData exists before proceeding
+        if (this.userData && this.userData.id) {
+          const params = {
+            user_id: this.userData.id
+          };
+
+          this.DashBoardSvc.list(DashboardServiceType.WEDDING_VIEW_CORE, params).subscribe(
+            (res) => {
+              this.weddingDataFromIndex = res.data;
+              console.log(JSON.stringify(this.weddingDataFromIndex, null, 2));
+            },
+            (error) => {
+              console.error('Error fetching wedding data:', error);
+            }
+          );
+        } else {
+          console.warn('No user data available');
+        }
+      },
+      (error) => {
+        console.error('Error fetching user profile:', error);
+      }
+    );
+    setTimeout(() => {
+      this.initializeChart();
+    }, 100);
   }
 
   ngAfterViewInit(): void {
@@ -307,4 +351,45 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       this.chart.destroy();
     }
   }
+
+  /**
+   * Generate and open wedding URL with couple name only
+   * URL format: /wedding/anton-keok (simplified endpoint)
+   */
+  onViewWebsite(): void {
+    if (!this.weddingDataFromIndex) {
+      console.warn('Wedding data not available yet. Please wait for data to load.');
+
+      // Fallback to basic wedding route
+      const url = this.router.serializeUrl(this.router.createUrlTree(['/wedding']));
+      window.open(url, '_blank');
+      return;
+    }
+
+    try {
+      // Generate couple name from mempelai data
+      const coupleName = this.weddingDataService.generateCoupleName(this.weddingDataFromIndex.mempelai);
+
+      // Create URL with couple name only (backend now uses couple name endpoint)
+      const url = this.router.serializeUrl(
+        this.router.createUrlTree(['/wedding', coupleName])
+      );
+
+      console.log('Opening wedding page with URL:', url);
+      console.log('Couple name:', coupleName);
+
+      // Store data in service for immediate access if needed
+      this.weddingDataService.setWeddingData(this.weddingDataFromIndex);
+
+      window.open(url, '_blank');
+
+    } catch (error) {
+      console.error('Error generating wedding URL:', error);
+
+      // Fallback to basic wedding route
+      const url = this.router.serializeUrl(this.router.createUrlTree(['/wedding']));
+      window.open(url, '_blank');
+    }
+  }
+
 }
