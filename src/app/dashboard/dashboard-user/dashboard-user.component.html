@@ -1,106 +1,252 @@
 <div class="dashboard-container">
-  <!-- Toggle Button for Mobile -->
-  <button class="menu-toggle" (click)="toggleSidebar()">
-    <i class="fas fa-bars"></i>
+  <!-- Overlay for mobile -->
+  <div class="sidebar-overlay"
+       [class.active]="isSidebarOpen"
+       (click)="closeSidebar()"
+       [@sidebarSlide]="isSidebarOpen ? 'open' : 'closed'"></div>
+
+  <!-- Enhanced Toggle Button for Mobile -->
+  <button class="menu-toggle"
+          (click)="toggleSidebar()"
+          [class.active]="isSidebarOpen"
+          aria-label="Toggle sidebar menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
   </button>
 
-  <!-- Sidebar -->
-  <div class="sidebar" [ngClass]="{'open': isSidebarOpen}">
-    <div class="logo">
-      <img
-        alt="Company Logo"
-        src="assets/logos.png"
-      />
-      <h1>Horuzt Invitation</h1>
+  <!-- Sidebar with Animation -->
+  <div class="sidebar"
+       [class.open]="isSidebarOpen">
+
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo-container">
+        <img src="assets/logos.png" alt="Horuzt Digital Invitation Logo" />
+        <div class="logo-text">
+          <h1>Horuzt</h1>
+          <h2>Invitation</h2>
+        </div>
+      </div>
     </div>
 
-    <div class="menu">
-      <a class="menu-item" routerLink="overview" routerLinkActive="active">
-        <i class="fas fa-th"></i> <span>Dashboard</span>
-      </a>
-    </div>
-    <hr>
-
-    <div class="menu">
-      <div class="none"><p>FITUR</p></div>
-      <div class="menu-item" [ngClass]="{'active': isActiveRoute('website')}" (click)="toggleWebsiteSubmenu()">
-        <i class="fas fa-globe"></i> <span>Website</span>
-        <i class="fas fa-chevron-down" [ngClass]="{'rotate': isWebsiteSubmenuOpen}"></i>
-      </div>
-      <div *ngIf="isWebsiteSubmenuOpen" class="submenu">
-        <a class="submenu-item" routerLink="website/tampilan" routerLinkActive="active">Tampilan</a>
-        <a class="submenu-item" routerLink="website/pengaturan" routerLinkActive="active">Pengaturan</a>
-        <a class="submenu-item">Data Website</a>
-        <a class="submenu-item" routerLink="website/mempelai" routerLinkActive="active">Mempelai</a>
-        <a class="submenu-item" routerLink="website/acara" routerLinkActive="active">Acara</a>
-        <a class="submenu-item" routerLink="website/gallery" routerLinkActive="active">Gallery</a>
-        <a class="submenu-item" routerLink="website/cerita-quote" routerLinkActive="active">Cerita & Quote</a>
-        <a class="submenu-item" routerLink="website/rekening" routerLinkActive="active">Rekening</a>
-      </div>
-
-      <div class="menu">
-        <a class="menu-item" [ngClass]="{'active': isActiveRoute('pengunjung')}" (click)="togglePengunjungSubmenu()">
-          <i class="fas fa-chart-line"></i> <span>Pengunjung</span>
-          <i class="fas fa-chevron-down" [ngClass]="{'rotate': isPengunjungSubmenuOpen}"></i>
+    <!-- Navigation Menu -->
+    <nav class="navigation-menu" role="navigation" aria-label="Main navigation">
+      <!-- Dashboard -->
+      <div class="menu-section">
+        <a class="menu-item"
+           routerLink="overview"
+           routerLinkActive="active"
+           (click)="onMenuItemClick()"
+           tabindex="0">
+          <i class="fas fa-th-large" aria-hidden="true"></i>
+          <span>Dashboard</span>
         </a>
-        <div *ngIf="isPengunjungSubmenuOpen" class="submenu">
-          <a class="submenu-item" routerLink="pengunjung/ucapan" routerLinkActive="active">Riwayat & Ucapan</a>
+      </div>
+
+      <!-- Divider -->
+      <div class="menu-divider"></div>
+
+      <!-- FITUR Section Header -->
+      <div class="menu-section">
+        <div class="section-header">
+          <span>FITUR</span>
         </div>
       </div>
 
-      <a class="menu-item" routerLink="testimoni" routerLinkActive="active">
-        <i class="fas fa-comments"></i> <span>Testimoni</span>
-      </a>
-    </div>
+      <!-- Website with Dropdown -->
+      <div class="menu-section">
+        <div class="menu-item dropdown-toggle"
+             [class.active]="isActiveRoute('website')"
+             (click)="toggleWebsiteSubmenu()"
+             tabindex="0"
+             role="button"
+             [attr.aria-expanded]="isWebsiteSubmenuOpen"
+             aria-label="Website menu">
+          <div class="menu-item-content">
+            <i class="fas fa-globe" aria-hidden="true"></i>
+            <span>Website</span>
+          </div>
+          <i class="fas fa-chevron-right dropdown-icon"
+             [class.rotated]="isWebsiteSubmenuOpen"
+             aria-hidden="true"></i>
+        </div>
 
-    <hr>
+        <!-- Website Submenu with Animation -->
+        <div class="submenu"
+             [@submenuExpand]="isWebsiteSubmenuOpen ? 'expanded' : 'collapsed'">
+          <a class="submenu-item"
+             routerLink="website/tampilan"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Tampilan</span>
+          </a>
+          <a class="submenu-item"
+             routerLink="website/pengaturan"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Pengaturan</span>
+          </a>
+          <a class="submenu-item"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Data Website</span>
+          </a>
+          <a class="submenu-item"
+             routerLink="website/mempelai"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Mempelai</span>
+          </a>
+          <a class="submenu-item"
+             routerLink="website/acara"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Acara</span>
+          </a>
+          <a class="submenu-item"
+             routerLink="website/gallery"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Gallery</span>
+          </a>
+          <a class="submenu-item"
+             routerLink="website/cerita-quote"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Cerita & Quote</span>
+          </a>
+          <a class="submenu-item"
+             routerLink="website/rekening"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Rekening</span>
+          </a>
+        </div>
+      </div>
 
-    <!-- Help Section -->
-    <div class="menu">
-      <div class="none"><p>BANTUAN</p></div>
-      <a class="menu-item" routerLink="hubungi-kami" routerLinkActive="active">
-        <i class="fas fa-phone"></i> <span>Hubungi Kami</span>
-      </a>
-    </div>
+      <!-- Pengunjung with Dropdown -->
+      <div class="menu-section">
+        <div class="menu-item dropdown-toggle"
+             [class.active]="isActiveRoute('pengunjung')"
+             (click)="togglePengunjungSubmenu()"
+             tabindex="0"
+             role="button"
+             [attr.aria-expanded]="isPengunjungSubmenuOpen"
+             aria-label="Pengunjung menu">
+          <div class="menu-item-content">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            <span>Pengunjung</span>
+          </div>
+          <i class="fas fa-chevron-right dropdown-icon"
+             [class.rotated]="isPengunjungSubmenuOpen"
+             aria-hidden="true"></i>
+        </div>
+
+        <!-- Pengunjung Submenu with Animation -->
+        <div class="submenu"
+             [@submenuExpand]="isPengunjungSubmenuOpen ? 'expanded' : 'collapsed'">
+          <a class="submenu-item"
+             routerLink="pengunjung/ucapan"
+             routerLinkActive="active"
+             (click)="onMenuItemClick()"
+             tabindex="0">
+            <span>Riwayat & Ucapan</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Testimoni -->
+      <div class="menu-section">
+        <a class="menu-item"
+           routerLink="testimoni"
+           routerLinkActive="active"
+           (click)="onMenuItemClick()"
+           tabindex="0">
+          <i class="fas fa-comments" aria-hidden="true"></i>
+          <span>Testimoni</span>
+        </a>
+      </div>
+
+      <!-- Divider -->
+      <div class="menu-divider"></div>
+
+      <!-- BANTUAN Section Header -->
+      <div class="menu-section">
+        <div class="section-header">
+          <span>BANTUAN</span>
+        </div>
+      </div>
+
+      <!-- Hubungi Kami -->
+      <div class="menu-section">
+        <a class="menu-item"
+           routerLink="hubungi-kami"
+           routerLinkActive="active"
+           (click)="onMenuItemClick()"
+           tabindex="0">
+          <i class="fas fa-phone" aria-hidden="true"></i>
+          <span>Hubungi Kami</span>
+        </a>
+      </div>
+
+      <!-- Bottom Divider -->
+      <div class="menu-divider"></div>
+    </nav>
   </div>
 
   <!-- Main Content -->
   <div class="content">
     <!-- Header -->
-    <div class="header">
+    <header class="header" role="banner">
       <div class="breadcrumbs">
-        <span class="route-name">{{ currentRouteName }}</span>
+        <h1 class="route-name">{{ currentRouteName }}</h1>
         <span class="route-path">{{ routePath }}</span>
       </div>
 
       <!-- User Profile Section -->
-      <div class="user-profile" (click)="toggleDropdown($event)">
-        <img
-          class="user-avatar"
-          src="assets/logos.png"
-          alt="User Avatar"
-        />
-        <span class="user-name">{{userData?.email}}</span>
-        <i class="fas fa-caret-down"></i>
+      <div class="user-profile" (click)="toggleDropdown($event)" tabindex="0" role="button">
+        <img class="user-avatar"
+             [src]="getProfilePhotoUrl()"
+             [alt]="getUserDisplayName() + ' Avatar'"
+             onerror="this.src='assets/logos.png'" />
+        <span class="user-name">{{ getUserDisplayName() }}</span>
+        <i class="fas fa-caret-down" aria-hidden="true"></i>
 
         <!-- Dropdown Menu -->
-        <div class="dropdown-menu" *ngIf="isDropdownOpen">
-          <a class="dropdown-item" (click)="onClickBill()">Bill</a>
-          <a class="dropdown-item" (click)="selectMenu()">Profile</a>
-          <a class="dropdown-item" (click)="logout()">Logout</a>
+        <div class="dropdown-menu" *ngIf="isDropdownOpen" role="menu">
+          <a class="dropdown-item"
+             (click)="onClickBill()"
+             role="menuitem"
+             tabindex="0">Bill</a>
+          <a class="dropdown-item"
+             (click)="selectMenu()"
+             role="menuitem"
+             tabindex="0">Profile</a>
+          <a class="dropdown-item"
+             (click)="logout()"
+             role="menuitem"
+             tabindex="0">Logout</a>
         </div>
       </div>
-    </div>
+    </header>
 
     <!-- Content Area -->
-    <div class="well">
+    <main class="well" role="main">
       <router-outlet></router-outlet>
-    </div>
+    </main>
 
     <!-- Footer -->
-    <div class="footer">
+    <footer class="footer" role="contentinfo">
       <p>Copyright &#64; Horuzt Invitation 2024</p>
-    </div>
+    </footer>
   </div>
 </div>
 

@@ -62,7 +62,7 @@ export class PaymentConfirmComponent implements OnInit {
 
   copyMidtrans(text: string) {
     navigator.clipboard.writeText(text).then(() => {
-      this.notyf.success('Kode Midtrans disalin!');
+      this.notyf.success('berhasil disalin!');
     }).catch(() => {
       this.notyf.error('Gagal menyalin.');
     });

@@ -39,7 +39,7 @@ export class ModalUploadGaleriComponent implements OnInit {
 
     this.uploadForm = this.fb.group({
       photo: [galeriData.photo || ''],
-      status: [galeriData.status ? 1 : 0],
+      status: [1],
       user_id: ['',Validators.required]
     });
 

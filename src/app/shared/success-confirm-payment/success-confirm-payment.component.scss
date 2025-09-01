@@ -95,6 +95,33 @@ input.form-control {
   font-weight: 700;
   font-size: 22px;
 }
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-cancel {
+  background: #e0e0e0;
+  border: none;
+  border-radius: 15px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+  color: #666;
+  padding: 10px 30px;
+  box-shadow: 0 6px 10px rgb(224 224 224 / 0.5);
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover,
+.btn-cancel:focus {
+  background: #c0c0c0;
+  color: #333;
+}
+
 .btn-confirm {
   background: #ec9ca4;
   border: none;
@@ -117,8 +144,13 @@ input.form-control {
     margin: 20px 15px;
     padding: 25px 20px 30px 20px;
   }
-  .btn-confirm {
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn-confirm, .btn-cancel {
     padding: 10px 30px;
     font-size: 16px;
+    width: 100%;
   }
 }

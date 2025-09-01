@@ -49,6 +49,7 @@ export class InformasiMempelaiComponent implements OnInit {
       ayah_wanita: ['', Validators.required],
       ibu_wanita: ['', Validators.required],
       user_id: ['', Validators.required],
+      status: [1],
       photo_pria: [null],
       photo_wanita: [null],
       cover_photo: [null]
@@ -67,6 +68,8 @@ export class InformasiMempelaiComponent implements OnInit {
     const existingFormData = JSON.parse(localStorage.getItem('formData') || '{}');
     if (existingFormData.informasiMempelai) {
       this.formGroup.patchValue(existingFormData.informasiMempelai.updatedData);
+      console.log(existingFormData.informasiMempelai);
+
     }
     this.imagePreviews = {
       photo_pria: existingFormData?.informasiMempelai?.updatedData?.photo_pria

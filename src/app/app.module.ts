@@ -85,6 +85,7 @@ import { GalleryViewComponent } from './dashboard/wedding-view/gallery-view/gall
 import { PresenceViewComponent } from './dashboard/wedding-view/presence-view/presence-view.component';
 import { GiftViewComponent } from './dashboard/wedding-view/gift-view/gift-view.component';
 import { BillUserComponent } from './dashboard/bill-user/bill-user.component';
+import { ProfileAdminComponent } from './dashboard-admin/pengaturan/profile-admin/profile-admin.component';
 
 @NgModule({
   declarations: [
@@ -158,7 +159,8 @@ import { BillUserComponent } from './dashboard/bill-user/bill-user.component';
     GalleryViewComponent,
     PresenceViewComponent,
     GiftViewComponent,
-    BillUserComponent
+    BillUserComponent,
+    ProfileAdminComponent
   ],
   imports: [
     BrowserModule,

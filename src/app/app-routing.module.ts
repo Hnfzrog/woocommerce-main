@@ -36,6 +36,7 @@ import { SettingsPaymentComponent } from './dashboard-admin/pengaturan/settings-
 import { WeddingViewComponent } from './dashboard/wedding-view/wedding-view.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { BillUserComponent } from './dashboard/bill-user/bill-user.component';
+import { ProfileAdminComponent } from './dashboard-admin/pengaturan/profile-admin/profile-admin.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -86,6 +87,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'pengguna', component: PenggunaComponent },
+      { path: 'profile', component: ProfileAdminComponent },
       { path: 'pembayaran', component: PembayaranComponent },
       { path: 'gateway', component: GatewayComponent },
       { path: 'testimoni', component: TestimoniesComponent },

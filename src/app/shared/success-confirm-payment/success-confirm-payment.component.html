@@ -10,7 +10,10 @@
   <p class="info-text">
     Saat ini status undangan Anda masih Uji Coba. Anda dapat melakukan pembelian paket kapanpun.
   </p>
-  <button type="button" class="btn btn-confirm" (click)="onRedirectToDasboard()">Dashboard</button>
+  <div class="button-group">
+    <button type="button" class="btn btn-cancel" (click)="onCancel()">Batal</button>
+    <button type="button" class="btn btn-confirm" (click)="onRedirectToDasboard()">Dashboard</button>
+  </div>
 </div>
 
 <!-- </body> -->

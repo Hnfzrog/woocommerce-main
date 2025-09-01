@@ -516,6 +516,21 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     return 'Last 30 Days';
   }
 
+  /**
+   * Get formatted domain expiry date from userData
+   */
+  getDomainExpiryDate(): string {
+    if (this.userData?.invitation?.domain_expires_at) {
+      const expiryDate = new Date(this.userData.invitation.domain_expires_at);
+      return expiryDate.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+    return '20 Desember 2024'; // Fallback to original hardcoded date
+  }
+
   ngOnDestroy(): void {
     if (this.chart) {
       this.chart.destroy();
@@ -573,7 +588,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error fetching settings for domain:', error);
-        
+
         // Log specific error details
         if (error.status === 401) {
           console.error('Authentication required to fetch settings');
@@ -618,7 +633,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     } catch (error) {
       console.error('Error in fallback URL generation:', error);
-      
+
       // Final fallback
       const url = this.router.serializeUrl(this.router.createUrlTree(['/wedding']));
       window.open(url, '_blank');

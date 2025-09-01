@@ -122,6 +122,20 @@ export enum DashboardServiceType {
   UCAPAN_DELETE,
   UCAPAN_STATISTICS,
 
+  // Profile Management endpoints
+  PROFILE_GET,
+  PROFILE_UPDATE,
+  PROFILE_PHOTO_UPLOAD,
+  PROFILE_PHOTO_DELETE,
+  PROFILE_CHANGE_PASSWORD,
+
+  // Admin Profile Management endpoints
+  ADMIN_PROFILE_GET,
+  ADMIN_PROFILE_UPDATE,
+  ADMIN_PROFILE_PHOTO_UPLOAD,
+  ADMIN_PROFILE_PHOTO_DELETE,
+  ADMIN_PROFILE_CHANGE_PASSWORD,
+
 }
 
 @Injectable({
@@ -370,8 +384,29 @@ export class DashboardService {
       case DashboardServiceType.UCAPAN_STATISTICS:
         return `${this.BASE_URL_API}/v1/ucapan-statistics`;
 
+      // Profile Management API endpoints
+      case DashboardServiceType.PROFILE_GET:
+        return `${this.BASE_URL_API}/profile`;
+      case DashboardServiceType.PROFILE_UPDATE:
+        return `${this.BASE_URL_API}/profile`;
+      case DashboardServiceType.PROFILE_PHOTO_UPLOAD:
+        return `${this.BASE_URL_API}/profile/photo`;
+      case DashboardServiceType.PROFILE_PHOTO_DELETE:
+        return `${this.BASE_URL_API}/profile/photo`;
+      case DashboardServiceType.PROFILE_CHANGE_PASSWORD:
+        return `${this.BASE_URL_API}/profile/change-password`;
 
-
+      // Admin Profile Management API endpoints
+      case DashboardServiceType.ADMIN_PROFILE_GET:
+        return `${this.BASE_URL_API}/admin/profile`;
+      case DashboardServiceType.ADMIN_PROFILE_UPDATE:
+        return `${this.BASE_URL_API}/admin/profile`;
+      case DashboardServiceType.ADMIN_PROFILE_PHOTO_UPLOAD:
+        return `${this.BASE_URL_API}/admin/profile/photo`;
+      case DashboardServiceType.ADMIN_PROFILE_PHOTO_DELETE:
+        return `${this.BASE_URL_API}/admin/profile/photo`;
+      case DashboardServiceType.ADMIN_PROFILE_CHANGE_PASSWORD:
+        return `${this.BASE_URL_API}/admin/profile/change-password`;
 
       default:
         return '';
@@ -445,6 +480,88 @@ export class DashboardService {
     }
 
     return this.httpSvc.get(`${this.getUrl(serviceType)}${parameter}`, { params: httpParams });
+  }
+
+  /**
+   * Upload file with FormData (for profile photo uploads)
+   */
+  uploadFile(serviceType: DashboardServiceType, formData: FormData): Observable<any> {
+    // Don't set Content-Type header, let browser set it automatically for multipart/form-data
+    return this.httpSvc.post(this.getUrl(serviceType), formData);
+  }
+
+  /**
+   * Get profile data with authentication
+   */
+  getProfile(): Observable<ProfileResponse> {
+    return this.httpSvc.get<ProfileResponse>(this.getUrl(DashboardServiceType.PROFILE_GET));
+  }
+
+  /**
+   * Update profile data
+   */
+  updateProfile(data: ProfileUpdateRequest): Observable<ProfileUpdateResponse> {
+    return this.httpSvc.put<ProfileUpdateResponse>(this.getUrl(DashboardServiceType.PROFILE_UPDATE), data);
+  }
+
+  /**
+   * Upload profile photo
+   */
+  uploadProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
+    const formData = new FormData();
+    formData.append('profile_photo', file);
+    return this.httpSvc.post<ProfilePhotoUploadResponse>(this.getUrl(DashboardServiceType.PROFILE_PHOTO_UPLOAD), formData);
+  }
+
+  /**
+   * Delete profile photo
+   */
+  deleteProfilePhoto(): Observable<ProfilePhotoDeleteResponse> {
+    return this.httpSvc.delete<ProfilePhotoDeleteResponse>(this.getUrl(DashboardServiceType.PROFILE_PHOTO_DELETE));
+  }
+
+  /**
+   * Change password
+   */
+  changePassword(data: PasswordChangeRequest): Observable<PasswordChangeResponse> {
+    return this.httpSvc.post<PasswordChangeResponse>(this.getUrl(DashboardServiceType.PROFILE_CHANGE_PASSWORD), data);
+  }
+
+  /**
+   * Get admin profile data with authentication
+   */
+  getAdminProfile(): Observable<ProfileResponse> {
+    return this.httpSvc.get<ProfileResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_GET));
+  }
+
+  /**
+   * Update admin profile data
+   */
+  updateAdminProfile(data: ProfileUpdateRequest): Observable<ProfileUpdateResponse> {
+    return this.httpSvc.put<ProfileUpdateResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_UPDATE), data);
+  }
+
+  /**
+   * Upload admin profile photo
+   */
+  uploadAdminProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
+    const formData = new FormData();
+    formData.append('profile_photo', file);
+    return this.httpSvc.post<ProfilePhotoUploadResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_PHOTO_UPLOAD), formData);
+  }
+
+  /**
+   * Delete admin profile photo
+   */
+  deleteAdminProfilePhoto(): Observable<ProfilePhotoDeleteResponse> {
+    return this.httpSvc.delete<ProfilePhotoDeleteResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_PHOTO_DELETE));
+  }
+
+  /**
+   * Change admin password
+   */
+  changeAdminPassword(data: PasswordChangeRequest): Observable<PasswordChangeResponse> {
+    return this.httpSvc.post<PasswordChangeResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_CHANGE_PASSWORD), data);
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
@@ -703,4 +820,93 @@ export interface TestimoniCreateResponse {
 
 export interface TestimoniDeleteResponse {
   message: string;
+}
+
+// Profile Management API interfaces
+export interface ProfilePackageInfo {
+  id: number;
+  name: string;
+  jenis_paket: string;
+  price: number;
+  currency: string;
+  payment_status: string;
+  is_active: boolean;
+}
+
+export interface ProfileDomainInfo {
+  domain: string;
+  is_active: boolean;
+  expires_at: string;
+  days_until_expiry: number;
+  payment_confirmed_at: string;
+}
+
+export interface ProfileData {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  profile_photo_url: string | null;
+  kode_pemesanan: string;
+  package_info: ProfilePackageInfo;
+  domain_info: ProfileDomainInfo;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProfileResponse {
+  success: boolean;
+  message: string;
+  data: ProfileData;
+}
+
+export interface ProfileUpdateRequest {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface ProfileUpdateResponse {
+  success: boolean;
+  message: string;
+  data: ProfileData;
+}
+
+export interface ProfilePhotoUploadResponse {
+  success: boolean;
+  message: string;
+  data: {
+    profile_photo_url: string;
+    updated_at: string;
+  };
+}
+
+export interface ProfilePhotoDeleteResponse {
+  success: boolean;
+  message: string;
+  data: {
+    profile_photo_url: null;
+    updated_at: string;
+  };
+}
+
+export interface PasswordChangeRequest {
+  current_password: string;
+  new_password: string;
+  new_password_confirmation: string;
+}
+
+export interface PasswordChangeResponse {
+  success: boolean;
+  message: string;
+  data: {
+    updated_at: string;
+  };
+}
+
+export interface ValidationError {
+  message: string;
+  errors: {
+    [key: string]: string[];
+  };
 }

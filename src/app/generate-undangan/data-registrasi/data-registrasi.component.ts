@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Notyf } from 'notyf';
 import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
@@ -26,6 +27,7 @@ export class DataRegistrasiComponent implements OnInit {
     private fb: FormBuilder,
     private modalSvc: BsModalService,
     private dashboardSvc: DashboardService,
+    private router: Router
 
   ) {
     this.notyf = new Notyf({
@@ -143,4 +145,9 @@ export class DataRegistrasiComponent implements OnInit {
   handleCancelClicked(): void {
     this.modalRef?.hide();
   }
+
+  onCancel(){
+    this.router.navigate(['/']);
+  }
+
 }

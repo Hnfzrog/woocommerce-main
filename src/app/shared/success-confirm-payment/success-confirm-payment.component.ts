@@ -26,4 +26,8 @@ export class SuccessConfirmPaymentComponent implements OnInit {
     this.modalService.hide();
   }
 
+  onCancel() {
+    this.modalService.hide();
+  }
+
 }

@@ -9,11 +9,11 @@ import {
 } from 'src/app/dashboard.service';
 
 @Component({
-  selector: 'wc-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  selector: 'wc-profile-admin',
+  templateUrl: './profile-admin.component.html',
+  styleUrls: ['./profile-admin.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileAdminComponent implements OnInit {
   profileForm: FormGroup;
   passwordForm: FormGroup;
   profileData: ProfileData | null = null;
@@ -58,12 +58,12 @@ export class ProfileComponent implements OnInit {
   }
 
   /**
-   * Load user profile data
+   * Load admin profile data
    */
   loadProfile(): void {
     this.isLoading = true;
 
-    this.dashboardService.getProfile().subscribe({
+    this.dashboardService.getAdminProfile().subscribe({
       next: (response: ProfileResponse) => {
         this.profileData = response.data;
         this.populateForm();
@@ -103,7 +103,7 @@ export class ProfileComponent implements OnInit {
     this.isSubmitting = true;
     const formData = this.profileForm.value;
 
-    this.dashboardService.updateProfile(formData).subscribe({
+    this.dashboardService.updateAdminProfile(formData).subscribe({
       next: (response) => {
         this.profileData = response.data;
         this.notyf.success(response.message || 'Profil berhasil diperbarui');
@@ -159,7 +159,7 @@ export class ProfileComponent implements OnInit {
 
     this.isUploadingPhoto = true;
 
-    this.dashboardService.uploadProfilePhoto(this.selectedFile).subscribe({
+    this.dashboardService.uploadAdminProfilePhoto(this.selectedFile).subscribe({
       next: (response) => {
         if (this.profileData) {
           this.profileData.profile_photo_url = response.data.profile_photo_url;
@@ -187,7 +187,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.dashboardService.deleteProfilePhoto().subscribe({
+    this.dashboardService.deleteAdminProfilePhoto().subscribe({
       next: (response) => {
         if (this.profileData) {
           this.profileData.profile_photo_url = null;
@@ -236,7 +236,7 @@ export class ProfileComponent implements OnInit {
 
     this.isPasswordSubmitting = true;
 
-    this.dashboardService.changePassword(formData).subscribe({
+    this.dashboardService.changeAdminPassword(formData).subscribe({
       next: (response) => {
         this.notyf.success(response.message || 'Kata sandi berhasil diperbarui');
         this.passwordForm.reset();
