@@ -1,7 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Notyf } from 'notyf';
-import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import {
+  DashboardService,
+  TestimonialService,
+  TestimonialData,
+  TestimonialResponse
+} from 'src/app/dashboard.service';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
 
 @Component({
@@ -9,216 +17,383 @@ import { ModalComponent } from 'src/app/shared/modal/modal.component';
   templateUrl: './testimonies.component.html',
   styleUrls: ['./testimonies.component.scss']
 })
-export class TestimoniesComponent implements OnInit {
-  rows: Array<any> = [];
-  columns: Array<any> = [];
-  filteredRows: Array<any> = [];
+export class TestimoniesComponent implements OnInit, OnDestroy {
+  // Expose Math to template
+  Math = Math;
+  testimonials: TestimonialData[] = [];
+  filteredTestimonials: TestimonialData[] = [];
+  isLoading = true;
+  hasError = false;
 
-  data: any
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalItems = 0;
+  totalPages = 0;
 
-  modalRef?: BsModalRef
-  private notyf: Notyf
+  // Search and filters
+  searchControl = new FormControl('');
+  selectedStatus = 'all'; // 'all', 'published', 'unpublished'
+
+  // Selection
+  selectedTestimonials: number[] = [];
+  selectAll = false;
+
+  private destroy$ = new Subject<void>();
+  private testimonialService: TestimonialService;
+  private notyf: Notyf;
+  modalRef?: BsModalRef;
 
   constructor(
-    private dashboardSvc: DashboardService,
-    private modalSvc: BsModalService
+    private dashboardService: DashboardService,
+    private modalService: BsModalService,
+    private cdr: ChangeDetectorRef
   ) {
+    this.testimonialService = new TestimonialService(this.dashboardService);
     this.notyf = new Notyf({
       duration: 3000,
-      position: {
-        x: 'right',
-        y: 'top'
-      }
+      position: { x: 'right', y: 'top' }
     });
-   }
+  }
 
   ngOnInit(): void {
-
-    this.getDataUser();
-
-    this.columns = [
-      { name: 'No', prop: 'number' },
-      { name: 'Nama', prop: 'email' },
-      { name: 'Kota', prop: 'kota' },
-      { name: 'Provinsi', prop: 'provinsi' },
-      { name: 'Ulasan', prop: 'ulasan' },
-      { name: 'Status', prop: 'status', type: 'html' },
-
-    ];
-
-    this.filteredRows = [...this.rows];
+    this.loadTestimonials();
+    this.setupSearchSubscription();
   }
 
-  getDataUser(){
-    this.dashboardSvc.getParam(DashboardServiceType.ADM_TESTI, '').subscribe(res => {
-      this.data = res?.data;
-
-      this.rows = this.data.map((item: any, index: number) => ({
-        number: index + 1,
-        email: item?.user?.email,
-        kota: item?.kota,
-        provinsi: item?.provinsi,
-        ulasan: item?.ulasan,
-        id: item?.id,
-        status_bol: item?.status,
-        status: this.setStatusLabelTabel(item?.status), // Ubah status sesuai aturan
-        auth: {
-          canDelete: true
-        }
-      }));
-
-      this.filteredRows = [...this.rows];
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-
-
-  onSearch(event: any) {
-    const query = event.target.value.toLowerCase();
-    this.filteredRows = this.rows.filter(user =>
-      user.name.toLowerCase().includes(query)
-    );
+  /**
+   * Setup search subscription with debounce
+   */
+  private setupSearchSubscription(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.currentPage = 1;
+        this.loadTestimonials();
+      });
   }
 
-  onConfirmClicked(row: any) {
-    console.log('Confirm action:', row);
-  }
+  /**
+   * Load testimonials from API
+   */
+  loadTestimonials(): void {
+    this.isLoading = true;
+    this.hasError = false;
 
-  onEditClicked(row: any) {
-    const initialState = {
-        message: 'Apakah anda ingin mengubah data testimoni??',
-        cancelClicked: () => this.handleCancelClicked(),
-        submitClicked: () => this.saveEditData(row),
-        submitMessage: 'Simpan',
-      };
+    const params = {
+      page: this.currentPage,
+      limit: this.itemsPerPage,
+      search: this.searchControl.value || undefined,
+      status: this.selectedStatus === 'all' ? undefined :
+             (this.selectedStatus === 'published' ? '1' : '0')
+    };
 
-      this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-
-      if (this.modalRef?.content) {
-        this.modalRef.content.onClose.subscribe((res: any) => {
-          if (res?.state === 'delete') {
-            console.log('Delete action triggered');
-          } else if (res?.state === 'cancel') {
-            console.log('Action canceled');
+    this.testimonialService.getAdminTestimonials(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: TestimonialResponse) => {
+          if (response.data) {
+            this.testimonials = response.data;
+            this.totalItems = response.meta?.total || response.data.length;
+            this.totalPages = response.meta?.last_page || 1;
+            this.selectedTestimonials = [];
+            this.selectAll = false;
+          } else {
+            this.testimonials = [];
+            this.hasError = true;
           }
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error loading testimonials:', error);
+          this.testimonials = [];
+          this.hasError = true;
+          this.isLoading = false;
+          this.notyf.error('Gagal memuat data testimoni');
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  /**
+   * Handle status filter change
+   */
+  onStatusFilterChange(status: string): void {
+    this.selectedStatus = status;
+    this.currentPage = 1;
+    this.loadTestimonials();
+  }
+
+  /**
+   * Handle pagination
+   */
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadTestimonials();
+    }
+  }
+
+  /**
+   * Handle items per page change
+   */
+  onItemsPerPageChange(event: Event): void {
+    const items = +(event.target as HTMLSelectElement).value;
+    this.itemsPerPage = items;
+    this.currentPage = 1;
+    this.loadTestimonials();
+  }
+
+  /**
+   * Toggle testimonial status
+   */
+  toggleTestimonialStatus(testimonial: TestimonialData): void {
+    const newStatus = testimonial.status === 0 ? 1 : 0;
+    const statusText = newStatus === 1 ? 'dipublikasikan' : 'disembunyikan';
+
+    const initialState = {
+      message: `Apakah Anda yakin ingin mengubah status testimoni menjadi ${statusText}?`,
+      cancelClicked: () => this.modalRef?.hide(),
+      submitClicked: () => this.confirmToggleStatus(testimonial.id, newStatus === 1),
+      submitMessage: 'Ya, Ubah',
+    };
+
+    this.modalRef = this.modalService.show(ModalComponent, { initialState });
+  }
+
+  /**
+   * Confirm status toggle
+   */
+  private confirmToggleStatus(id: number, status: boolean): void {
+    this.testimonialService.updateTestimonialStatus(id, status)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
           this.modalRef?.hide();
-        });
-      }
+          this.notyf.success(response.message || 'Status testimoni berhasil diubah');
+          this.loadTestimonials();
+        },
+        error: (error) => {
+          this.modalRef?.hide();
+          console.error('Error updating status:', error);
+          this.notyf.error('Gagal mengubah status testimoni');
+        }
+      });
   }
 
-  public setStatusLabelTabel(val: any) {
-  switch (val) {
-    case 0:
-      return '<label class="label label-default">Private</label>';
-    case 1:
-      return '<label class="label label-blues">Publik</label>';
-    default:
-      return ''; // Tambahkan return di default case
-  }
-}
-
-handleCancelClicked(){
-
-}
-
-saveEditData(data: any) {
-  console.log(data);
-
-  const param = `/${data?.id}/update-status`;
-
-  // Konversi status ke boolean (true/false)
-  const newStatus: boolean = data?.status_bol === 0 ? true : false;
-
-  // Kirim sebagai objek JSON langsung
-  const payload = { status: newStatus };
-
-  this.dashboardSvc.update(DashboardServiceType.ADM_TESTI, param, payload).subscribe({
-    next: (res) => {
-      this.modalRef?.hide();
-      this.notyf.success(res?.message || 'Data berhasil disimpan.');
-      window.location.reload();
-    },
-    error: (err) => {
-      console.error('Error:', err);
-      this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-    }
-  });
-}
-
-
-  onDeleteClicked(row: any) {
+  /**
+   * Delete single testimonial
+   */
+  deleteTestimonial(testimonial: TestimonialData): void {
+    const userName = testimonial.user.name || testimonial.user.email;
     const initialState = {
-      message: 'Apakah anda ingin menghapus data testimoni??',
-      cancelClicked: () => this.handleCancelClicked(),
-      submitClicked: () => this.deleteDataSingle(row),
-      submitMessage: 'Simpan',
+      message: `Apakah Anda yakin ingin menghapus testimoni dari ${userName}?`,
+      cancelClicked: () => this.modalRef?.hide(),
+      submitClicked: () => this.confirmDeleteTestimonial(testimonial.id),
+      submitMessage: 'Ya, Hapus',
     };
 
-    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
+    this.modalRef = this.modalService.show(ModalComponent, { initialState });
+  }
 
-    if (this.modalRef?.content) {
-      this.modalRef.content.onClose.subscribe((res: any) => {
-        if (res?.state === 'delete') {
-          console.log('Delete action triggered');
-        } else if (res?.state === 'cancel') {
-          console.log('Action canceled');
+  /**
+   * Confirm single testimonial deletion
+   */
+  private confirmDeleteTestimonial(id: number): void {
+    this.testimonialService.deleteTestimonial(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.modalRef?.hide();
+          this.notyf.success(response.message || 'Testimoni berhasil dihapus');
+          this.loadTestimonials();
+        },
+        error: (error) => {
+          this.modalRef?.hide();
+          console.error('Error deleting testimonial:', error);
+          this.notyf.error('Gagal menghapus testimoni');
         }
-        this.modalRef?.hide();
       });
+  }
+
+  /**
+   * Delete all testimonials
+   */
+  deleteAllTestimonials(): void {
+    const initialState = {
+      message: 'Apakah Anda yakin ingin menghapus SEMUA testimoni? Tindakan ini tidak dapat dibatalkan!',
+      cancelClicked: () => this.modalRef?.hide(),
+      submitClicked: () => this.confirmDeleteAll(),
+      submitMessage: 'Ya, Hapus Semua',
+    };
+
+    this.modalRef = this.modalService.show(ModalComponent, { initialState });
+  }
+
+  /**
+   * Confirm delete all testimonials
+   */
+  private confirmDeleteAll(): void {
+    this.testimonialService.deleteAllTestimonials()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.modalRef?.hide();
+          this.notyf.success(response.message || 'Semua testimoni berhasil dihapus');
+          this.loadTestimonials();
+        },
+        error: (error) => {
+          this.modalRef?.hide();
+          console.error('Error deleting all testimonials:', error);
+          this.notyf.error('Gagal menghapus testimoni');
+        }
+      });
+  }
+
+  /**
+   * Handle individual selection
+   */
+  onTestimonialSelect(testimonialId: number, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedTestimonials.push(testimonialId);
+    } else {
+      this.selectedTestimonials = this.selectedTestimonials.filter(id => id !== testimonialId);
+      this.selectAll = false;
+    }
+    this.updateSelectAllState();
+  }
+
+  /**
+   * Handle select all
+   */
+  onSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectAll = checked;
+    if (checked) {
+      this.selectedTestimonials = this.testimonials.map(t => t.id);
+    } else {
+      this.selectedTestimonials = [];
     }
   }
 
-  deleteDataSingle(data:any){
-    // const param = `/${data?.number}`;
+  /**
+   * Update select all state
+   */
+  private updateSelectAllState(): void {
+    this.selectAll = this.testimonials.length > 0 &&
+                     this.selectedTestimonials.length === this.testimonials.length;
+  }
 
-    this.dashboardSvc.deleteV2(DashboardServiceType.ADM_TESTI, data?.id).subscribe({
-      next: (res) => {
+  /**
+   * Bulk status update
+   */
+  bulkUpdateStatus(status: boolean): void {
+    if (this.selectedTestimonials.length === 0) {
+      this.notyf.error('Silakan pilih testimoni terlebih dahulu');
+      return;
+    }
+
+    const statusText = status ? 'dipublikasikan' : 'disembunyikan';
+    const initialState = {
+      message: `Apakah Anda yakin ingin mengubah status ${this.selectedTestimonials.length} testimoni menjadi ${statusText}?`,
+      cancelClicked: () => this.modalRef?.hide(),
+      submitClicked: () => this.confirmBulkStatusUpdate(status),
+      submitMessage: 'Ya, Ubah',
+    };
+
+    this.modalRef = this.modalService.show(ModalComponent, { initialState });
+  }
+
+  /**
+   * Confirm bulk status update
+   */
+  private confirmBulkStatusUpdate(status: boolean): void {
+    this.testimonialService.bulkUpdateStatus({
+      ids: this.selectedTestimonials,
+      status: status
+    })
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (response) => {
         this.modalRef?.hide();
-        this.notyf.success(res?.message || 'Data berhasil dihapus.');
-        window.location.reload();
+        this.notyf.success(response.message || 'Status testimoni berhasil diubah');
+        this.selectedTestimonials = [];
+        this.selectAll = false;
+        this.loadTestimonials();
       },
-      error: (err) => {
-        console.error('Error:', err);
-        this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
+      error: (error) => {
+        this.modalRef?.hide();
+        console.error('Error bulk updating status:', error);
+        this.notyf.error('Gagal mengubah status testimoni');
       }
     });
   }
 
-  onDeleteAllClicked() {
-    const initialState = {
-      message: 'Apakah anda ingin menghapus semua data testimoni??',
-      cancelClicked: () => this.handleCancelClicked(),
-      submitClicked: () => this.deleteDataAll(),
-      submitMessage: 'Simpan',
-    };
-
-    this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-
-    if (this.modalRef?.content) {
-      this.modalRef.content.onClose.subscribe((res: any) => {
-        if (res?.state === 'delete') {
-          console.log('Delete action triggered');
-        } else if (res?.state === 'cancel') {
-          console.log('Action canceled');
-        }
-        this.modalRef?.hide();
-      });
-    }
+  /**
+   * Check if testimonial is selected
+   */
+  isSelected(testimonialId: number): boolean {
+    return this.selectedTestimonials.includes(testimonialId);
   }
 
-  deleteDataAll(){
-    // const param = `/${data?.number}`;
+  /**
+   * Get status badge HTML
+   */
+  getStatusBadge(status: number): string {
+    return status === 1
+      ? '<span class="badge badge-success">Dipublikasi</span>'
+      : '<span class="badge badge-secondary">Disembunyikan</span>';
+  }
 
-    this.dashboardSvc.delete(DashboardServiceType.ADM_TESTI_DELETE_ALL).subscribe({
-      next: (res) => {
-        this.modalRef?.hide();
-        this.notyf.success(res?.message || 'Data berhasil dihapus.');
-        window.location.reload();
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-      }
+  /**
+   * Truncate text
+   */
+  truncateText(text: string, maxLength: number = 100): string {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
+  /**
+   * Format date
+   */
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
+  }
+
+  /**
+   * Get page numbers for pagination
+   */
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  /**
+   * Track by function for ngFor performance
+   */
+  trackByTestimonialId(index: number, testimonial: TestimonialData): number {
+    return testimonial.id;
   }
 }

@@ -1,199 +1,383 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
+<div class="settings-payment-container">
+  <div class="container-fluid">
 
-    <div class="col-lg-6 col-md-6">
-      <div class="card">
-        <div class="card-header">Metode Pembayaran Tagihan</div>
-        <div class="card-body">
-          <label for="paket_undangan_id">Metode pembayaran</label>
-          <ngx-select [items]="selectOptions.payment.items" [optionTextField]="'name'" [optionValueField]="'id'"
-            placeholder="Pilih metode pembayaran" (select)="onMetodeSelect($event)"></ngx-select>
+    <!-- Loading State -->
+    <div *ngIf="isLoading && !selectedPaymentMethod" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Memuat metode pembayaran...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div *ngIf="!isLoading || selectedPaymentMethod" class="row">
+
+      <!-- Payment Method Selection -->
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card payment-method-card">
+          <div class="card-header">
+            <i class="fas fa-credit-card me-2"></i>
+            Metode Pembayaran Tagihan
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="payment-method" class="form-label">
+                <i class="fas fa-list me-2"></i>Pilihan Pembayaran
+              </label>
+              <ngx-select
+                [items]="paymentMethods"
+                [optionTextField]="'name'"
+                [optionValueField]="'id'"
+                placeholder="Pilih metode pembayaran"
+                (select)="onPaymentMethodSelect($event)"
+                class="payment-select"
+              ></ngx-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Configuration Form -->
+      <div *ngIf="selectedPaymentMethod" class="col-lg-6 col-md-12 mb-4">
+        <div class="card config-card">
+          <div class="card-header">
+            <i class="fas fa-cog me-2"></i>
+            Pengaturan {{ selectedPaymentMethod.name }}
+          </div>
+          <div class="card-body">
+
+            <!-- Manual Payment Form -->
+            <form *ngIf="selectedPaymentMethod.id === 1" [formGroup]="paymentForm" (ngSubmit)="onSubmitPayment()">
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-university me-2"></i>Nama Bank
+                </label>
+                <ngx-select
+                  [items]="bankList"
+                  [optionTextField]="'name'"
+                  [optionValueField]="'kode_bank'"
+                  placeholder="Pilih Bank"
+                  formControlName="kode_bank"
+                  (select)="onBankSelect($event)"
+                  class="bank-select"
+                ></ngx-select>
+                <div class="error-message" *ngIf="getFieldError('kode_bank')">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  {{ getFieldError('kode_bank') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-credit-card me-2"></i>No Rekening
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nomor_rekening"
+                  placeholder="Contoh: 01234567890"
+                  [class.is-invalid]="getFieldError('nomor_rekening')"
+                />
+                <div class="error-message" *ngIf="getFieldError('nomor_rekening')">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  {{ getFieldError('nomor_rekening') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-user me-2"></i>Nama Pemilik
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nama_pemilik"
+                  placeholder="Contoh: Zayyin Alfarizi"
+                  [class.is-invalid]="getFieldError('nama_pemilik')"
+                />
+                <div class="error-message" *ngIf="getFieldError('nama_pemilik')">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  {{ getFieldError('nama_pemilik') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-image me-2"></i>Upload Foto Rekening (Opsional)
+                </label>
+                <div class="file-upload-wrapper">
+                  <input
+                    type="file"
+                    id="photoUpload"
+                    class="file-input"
+                    accept="image/jpeg,image/png,image/jpg"
+                    (change)="onFileSelected($event)"
+                  />
+                  <label for="photoUpload" class="file-label">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>
+                    Choose File
+                  </label>
+                  <span class="file-info">
+                    {{ selectedPhotoFile ? selectedPhotoFile.name : 'No file chosen' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg w-100"
+                  [disabled]="!isFormValid() || isSubmitting"
+                >
+                  <i class="fas fa-save me-2"></i>
+                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                </button>
+              </div>
+            </form>
+
+            <!-- Tripay Payment Form -->
+            <form *ngIf="selectedPaymentMethod.id === 2" [formGroup]="paymentForm" (ngSubmit)="onSubmitPayment()">
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-code me-2"></i>Kode Merchant
+                </label>
+                <input type="text" class="form-control" formControlName="kode_merchant" placeholder="Kode merchant Tripay">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-key me-2"></i>API Key
+                </label>
+                <input type="text" class="form-control" formControlName="api_key" placeholder="API Key Tripay">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-lock me-2"></i>Private Key
+                </label>
+                <input type="password" class="form-control" formControlName="private_key" placeholder="Private Key Tripay">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-link me-2"></i>URL Transaksi Tripay
+                </label>
+                <input type="url" class="form-control" formControlName="url_tripay" placeholder="https://...">
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg w-100"
+                  [disabled]="!isFormValid() || isSubmitting"
+                >
+                  <i class="fas fa-save me-2"></i>
+                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                </button>
+              </div>
+            </form>
+
+            <!-- Midtrans Payment Form -->
+            <form *ngIf="selectedPaymentMethod.id === 3" [formGroup]="paymentForm" (ngSubmit)="onSubmitPayment()">
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-link me-2"></i>URL Midtrans
+                </label>
+                <input type="url" class="form-control" formControlName="url" placeholder="https://...">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-server me-2"></i>ServerKey Midtrans
+                </label>
+                <input type="password" class="form-control" formControlName="server_key" placeholder="Server Key Midtrans">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-desktop me-2"></i>ClientKey Midtrans
+                </label>
+                <input type="text" class="form-control" formControlName="client_key" placeholder="Client Key Midtrans">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">
+                  <i class="fas fa-toggle-on me-2"></i>Metode Production
+                </label>
+                <select class="form-control" formControlName="metode_production">
+                  <option value="">Pilih Mode</option>
+                  <option value="sandbox">Sandbox</option>
+                  <option value="production">Production</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg w-100"
+                  [disabled]="!isFormValid() || isSubmitting"
+                >
+                  <i class="fas fa-save me-2"></i>
+                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                </button>
+              </div>
+            </form>
+
+          </div>
         </div>
       </div>
     </div>
-    <ng-container *ngIf="methodSelected === 1">
-      <div class="col-lg-6 col-md-6">
-        <div class="card">
-          <div class="card-header">Pengaturan Pembayaran Manual</div>
-          <div class="card-body">
-            <form [formGroup]="formPayment">
-              <div class="mb-3">
-                <label class="form-label">Nama Bank</label>
-                <ngx-select [items]="listBank" [optionTextField]="'name'" [optionValueField]="'kode_bank'"
-                  placeholder="Pilih Bank" formControlName="kode_bank" (change)="onBankSelect($event)">
-                </ngx-select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">No Rekening</label>
-                <input type="number" class="form-control" formControlName="nomor_rekening">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Nama Pemilik</label>
-                <input type="text" class="form-control" formControlName="nama_pemilik">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Upload Foto Rekening</label>
-                <input type="file" class="form-control" (change)="onFileSelected($event)" />
-              </div>
 
-              <div class="text-right">
-                <button type="button" class="btn" (click)="onSubmitPayment()" [disabled]="formPayment.invalid"
-                  style="background: #4bd0f1; color: white;">
-                  Simpan
-                </button>
-              </div>
-            </form>
+    <!-- Payment Details Table -->
+    <div *ngIf="selectedPaymentMethod && hasPaymentDetails()" class="row">
+      <div class="col-12">
+        <div class="card table-card">
+          <div class="card-header table-header">
+            <div class="header-content">
+              <h3 class="table-title">
+                <i class="fas fa-table me-2"></i>
+                Konfigurasi {{ selectedPaymentMethod.name }}
+              </h3>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table payment-table" role="table" aria-label="Payment configuration table">
+                <thead>
+                  <tr>
+                    <th *ngFor="let column of getTableColumns()" scope="col">
+                      {{ getColumnHeader(column) }}
+                    </th>
+                    <th scope="col" class="text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let detail of paymentDetails; let i = index">
+
+                    <!-- Manual Payment Columns -->
+                    <td *ngIf="getTableColumns().includes('pengguna')">
+                      <div class="user-info">
+                        <i class="fas fa-user text-primary me-2"></i>
+                        <span>{{ detail.pengguna }}</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('email')">
+                      <div class="email-info">
+                        <i class="fas fa-envelope text-info me-2"></i>
+                        <span>{{ detail.email }}</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('noRekening')">
+                      <div class="account-info">
+                        <i class="fas fa-credit-card text-success me-2"></i>
+                        <span class="account-number">{{ detail.noRekening }}</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('namaBank')">
+                      <div class="bank-info">
+                        <i class="fas fa-university text-warning me-2"></i>
+                        <span class="bank-name">{{ detail.namaBank }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Tripay Columns -->
+                    <td *ngIf="getTableColumns().includes('urlTripay')">
+                      <div class="url-info">
+                        <i class="fas fa-link text-primary me-2"></i>
+                        <span class="url-text">{{ detail.urlTripay }}</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('apiKey')">
+                      <div class="key-info">
+                        <i class="fas fa-key text-warning me-2"></i>
+                        <span class="key-text">{{ detail.apiKey | slice:0:10 }}...</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('kodeMerchant')">
+                      <div class="merchant-info">
+                        <i class="fas fa-store text-info me-2"></i>
+                        <span>{{ detail.kodeMerchant }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Midtrans Columns -->
+                    <td *ngIf="getTableColumns().includes('url')">
+                      <div class="url-info">
+                        <i class="fas fa-link text-primary me-2"></i>
+                        <span class="url-text">{{ detail.url }}</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('serverKey')">
+                      <div class="key-info">
+                        <i class="fas fa-server text-danger me-2"></i>
+                        <span class="key-text">{{ detail.serverKey | slice:0:10 }}...</span>
+                      </div>
+                    </td>
+
+                    <td *ngIf="getTableColumns().includes('clientKey')">
+                      <div class="key-info">
+                        <i class="fas fa-desktop text-success me-2"></i>
+                        <span class="key-text">{{ detail.clientKey | slice:0:10 }}...</span>
+                      </div>
+                    </td>
+
+                    <!-- Trial Columns -->
+                    <td *ngIf="getTableColumns().includes('trialInfo')">
+                      <div class="trial-info">
+                        <i class="fas fa-flask text-secondary me-2"></i>
+                        <span class="trial-text">{{ detail.trialInfo }}</span>
+                      </div>
+                    </td>
+
+                    <!-- Payment Method Column -->
+                    <td *ngIf="getTableColumns().includes('metodePembayaran')">
+                      <span class="payment-method-badge">
+                        <i class="fas fa-tag me-1"></i>
+                        {{ detail.metodePembayaran }}
+                      </span>
+                    </td>
+
+                    <!-- Action Column -->
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Delete">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!hasPaymentDetails()" class="empty-state text-center py-5">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">Belum ada konfigurasi pembayaran</h5>
+              <p class="text-muted">Silakan tambahkan konfigurasi pembayaran terlebih dahulu</p>
+            </div>
           </div>
         </div>
       </div>
-    </ng-container>
-    <ng-container *ngIf="methodSelected === 2">
-      <div class="col-lg-6 col-md-6">
-        <div class="card">
-          <div class="card-header">Pengaturan Pembayaran Tripay</div>
-          <div class="card-body">
-            <form [formGroup]="formPayment">
-              <div class="mb-3">
-                <label class="form-label">Kode Merchant</label>
-                <input type="text" class="form-control" formControlName="kode_merchant">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">API Key</label>
-                <input type="text" class="form-control" formControlName="api_key">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Private Key</label>
-                <input type="text" class="form-control" formControlName="private_key">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">URL Transaksi Tripay</label>
-                <input type="text" class="form-control" formControlName="url_tripay">
-              </div>
-              <div class="text-right">
-                <button type="button" class="btn" (click)="onSubmitPayment()" [disabled]="formPayment.invalid"
-                  style="background: #4bd0f1; color: white;">
-                  Simpan
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+    </div>
+
+    <!-- Loading State for Details -->
+    <div *ngIf="isLoading && selectedPaymentMethod" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
       </div>
-    </ng-container>
-    <ng-container *ngIf="methodSelected === 3">
-      <div class="col-lg-6 col-md-6">
-        <div class="card">
-          <div class="card-header">Pengaturan Pembayaran Midtrans</div>
-          <div class="card-body">
-            <form [formGroup]="formPayment">
-              <div class="mb-3">
-                <label class="form-label">URL Midtrans</label>
-                <input type="text" class="form-control" formControlName="url">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">ServerKey Midtrans</label>
-                <input type="text" class="form-control" formControlName="server_key">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Clientkey Midtrans</label>
-                <input type="text" class="form-control" formControlName="client_key">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Metode Production</label>
-                <input type="text" class="form-control" formControlName="metode_production">
-              </div>
-              <div class="text-right">
-                <button type="button" class="btn" (click)="onSubmitPayment()" [disabled]="formPayment.invalid"
-                  style="background: #4bd0f1; color: white;">
-                  Simpan
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </ng-container>
+      <p class="mt-2 text-muted">Memuat detail pembayaran...</p>
+    </div>
 
   </div>
 </div>
-
-
-<body>
-  <div class="invoice-container shadow-sm" role="region" aria-label="Invoice table container">
-    <div class="invoice-header">
-      <h2>Invoice</h2>
-    </div>
-
-    <table role="table" aria-label="Rekening Admin data table" class="admin-table">
-      <thead>
-        <tr>
-          <th *ngFor="let column of getTableColumns()" scope="col">
-            {{ getColumnHeader(column) }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of rows">
-          <td *ngFor="let column of getTableColumns()">
-
-
-            <div *ngIf="column === 'pengguna'" class="user-info">
-              <div class="user-email">{{ row.pengguna }}</div>
-            </div>
-
-            <div *ngIf="column === 'email'" class="user-info">
-              <div class="user-email">{{ row.email }}</div>
-            </div>
-
-            <div *ngIf="column === 'noRekening'" class="rekening-info">
-              <div class="rekening-number">{{ row.noRekening }}</div>
-            </div>
-
-            <div *ngIf="column === 'namaBank'" class="bank-info">
-              <div class="bank-name">{{ row.namaBank }}</div>
-            </div>
-
-
-            <div *ngIf="column === 'urlTripay'" class="url-info">
-              <div class="url-text">{{ row.urlTripay }}</div>
-            </div>
-
-            <div *ngIf="column === 'apiKey'" class="api-info">
-              <div class="api-text">{{ row.apiKey }}</div>
-            </div>
-
-            <div *ngIf="column === 'kodeMerchant'" class="merchant-info">
-              <div class="merchant-text">{{ row.kodeMerchant }}</div>
-            </div>
-
-
-            <div *ngIf="column === 'url'" class="url-info">
-              <div class="url-text">{{ row.url }}</div>
-            </div>
-
-            <div *ngIf="column === 'serverKey'" class="server-info">
-              <div class="server-text">{{ row.serverKey }}</div>
-            </div>
-
-            <div *ngIf="column === 'clientKey'" class="client-info">
-              <div class="client-text">{{ row.clientKey }}</div>
-            </div>
-
-
-            <div *ngIf="column === 'trialInfo'" class="trial-info">
-              <div class="trial-text">{{ row.trialInfo }}</div>
-            </div>
-
-
-            <div *ngIf="column === 'metodePembayaran'">
-              <span class="payment-method">{{ row.metodePembayaran }}</span>
-            </div>
-
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-
-  </div>
-</body>

@@ -24,6 +24,16 @@ export class CeritaQuoteComponent implements OnInit {
   editingQuoteId: number | null = null;
   editQuoteForm: FormGroup | null = null;
 
+  // Loading states for better UX
+  isLoadingCeritaData = false;
+  isLoadingQuoteData = false;
+  isSubmittingCerita = false;
+  isSubmittingQuote = false;
+  isDeletingCerita = false;
+  isDeletingQuote = false;
+  isUpdatingCerita = false;
+  isUpdatingQuote = false;
+
   private notyf: Notyf;
   private modalRef? : BsModalRef
 
@@ -57,6 +67,7 @@ export class CeritaQuoteComponent implements OnInit {
     this.fetchQuoteData();
   }
   fetchQuoteData() {
+    this.isLoadingQuoteData = true;
     this.dashboardSvc.list(DashboardServiceType.QUOTE_DATA).subscribe({
       next: (res) => {
         this.quoteData = (res?.data || []).map((item: any) => ({
@@ -64,10 +75,12 @@ export class CeritaQuoteComponent implements OnInit {
           name: item.name,
           quote: item.qoute || item.quote, // handle typo from backend
         }));
+        this.isLoadingQuoteData = false;
       },
       error: (err) => {
         this.notyf.error('Gagal memuat data quote.');
         this.quoteData = [];
+        this.isLoadingQuoteData = false;
       }
     });
   }
@@ -90,23 +103,29 @@ export class CeritaQuoteComponent implements OnInit {
       this.editQuoteForm?.markAllAsTouched();
       return;
     }
+
+    this.isUpdatingQuote = true;
     const payload = {
       id: quote.id,
       name: this.editQuoteForm.value.name,
       qoute: this.editQuoteForm.value.quote,
     };
+
     this.dashboardSvc.update(DashboardServiceType.QUOTE_UPDATE, '', payload).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Quote berhasil diupdate.');
         this.cancelEditQuote();
         this.fetchQuoteData();
+        this.isUpdatingQuote = false;
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Gagal update quote.');
+        this.isUpdatingQuote = false;
       }
     });
   }
   fetchCeritaData() {
+    this.isLoadingCeritaData = true;
     this.dashboardSvc.list(DashboardServiceType.CERITA_DATA).subscribe({
       next: (res) => {
         this.ceritaData = (res?.data || []).map((item: any) => ({
@@ -115,10 +134,12 @@ export class CeritaQuoteComponent implements OnInit {
           lead_cerita: item.lead_cerita,
           tanggal_cerita: item.tanggal_cerita,
         }));
+        this.isLoadingCeritaData = false;
       },
       error: (err) => {
         this.notyf.error('Gagal memuat data cerita.');
         this.ceritaData = [];
+        this.isLoadingCeritaData = false;
       }
     });
   }
@@ -142,20 +163,25 @@ export class CeritaQuoteComponent implements OnInit {
       this.editCeritaForm?.markAllAsTouched();
       return;
     }
+
+    this.isUpdatingCerita = true;
     const payload = {
       id: cerita.id,
       title: this.editCeritaForm.value.title,
       lead_cerita: this.editCeritaForm.value.lead_cerita,
       tanggal_cerita: this.formatDate(this.editCeritaForm.value.tanggal_cerita),
     };
+
     this.dashboardSvc.update(DashboardServiceType.CERITA_UPDATE, '', payload).subscribe({
       next: (res) => {
         this.notyf.success(res?.message || 'Cerita berhasil diupdate.');
         this.cancelEditCerita();
         this.fetchCeritaData();
+        this.isUpdatingCerita = false;
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Gagal update cerita.');
+        this.isUpdatingCerita = false;
       }
     });
   }
@@ -166,6 +192,15 @@ export class CeritaQuoteComponent implements OnInit {
 
   getCeritaFormGroup(index: number): FormGroup {
     return this.ceritaFormArray.at(index) as FormGroup;
+  }
+
+  // Helper methods for template tracking
+  trackByCeritaId(index: number, item: any): any {
+    return item.id || index;
+  }
+
+  trackByQuoteId(index: number, item: any): any {
+    return item.id || index;
   }
 
   createCerita(): FormGroup {
@@ -191,31 +226,15 @@ export class CeritaQuoteComponent implements OnInit {
 
   onSubmitCerita(): void {
     if (this.ceritaForm.valid) {
-      const initialState = {
-        message: 'Apakah anda ingin menyimpan cerita?',
-        cancelClicked: () => this.handleCancelClicked(),
-        submitClicked: () => this.SubmitCerita(),
-        submitMessage: 'Simpan',
-      };
-
-      this.modalRef = this.modalSvc.show(ModalComponent, { initialState });
-
-      if (this.modalRef?.content) {
-        this.modalRef.content.onClose.subscribe((res: any) => {
-          if (res?.state === 'delete') {
-            console.log('Delete action triggered');
-          } else if (res?.state === 'cancel') {
-            console.log('Action canceled');
-          }
-          this.modalRef?.hide();
-        });
-      }
+      this.isSubmittingCerita = true;
+      this.SubmitCerita();
     } else {
       this.ceritaForm.markAllAsTouched();
     }
   }
 
   SubmitCerita() {
+    this.isSubmittingCerita = true;
     const formData = new FormData();
 
     this.ceritaFormArray.controls.forEach((control: AbstractControl, index: number) => {
@@ -234,10 +253,12 @@ export class CeritaQuoteComponent implements OnInit {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
         this.ceritaForm.reset();
         this.fetchCeritaData();
+        this.isSubmittingCerita = false;
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
         console.error('Error while submitting data:', err);
+        this.isSubmittingCerita = false;
       }
     });
   }
@@ -273,6 +294,7 @@ export class CeritaQuoteComponent implements OnInit {
   }
 
   SubmitQuote(){
+    this.isSubmittingQuote = true;
     const formData = new FormData();
 
     const quote = this.quoteForm.value;
@@ -284,10 +306,12 @@ export class CeritaQuoteComponent implements OnInit {
         this.notyf.success(res?.message || 'Data berhasil disimpan.');
         this.quoteForm.reset();
         this.fetchQuoteData();
+        this.isSubmittingQuote = false;
       },
       error: (err) => {
         this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
         console.error('Error while submitting data:', err);
+        this.isSubmittingQuote = false;
       }
     })
   }
@@ -304,28 +328,36 @@ export class CeritaQuoteComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-    deleteCerita(cerita: any) {
+  deleteCerita(cerita: any) {
     if (!cerita?.id) return;
+
+    this.isDeletingCerita = true;
     this.dashboardSvc.delete(DashboardServiceType.CERITA_DELETE, { id: cerita.id }).subscribe({
       next: (res: any) => {
         this.notyf.success(res?.message || 'Cerita berhasil dihapus.');
         this.fetchCeritaData();
+        this.isDeletingCerita = false;
       },
       error: (err: any) => {
         this.notyf.error(err?.message || 'Gagal menghapus cerita.');
+        this.isDeletingCerita = false;
       }
     });
   }
 
   deleteQuote(quote: any) {
     if (!quote?.id) return;
+
+    this.isDeletingQuote = true;
     this.dashboardSvc.delete(DashboardServiceType.QUOTE_DELETE, { id: quote.id }).subscribe({
       next: (res: any) => {
         this.notyf.success(res?.message || 'Quote berhasil dihapus.');
         this.fetchQuoteData();
+        this.isDeletingQuote = false;
       },
       error: (err: any) => {
         this.notyf.error(err?.message || 'Gagal menghapus quote.');
+        this.isDeletingQuote = false;
       }
     });
   }

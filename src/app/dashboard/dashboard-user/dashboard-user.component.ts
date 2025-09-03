@@ -270,6 +270,13 @@ export class DashboardUserComponent implements OnInit, OnDestroy {
     this.router.navigate(['/dashboard/bill']);
   }
 
+  /**
+   * Get current year for copyright
+   */
+  getCurrentYear(): number {
+    return new Date().getFullYear();
+  }
+
   ngOnDestroy(): void {
     // Cleanup event listeners
     window.removeEventListener('storage', this.handleStorageChange.bind(this));

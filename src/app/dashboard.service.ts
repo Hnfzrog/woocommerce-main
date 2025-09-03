@@ -11,6 +11,7 @@ export enum DashboardServiceType {
 
   //TESTIMONI (Fixed spelling)
   USER_TESTIMONI,
+  PUBLIC_TESTIMONI,
   TESTIMONI_ADMIN_LIST,
   TESTIMONI_ADMIN_UPDATE_STATUS,
   TESTIMONI_ADMIN_DELETE_ALL,
@@ -138,6 +139,66 @@ export enum DashboardServiceType {
 
 }
 
+// Testimonial Interfaces
+export interface TestimonialUser {
+  id: number;
+  name: string | null;
+  email: string;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+  kode_pemesanan: string | null;
+  user_aktif: number;
+  domain: string | null;
+  status: string | null;
+  kd_status: string | null;
+  domain_create_date: string | null;
+  domain_end_date: string | null;
+  paket_undangan_id: number | null;
+}
+
+export interface TestimonialData {
+  id: number;
+  user: TestimonialUser;
+  kota: string;
+  provinsi: string;
+  ulasan: string;
+  status: number; // API mengembalikan 0/1, bukan boolean
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TestimonialMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  links: any[];
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+export interface TestimonialResponse {
+  data: TestimonialData[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: TestimonialMeta;
+}
+
+export interface TestimonialStatusUpdateRequest {
+  status: boolean;
+}
+
+export interface TestimonialBulkStatusRequest {
+  ids: number[];
+  status: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -145,9 +206,9 @@ export class DashboardService {
 
   private BASE_URL_API = 'http://127.0.0.1:8000/api';
 
-  constructor(private httpSvc: HttpClient) { }
+  constructor(public httpSvc: HttpClient) { }
 
-  private getUrl(serviceType: DashboardServiceType): string {
+  public getUrl(serviceType: DashboardServiceType): string {
     switch (serviceType) {
 
       case DashboardServiceType.USER_LOGIN:
@@ -186,7 +247,9 @@ export class DashboardService {
 
       //testimoni (Fixed spelling and added admin endpoints)
       case DashboardServiceType.USER_TESTIMONI:
-        return `${this.BASE_URL_API}/v1/user/post-testimoni`;
+        return `${this.BASE_URL_API}/v1/user/testimoni`;
+      case DashboardServiceType.PUBLIC_TESTIMONI:
+        return `${this.BASE_URL_API}/v1/testimoni/public`;
       case DashboardServiceType.TESTIMONI_ADMIN_LIST:
         return `${this.BASE_URL_API}/v1/admin/testimoni`;
       case DashboardServiceType.TESTIMONI_ADMIN_UPDATE_STATUS:
@@ -488,6 +551,11 @@ export class DashboardService {
   uploadFile(serviceType: DashboardServiceType, formData: FormData): Observable<any> {
     // Don't set Content-Type header, let browser set it automatically for multipart/form-data
     return this.httpSvc.post(this.getUrl(serviceType), formData);
+  }
+
+  updateFile(serviceType: DashboardServiceType, formData: FormData): Observable<any> {
+    // Don't set Content-Type header, let browser set it automatically for multipart/form-data
+    return this.httpSvc.put(this.getUrl(serviceType), formData);
   }
 
   /**
@@ -909,4 +977,81 @@ export interface ValidationError {
   errors: {
     [key: string]: string[];
   };
+}
+
+// Testimonial Service Methods
+@Injectable({
+  providedIn: 'root'
+})
+export class TestimonialService {
+  constructor(private dashboardService: DashboardService) {}
+
+  /**
+   * Get public testimonials for landing page
+   */
+  getPublicTestimonials(params?: { search?: string; limit?: number; page?: number }): Observable<TestimonialResponse> {
+    let httpParams = new HttpParams();
+    if (params?.search) httpParams = httpParams.set('search', params.search);
+    if (params?.limit) httpParams = httpParams.set('limit', params.limit.toString());
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+
+    return this.dashboardService.httpSvc.get<TestimonialResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.PUBLIC_TESTIMONI),
+      { params: httpParams }
+    );
+  }
+
+  /**
+   * Get all testimonials for admin panel
+   */
+  getAdminTestimonials(params?: { search?: string; status?: string; limit?: number; page?: number }): Observable<TestimonialResponse> {
+    let httpParams = new HttpParams();
+    if (params?.search) httpParams = httpParams.set('search', params.search);
+    if (params?.status) httpParams = httpParams.set('status', params.status);
+    if (params?.limit) httpParams = httpParams.set('limit', params.limit.toString());
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+
+    return this.dashboardService.httpSvc.get<TestimonialResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.TESTIMONI_ADMIN_LIST),
+      { params: httpParams }
+    );
+  }
+
+  /**
+   * Update testimonial status
+   */
+  updateTestimonialStatus(id: number, status: boolean): Observable<any> {
+    return this.dashboardService.httpSvc.put(
+      `${this.dashboardService.getUrl(DashboardServiceType.TESTIMONI_ADMIN_UPDATE_STATUS)}/${id}/status`,
+      { status }
+    );
+  }
+
+  /**
+   * Delete single testimonial
+   */
+  deleteTestimonial(id: number): Observable<any> {
+    return this.dashboardService.httpSvc.delete(
+      `${this.dashboardService.getUrl(DashboardServiceType.TESTIMONI_ADMIN_DELETE_BY_ID)}/${id}`
+    );
+  }
+
+  /**
+   * Delete all testimonials
+   */
+  deleteAllTestimonials(): Observable<any> {
+    return this.dashboardService.httpSvc.delete(
+      this.dashboardService.getUrl(DashboardServiceType.TESTIMONI_ADMIN_DELETE_ALL)
+    );
+  }
+
+  /**
+   * Bulk update testimonial status
+   */
+  bulkUpdateStatus(request: TestimonialBulkStatusRequest): Observable<any> {
+    return this.dashboardService.httpSvc.put(
+      `${this.dashboardService.getUrl(DashboardServiceType.TESTIMONI_ADMIN_UPDATE_STATUS)}/bulk-status`,
+      request
+    );
+  }
 }

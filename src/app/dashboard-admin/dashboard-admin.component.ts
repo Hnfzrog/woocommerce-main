@@ -284,6 +284,13 @@ export class DashboardAdminComponent implements OnInit, OnDestroy {
     this.getAdminProfile();
   }
 
+  /**
+   * Get current year for copyright
+   */
+  getCurrentYear(): number {
+    return new Date().getFullYear();
+  }
+
   ngOnDestroy(): void {
     // Cleanup event listeners
     window.removeEventListener('storage', this.handleStorageChange.bind(this));

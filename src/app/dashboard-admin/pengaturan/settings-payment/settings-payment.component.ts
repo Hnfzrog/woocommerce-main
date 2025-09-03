@@ -2,6 +2,48 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService, DashboardServiceType } from '../../../dashboard.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Notyf } from 'notyf';
+import { BankAccount } from '../../../services/wedding-data.service';
+
+interface PaymentMethod {
+  id: number;
+  name: string;
+}
+
+interface Bank {
+  id: number;
+  kode_bank: string;
+  name: string;
+  logo?: string;
+}
+
+interface PaymentMethodDetail {
+  id: number;
+  metodePembayaran: string;
+  idMetodePembayaran: string;
+  userId?: number;
+  // Manual payment fields
+  pengguna?: string;
+  email?: string;
+  noRekening?: string;
+  namaBank?: string;
+  kodeBank?: string;
+  namaPemilik?: string;
+  photoRek?: string | null;
+  // Tripay fields
+  urlTripay?: string;
+  privateKey?: string;
+  apiKey?: string;
+  kodeMerchant?: string;
+  // Midtrans fields
+  url?: string;
+  serverKey?: string;
+  clientKey?: string;
+  metodeProduction?: string;
+  // Trial fields
+  trialInfo?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 @Component({
   selector: 'wc-settings-payment',
@@ -10,25 +52,25 @@ import { Notyf } from 'notyf';
 })
 export class SettingsPaymentComponent implements OnInit {
 
-  selectOptions: any = {
-    payment: {
-      items: [],
-      defaultValue: [],
-      FormControl: new FormControl(),
-    }
-  };
+  // Payment method selection
+  paymentMethods: PaymentMethod[] = [];
+  selectedPaymentMethod: PaymentMethod | null = null;
 
-  rows: Array<any> = [];
+  // Bank list for manual payments
+  bankList: Bank[] = [];
 
+  // Forms
+  paymentForm!: FormGroup;
 
-  methodSelected: any;
+  // Data display
+  paymentDetails: PaymentMethodDetail[] = [];
 
-  formPayment!: FormGroup;
-  listBank: any[] = [];
+  // UI state
+  isLoading = false;
+  isSubmitting = false;
+  selectedPhotoFile: File | null = null;
 
-  private notyf: Notyf
-  idPayment: any;
-  namePayment: any;
+  private notyf: Notyf;
 
   constructor(
     private fb: FormBuilder,
@@ -41,177 +83,129 @@ export class SettingsPaymentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getMasterPayment();
-    this.getRekeningAdmin();
-
+    this.loadPaymentMethods();
   }
 
-  getListBank() {
-    this.dashboardSvc.list(DashboardServiceType.MD_LIST_BANK).subscribe((res) => {
-      this.listBank = res?.data;
+  private loadPaymentMethods(): void {
+    this.isLoading = true;
+    this.dashboardSvc.getParam(DashboardServiceType.MD_RGS_PAYMENT, '').subscribe({
+      next: (response) => {
+        this.paymentMethods = response?.data || [];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading payment methods:', err);
+        this.notyf.error('Gagal memuat metode pembayaran');
+        this.isLoading = false;
+      }
     });
   }
 
-  getMasterPayment() {
-    this.dashboardSvc.getParam(DashboardServiceType.MD_RGS_PAYMENT, '').subscribe((response) => {
-      this.selectOptions.payment.items = response["data"];
+  private loadBankList(): void {
+    this.dashboardSvc.list(DashboardServiceType.MD_LIST_BANK).subscribe({
+      next: (res) => {
+        this.bankList = res?.data || [];
+      },
+      error: (err) => {
+        console.error('Error loading bank list:', err);
+        this.notyf.error('Gagal memuat daftar bank');
+      }
     });
   }
 
-  onMetodeSelect(data: any) {
-    this.methodSelected = data;
-    const selectedPaymentMethod = this.selectOptions.payment.items.find((item: any) => item.id === data);
-    if (selectedPaymentMethod) {
-      const paymentInfo = {
-        id: selectedPaymentMethod.id,
-        name: selectedPaymentMethod.name
-      };
-      this.idPayment = paymentInfo.id;
-      this.namePayment = paymentInfo.name;
-      this.getRekeningAdmin();
-    }
-    if (this.methodSelected === 1) {
-      this.getListBank()
-    }
-    this.initForm();
-  }
+  onPaymentMethodSelect(methodId: number): void {
+    const method = this.paymentMethods.find(m => m.id === methodId);
+    if (!method) return;
 
+    this.selectedPaymentMethod = method;
+    this.initializeForm();
+    this.loadPaymentDetails();
 
-  initForm() {
-    if (this.methodSelected === 1) {
-      this.formPayment = this.fb.group({
-        kode_bank: ['', Validators.required],
-        nomor_rekening: ['', Validators.required],
-        nama_pemilik: ['', Validators.required],
-        photo_rek: [''],
-      })
-    } else if (this.methodSelected === 2) {
-      this.formPayment = this.fb.group({
-        url_tripay: ['', Validators.required],
-        private_key: ['', Validators.required],
-        api_key: ['', Validators.required],
-        kode_merchant: ['', Validators.required],
-        methode_pembayaran: ['Tripay', Validators.required],
-        id_methode_pembayaran: ["2", Validators.required]
-      })
-    } else if (this.methodSelected === 3) {
-      this.formPayment = this.fb.group({
-        url: ['', Validators.required],
-        server_key: ['', Validators.required],
-        client_key: ['', Validators.required],
-        metode_production: ['', Validators.required],
-        methode_pembayaran: ['Midtrans', Validators.required],
-        id_methode_pembayaran: ["3", Validators.required],
-      })
-    } else if (this.methodSelected === 4) {
-
+    // Load bank list if manual payment is selected
+    if (methodId === 1) {
+      this.loadBankList();
     }
   }
 
-  onBankSelect(data: any) {
-    this.formPayment.get('kode_bank')?.setValue('data')
-  }
+  private initializeForm(): void {
+    if (!this.selectedPaymentMethod) return;
 
-  selectedPhotoFile: File | null = null;
+    switch (this.selectedPaymentMethod.id) {
+      case 1: // Manual
+        this.paymentForm = this.fb.group({
+          kode_bank: ['', Validators.required],
+          nomor_rekening: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+          nama_pemilik: ['', [Validators.required, Validators.minLength(2)]],
+          photo_rek: ['']
+        });
+        break;
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedPhotoFile = input.files[0];
+      case 2: // Tripay
+        this.paymentForm = this.fb.group({
+          url_tripay: ['', Validators.required],
+          private_key: ['', Validators.required],
+          api_key: ['', Validators.required],
+          kode_merchant: ['', Validators.required],
+          methode_pembayaran: ['Tripay', Validators.required],
+          id_methode_pembayaran: ['2', Validators.required]
+        });
+        break;
+
+      case 3: // Midtrans
+        this.paymentForm = this.fb.group({
+          url: ['', Validators.required],
+          server_key: ['', Validators.required],
+          client_key: ['', Validators.required],
+          metode_production: ['', Validators.required],
+          methode_pembayaran: ['Midtrans', Validators.required],
+          id_methode_pembayaran: ['3', Validators.required]
+        });
+        break;
+
+      default:
+        this.paymentForm = this.fb.group({});
     }
   }
 
-  onSubmitPayment() {
-    const formValues = this.formPayment.value;
-    const formData = new FormData();
+  private loadPaymentDetails(): void {
+    if (!this.selectedPaymentMethod) return;
 
-    if (this.methodSelected === 1) {
-      Number(formData.append('kode_bank[0]', formValues.kode_bank));
-      formData.append('nomor_rekening[0]', formValues.nomor_rekening);
-      formData.append('nama_pemilik[0]', formValues.nama_pemilik);
-
-      if (this.selectedPhotoFile) {
-        formData.append('photo_rek[0]', this.selectedPhotoFile, this.selectedPhotoFile.name);
-      }
-      console.log('selectedPhotoFile:', this.selectedPhotoFile);
-
-
-      this.dashboardSvc.create(DashboardServiceType.ADM_ADD_REKENING, formData).subscribe({
-        next: (res) => {
-          this.notyf.success(res?.message || 'Data berhasil disimpan.');
-          this.getRekeningAdmin();
-        },
-        error: (err) => {
-          this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-          console.error('Error while submitting data:', err);
-        }
-      });
-
-    } else if (this.methodSelected === 2) {
-
-      for (const key in formValues) {
-        if (formValues.hasOwnProperty(key)) {
-          formData.append(key, formValues[key]);
-        }
-      }
-
-      this.dashboardSvc.create(DashboardServiceType.ADM_TRIPAY_PAYMENT, formData).subscribe({
-        next: (res) => {
-          this.notyf.success(res?.message || 'Data berhasil disimpan.');
-          this.getRekeningAdmin();
-        },
-        error: (err) => {
-          this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-          console.error('Error while submitting data:', err);
-        }
-      });
-
-    } else if (this.methodSelected === 3) {
-
-      for (const key in formValues) {
-        if (formValues.hasOwnProperty(key)) {
-          formData.append(key, formValues[key]);
-        }
-      }
-
-      this.dashboardSvc.create(DashboardServiceType.ADM_MIDTRANS_PAYMENT, formData).subscribe({
-        next: (res) => {
-          this.notyf.success(res?.message || 'Data berhasil disimpan.');
-          this.getRekeningAdmin();
-        },
-        error: (err) => {
-          this.notyf.error(err?.message || 'Ada kesalahan dalam sistem.');
-          console.error('Error while submitting data:', err);
-        }
-      });
-    }
-    this.formPayment.reset();
-  }
-
-
-
-
-
-  getRekeningAdmin() {
     const params = {
-      id_methode_pembayaran: this.idPayment || 0,
-      name_methode_pembayaran: this.namePayment || ''
-    }
-    this.dashboardSvc.list(DashboardServiceType.MNL_MD_METHOD_DETAIL, params).subscribe(res => {
-      const paymentList = res?.data ?? [];
-      this.rows = [];
-      this.rows = paymentList.map((item: any) => {
-        let rowData: any = {
-          id: item.id,
-          metodePembayaran: item.methode_pembayaran,
-          idMetodePembayaran: item.id_methode_pembayaran,
-          userId: item.user_id,
-          createdAt: item.created_at,
-          updatedAt: item.updated_at
-        };
-        if (item.id_methode_pembayaran === "1" || item.methode_pembayaran === "Manual") {
-          rowData = {
-            ...rowData,
+      id_methode_pembayaran: this.selectedPaymentMethod.id,
+      name_methode_pembayaran: this.selectedPaymentMethod.name
+    };
+
+    this.isLoading = true;
+    this.dashboardSvc.list(DashboardServiceType.MNL_MD_METHOD_DETAIL, params).subscribe({
+      next: (res) => {
+        const paymentList = res?.data || [];
+        this.mapPaymentDetails(paymentList);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading payment details:', err);
+        this.notyf.error('Gagal memuat detail pembayaran');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private mapPaymentDetails(data: any[]): void {
+    this.paymentDetails = data.map((item: any) => {
+      let detail: PaymentMethodDetail = {
+        id: item.id,
+        metodePembayaran: item.methode_pembayaran,
+        idMetodePembayaran: item.id_methode_pembayaran,
+        userId: item.user_id,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at
+      };
+
+      // Map specific fields based on payment method
+      switch (item.id_methode_pembayaran?.toString()) {
+        case '1': // Manual
+          detail = {
+            ...detail,
             pengguna: item.nama_pemilik || item.email || '-',
             email: item.email || '-',
             noRekening: item.nomor_rekening || '-',
@@ -220,54 +214,208 @@ export class SettingsPaymentComponent implements OnInit {
             namaPemilik: item.nama_pemilik || '-',
             photoRek: item.photo_rek || null
           };
-        }
-        else if (item.id_methode_pembayaran === "2" || item.methode_pembayaran === "Tripay") {
-          rowData = {
-            ...rowData,
+          break;
+
+        case '2': // Tripay
+          detail = {
+            ...detail,
             urlTripay: item.url_tripay || '-',
             privateKey: item.private_key || '-',
             apiKey: item.api_key || '-',
             kodeMerchant: item.kode_merchant || '-'
           };
-        }
-        else if (item.id_methode_pembayaran === "3" || item.methode_pembayaran === "Midtrans") {
-          rowData = {
-            ...rowData,
+          break;
+
+        case '3': // Midtrans
+          detail = {
+            ...detail,
             url: item.url || '-',
             serverKey: item.server_key || '-',
             clientKey: item.client_key || '-',
             metodeProduction: item.metode_production || '-'
           };
-        }
-        else if (item.id_methode_pembayaran === "4" || item.methode_pembayaran === "Trial") {
-          rowData = {
-            ...rowData,
+          break;
 
+        case '4': // Trial
+          detail = {
+            ...detail,
             trialInfo: 'Trial Mode Active'
           };
-        }
-        return rowData;
-      });
+          break;
+      }
+
+      return detail;
     });
   }
 
+  onBankSelect(bankCode: string): void {
+    if (this.paymentForm) {
+      this.paymentForm.get('kode_bank')?.setValue(bankCode);
+    }
+  }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      if (!this.validateFile(file)) {
+        return;
+      }
+
+      this.selectedPhotoFile = file;
+    }
+  }
+
+  private validateFile(file: File): boolean {
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+    if (file.size > maxSize) {
+      this.notyf.error('Ukuran file maksimal 2MB');
+      return false;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      this.notyf.error('Format file harus JPEG, PNG, atau JPG');
+      return false;
+    }
+
+    return true;
+  }
+
+  onSubmitPayment(): void {
+    if (!this.selectedPaymentMethod || !this.paymentForm || this.paymentForm.invalid) {
+      this.notyf.error('Harap lengkapi semua field yang wajib diisi');
+      return;
+    }
+
+    const formValues = this.paymentForm.value;
+    this.isSubmitting = true;
+
+    switch (this.selectedPaymentMethod.id) {
+      case 1: // Manual
+        this.submitManualPayment(formValues);
+        break;
+      case 2: // Tripay
+        this.submitTripayPayment(formValues);
+        break;
+      case 3: // Midtrans
+        this.submitMidtransPayment(formValues);
+        break;
+      default:
+        this.isSubmitting = false;
+        this.notyf.error('Metode pembayaran tidak didukung');
+    }
+  }
+
+  private submitManualPayment(formValues: any): void {
+    // Use JSON payload instead of FormData for consistency with user API
+    const payload = {
+      kode_bank: [formValues.kode_bank],
+      nomor_rekening: [formValues.nomor_rekening],
+      nama_pemilik: [formValues.nama_pemilik],
+      photo_rek: [this.selectedPhotoFile]
+    };
+
+    this.dashboardSvc.create(DashboardServiceType.ADM_ADD_REKENING, payload).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Rekening admin berhasil ditambahkan');
+        this.loadPaymentDetails();
+        this.resetForm();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.handleApiError(err);
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  private submitTripayPayment(formValues: any): void {
+    const formData = new FormData();
+    Object.keys(formValues).forEach(key => {
+      if (formValues[key] !== null && formValues[key] !== undefined) {
+        formData.append(key, formValues[key]);
+      }
+    });
+
+    this.dashboardSvc.create(DashboardServiceType.ADM_TRIPAY_PAYMENT, formData).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Konfigurasi Tripay berhasil disimpan');
+        this.loadPaymentDetails();
+        this.resetForm();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.handleApiError(err);
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  private submitMidtransPayment(formValues: any): void {
+    const formData = new FormData();
+    Object.keys(formValues).forEach(key => {
+      if (formValues[key] !== null && formValues[key] !== undefined) {
+        formData.append(key, formValues[key]);
+      }
+    });
+
+    this.dashboardSvc.create(DashboardServiceType.ADM_MIDTRANS_PAYMENT, formData).subscribe({
+      next: (res) => {
+        this.notyf.success(res?.message || 'Konfigurasi Midtrans berhasil disimpan');
+        this.loadPaymentDetails();
+        this.resetForm();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.handleApiError(err);
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  private resetForm(): void {
+    if (this.paymentForm) {
+      this.paymentForm.reset();
+    }
+    this.selectedPhotoFile = null;
+  }
+
+  private handleApiError(err: any): void {
+    console.error('API Error:', err);
+
+    if (err?.error?.errors) {
+      Object.values(err.error.errors).forEach((messages: any) => {
+        if (Array.isArray(messages)) {
+          messages.forEach(message => this.notyf.error(message));
+        }
+      });
+    } else if (err?.error?.message) {
+      this.notyf.error(err.error.message);
+    } else {
+      this.notyf.error('Terjadi kesalahan pada sistem');
+    }
+  }
+
+  // Table display methods
   getTableColumns(): string[] {
-    if (!this.idPayment) return [];
-    switch (this.idPayment.toString()) {
-      case "1":
+    if (!this.selectedPaymentMethod) return [];
+
+    switch (this.selectedPaymentMethod.id) {
+      case 1: // Manual
         return ['pengguna', 'email', 'noRekening', 'namaBank', 'metodePembayaran'];
-      case "2":
+      case 2: // Tripay
         return ['urlTripay', 'apiKey', 'kodeMerchant', 'metodePembayaran'];
-      case "3":
+      case 3: // Midtrans
         return ['url', 'serverKey', 'clientKey', 'metodePembayaran'];
-      case "4":
+      case 4: // Trial
         return ['trialInfo', 'metodePembayaran'];
       default:
         return ['metodePembayaran'];
     }
   }
-
 
   getColumnHeader(column: string): string {
     const headers: { [key: string]: string } = {
@@ -287,4 +435,29 @@ export class SettingsPaymentComponent implements OnInit {
     return headers[column] || column;
   }
 
+  getBankName(kodeBank: string): string {
+    const bank = this.bankList.find(b => b.kode_bank === kodeBank);
+    return bank?.name || 'Bank tidak ditemukan';
+  }
+
+  // Utility methods
+  getFieldError(fieldName: string): string | null {
+    if (!this.paymentForm) return null;
+
+    const field = this.paymentForm.get(fieldName);
+    if (field?.touched && field?.errors) {
+      if (field.errors['required']) return `${fieldName} wajib diisi`;
+      if (field.errors['pattern']) return `${fieldName} harus berupa angka`;
+      if (field.errors['minlength']) return `${fieldName} minimal 2 karakter`;
+    }
+    return null;
+  }
+
+  isFormValid(): boolean {
+    return this.paymentForm ? this.paymentForm.valid : false;
+  }
+
+  hasPaymentDetails(): boolean {
+    return this.paymentDetails.length > 0;
+  }
 }
