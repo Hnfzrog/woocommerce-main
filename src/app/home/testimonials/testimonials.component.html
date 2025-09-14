@@ -17,7 +17,7 @@
               paket.id === 2 ? 'linear-gradient(90deg, #C47D13 0%, rgba(220, 140, 21, 0.7) 100%)' :
               paket.id === 3 ? 'linear-gradient(90deg, #57B9EE 0%, #73D6FC 50%, #3D86D8 100%)' : ''
        }">
-      <h2 class="card__name">{{ paket.name_paket?.toUpperCase() }}</h2>
+      <h2 class="card__name">{{ paket.name_paket.toUpperCase() }}</h2>
     </div>
 
     <div class="card__content" style="border-color: var(--color06)">
@@ -25,10 +25,12 @@
         <p class="card__price" style="color: var(--color06)">
           <b style="font-size: smaller; padding: 1.55px 3px 9.95px 0px;">Rp</b>{{ paket.price |number:'1.0-0':'en-US' }}
         </p>
-        <p class="card__row" *ngIf="paket.bebas_pilih_tema === '1'">Bebas Pilih Tema</p>
+        <p class="card__row" *ngIf="isFeatureEnabled(paket.bebas_pilih_tema)">Bebas Pilih Tema</p>
         <p class="card__row">Edit Tanpa Batas</p>
-        <p class="card__row" *ngIf="paket.kirim_wa === '1'">Kirim Undangan via WhatsApp</p>
-        <p class="card__row" *ngIf="paket.import_data === '1'">Import Data Tamu</p>
+        <p class="card__row" *ngIf="isFeatureEnabled(paket.kirim_wa)">Kirim Undangan via WhatsApp</p>
+        <p class="card__row" *ngIf="isFeatureEnabled(paket.import_data)">Import Data Tamu</p>
+        <p class="card__row" *ngIf="isFeatureEnabled(paket.halaman_buku)">Halaman Buku</p>
+        <p class="card__row" *ngIf="isFeatureEnabled(paket.kirim_hadiah)">Kirim Hadiah</p>
         <p class="card__row">Buku Tamu</p>
         <p class="card__row">Amplop Digital</p>
         <p class="card__row">Galeri Foto</p>

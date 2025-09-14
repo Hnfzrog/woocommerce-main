@@ -3,13 +3,31 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+
+// === DashboardServiceType Enum - API Endpoint Categories ===
+// This enum defines all API endpoint types used in the application.
+// Grouped by functionality for easier navigation and maintenance.
+
 export enum DashboardServiceType {
+  // === Authentication Endpoints ===
+  // Handles user login, logout, registration, and profile retrieval.
   USER_LOGIN,
   USER_LOGOUT,
   USER_REGISTER,
   USER_PROFILE,
 
-  //TESTIMONI (Fixed spelling)
+  // === Manual Registration Endpoints ===
+  // Manages multi-step registration process for users.
+  MNL_STEP_ONE,
+  MNL_STEP_THREE,
+  MNL_STEP_FOUR,
+  MNL_STEP_TWO,
+  MNL_MD_METHOD,
+  MNL_MD_METHOD_DETAIL,
+  MNL_MD_PACK_INVITATION,
+
+  // === Testimonial (Testimoni) Endpoints ===
+  // Manages user testimonials, public display, and admin moderation.
   USER_TESTIMONI,
   PUBLIC_TESTIMONI,
   TESTIMONI_ADMIN_LIST,
@@ -17,28 +35,31 @@ export enum DashboardServiceType {
   TESTIMONI_ADMIN_DELETE_ALL,
   TESTIMONI_ADMIN_DELETE_BY_ID,
 
-  //UCAPAN
+  // === Ucapan (Wedding Wishes) Endpoints ===
+  // Handles guest book messages and wishes.
   USER_BUKUTAMU,
   USER_BUKUTAMU_V2,
   USER_BUKUTAMU_V3,
 
-  //RIWAYAT
+  // === Riwayat (Visitor History) Endpoints ===
+  // Manages visitor tracking and history deletion.
   USER_PENGUNJUNG_RIWAYAT,
   DELETE_PENGUNJUNG_RIWAYAT_ALL,
   DELETE_PENGUNJUNG_RIWAYAT_SINGLE,
 
-  //REKENING
+  // === Rekening (Bank Account) Endpoints ===
+  // Handles bank account management for payments.
   SEND_REKENING,
   MD_LIST_BANK,
   REKENING_DATA,
   UPDATE_REKENING,
-  // New simplified REST endpoints for rekenings (per API spec)
   REKENINGS_INDEX,
   REKENINGS_STORE,
   REKENINGS_UPDATE_JSON,
   REKENINGS_DELETE_JSON,
 
-  //cerita
+  // === Cerita (Story) Endpoints ===
+  // Manages wedding stories and quotes.
   CERITA_SUBMIT,
   QUOTE_SUBMIT,
   GALERY_SUBMIT,
@@ -49,10 +70,8 @@ export enum DashboardServiceType {
   MEMPELAI_SUBMIT_COVER,
   MEMPELAI_UPDATE,
 
-  //konfirmasi pembayaran
-  RDM_CONFIRM_PAYMENT,
-
-  //ACARA
+  // === Acara (Event) Endpoints ===
+  // Handles wedding event details and countdowns.
   ACARA_DATA,
   ACARA_SUBMIT_COUNTDOWN,
   SETTINGS_GET_FILTER,
@@ -61,36 +80,26 @@ export enum DashboardServiceType {
   ACARA_SUBMIT_UPDATE_DYNAMIC,
   ACARA_SUBMIT_DELETE_DYNAMIC,
 
-  //SETTINGS ADMIN BUNDLE
+  // === Admin Management Endpoints ===
+  // General admin operations, including bundles and categories.
   ST_BUNDLE_ADMIN,
-
-  //MANUAL REGIS
-  MNL_STEP_ONE,
-  MNL_STEP_THREE,
-  MNL_STEP_FOUR,
-  MNL_STEP_TWO,
-  MNL_MD_METHOD,
-  MNL_MD_PACK_INVITATION,
-
-  //ADMIN
   ADM_TESTI,
   ADM_TESTI_DELETE_ALL,
-
   ADM_IDX_DASHBOARD,
-  MNL_MD_METHOD_DETAIL,
-  MD_RGS_PAYMENT,
   ADM_MANUAL_PAYMENT,
+  MD_RGS_PAYMENT,
   ADM_ADD_REKENING,
   ADM_TRIPAY_PAYMENT,
   ADM_MIDTRANS_PAYMENT,
-
   ADM_ADD_CATEGORY,
   ADM_EDIT_CATEGORY,
   ADM_DELETE_CATEGORY,
   ADM_DELETE_ALL_CATEGORY,
   ADM_GET_CATEGORY,
+  RDM_CONFIRM_PAYMENT,
 
-  // setting user
+  // === User Settings Endpoints ===
+  // Manages user preferences like domain, music, and filters.
   USER_SETTINGS_SUBMIT_DOMAIN,
   USER_SETTINGS_SUBMIT_MUSIC,
   USER_SETTINGS_SUBMIT_SALAM,
@@ -109,37 +118,65 @@ export enum DashboardServiceType {
   QUOTE_DELETE,
   DELETE_REKENING,
 
+  // === Wedding View Endpoints ===
+  // Public and couple-specific wedding profile views.
   WEDDING_VIEW_CORE,
   WEDDING_VIEW_COUPLE,
   ATTENDANCE,
 
-  // Dashboard Analytics API endpoints
+  // === Dashboard Analytics Endpoints ===
+  // Provides overview, trends, and message analytics.
   DASHBOARD_OVERVIEW,
   DASHBOARD_TRENDS,
   DASHBOARD_MESSAGES,
 
-  // Ucapan endpoints
+  // === Ucapan (Wedding Wishes) Management Endpoints ===
+  // Additional endpoints for managing wishes.
   UCAPAN_INDEX,
   UCAPAN_DELETE,
   UCAPAN_STATISTICS,
 
-  // Profile Management endpoints
+  // === Profile Management Endpoints ===
+  // User and admin profile operations.
   PROFILE_GET,
   PROFILE_UPDATE,
   PROFILE_PHOTO_UPLOAD,
   PROFILE_PHOTO_DELETE,
   PROFILE_CHANGE_PASSWORD,
-
-  // Admin Profile Management endpoints
   ADMIN_PROFILE_GET,
   ADMIN_PROFILE_UPDATE,
   ADMIN_PROFILE_PHOTO_UPLOAD,
   ADMIN_PROFILE_PHOTO_DELETE,
   ADMIN_PROFILE_CHANGE_PASSWORD,
 
+  // === Theme Management Endpoints ===
+  // Admin and public theme/category management.
+  THEME_ADMIN_CATEGORIES_LIST,
+  THEME_ADMIN_CATEGORIES_CREATE,
+  THEME_ADMIN_CATEGORIES_UPDATE,
+  THEME_ADMIN_CATEGORIES_TOGGLE_ACTIVATION,
+  THEME_ADMIN_CATEGORIES_SORT_ORDER,
+  THEME_ADMIN_CATEGORIES_STATISTICS,
+  THEME_ADMIN_CATEGORIES_DELETE,
+  THEME_ADMIN_THEMES_LIST,
+  THEME_ADMIN_THEMES_CREATE,
+  THEME_ADMIN_THEMES_UPDATE,
+  THEME_ADMIN_THEMES_TOGGLE_ACTIVATION,
+  THEME_ADMIN_THEMES_SORT_ORDER,
+  THEME_ADMIN_THEMES_CATEGORIES_AVAILABLE,
+  THEME_ADMIN_THEMES_DELETE,
+  THEME_PUBLIC_CATEGORIES_WITH_THEMES,
+  THEME_PUBLIC_THEMES_BY_CATEGORY,
+  THEME_PUBLIC_THEME_DETAILS,
+  THEME_PUBLIC_POPULAR_THEMES,
+  THEME_USER_SELECT,
+  THEME_USER_SELECTED,
+  DELETE_REKENING_ADMIN,
+  UPDATE_REKENING_ADMIN,
 }
 
 // Testimonial Interfaces
+// Interfaces for handling testimonial data, responses, and requests.
 export interface TestimonialUser {
   id: number;
   name: string | null;
@@ -237,7 +274,7 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/for-step`;
 
       case DashboardServiceType.MNL_MD_METHOD:
-        return `${this.BASE_URL_API}//v1/master-tagihan`;
+        return `${this.BASE_URL_API}/v1/master-tagihan`;
 
       case DashboardServiceType.MNL_MD_METHOD_DETAIL:
         return `${this.BASE_URL_API}/v1/list-methode-transaction/all`;
@@ -288,8 +325,12 @@ export class DashboardService {
         return `${this.BASE_URL_API}/v1/user/get-rekening`;
       case DashboardServiceType.UPDATE_REKENING:
         return `${this.BASE_URL_API}/v1/user/update-rekening`;
+      case DashboardServiceType.UPDATE_REKENING_ADMIN:
+        return `${this.BASE_URL_API}/v1/admin/update-rekening`;
       case DashboardServiceType.DELETE_REKENING:
         return `${this.BASE_URL_API}/v1/user/delete-rekening`;
+      case DashboardServiceType.DELETE_REKENING_ADMIN:
+        return `${this.BASE_URL_API}/v1/admin/delete-rekening`;
 
       // New JSON-based CRUD endpoints for /api/rekenings
       case DashboardServiceType.REKENINGS_INDEX:
@@ -471,12 +512,146 @@ export class DashboardService {
       case DashboardServiceType.ADMIN_PROFILE_CHANGE_PASSWORD:
         return `${this.BASE_URL_API}/admin/profile/change-password`;
 
+      // Theme Management API - Admin Category Management (New API)
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_LIST:
+        return `${this.BASE_URL_API}/admin/categories`;
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_CREATE:
+        return `${this.BASE_URL_API}/admin/categories`;
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_UPDATE:
+        return `${this.BASE_URL_API}/admin/categories`;
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_TOGGLE_ACTIVATION:
+        return `${this.BASE_URL_API}/admin/categories`;
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_SORT_ORDER:
+        return `${this.BASE_URL_API}/admin/categories/sort-order`;
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_STATISTICS:
+        return `${this.BASE_URL_API}/admin/categories/statistics/overview`;
+      case DashboardServiceType.THEME_ADMIN_CATEGORIES_DELETE:
+        return `${this.BASE_URL_API}/admin/categories`;
+
+      // Theme Management API - Admin Theme Management
+      case DashboardServiceType.THEME_ADMIN_THEMES_LIST:
+        return `${this.BASE_URL_API}/admin/themes`;
+      case DashboardServiceType.THEME_ADMIN_THEMES_CREATE:
+        return `${this.BASE_URL_API}/admin/themes`;
+      case DashboardServiceType.THEME_ADMIN_THEMES_UPDATE:
+        return `${this.BASE_URL_API}/admin/themes`;
+      case DashboardServiceType.THEME_ADMIN_THEMES_TOGGLE_ACTIVATION:
+        return `${this.BASE_URL_API}/admin/themes`;
+      case DashboardServiceType.THEME_ADMIN_THEMES_SORT_ORDER:
+        return `${this.BASE_URL_API}/admin/themes/sort-order`;
+      case DashboardServiceType.THEME_ADMIN_THEMES_CATEGORIES_AVAILABLE:
+        return `${this.BASE_URL_API}/admin/themes/categories/available`;
+      case DashboardServiceType.THEME_ADMIN_THEMES_DELETE:
+        return `${this.BASE_URL_API}/admin/themes`;
+
+      // Theme Management API - Public Theme Browsing
+      case DashboardServiceType.THEME_PUBLIC_CATEGORIES_WITH_THEMES:
+        return `${this.BASE_URL_API}/themes/categories`;
+      case DashboardServiceType.THEME_PUBLIC_THEMES_BY_CATEGORY:
+        return `${this.BASE_URL_API}/themes/categories`;
+      case DashboardServiceType.THEME_PUBLIC_THEME_DETAILS:
+        return `${this.BASE_URL_API}/themes/theme`;
+      case DashboardServiceType.THEME_PUBLIC_POPULAR_THEMES:
+        return `${this.BASE_URL_API}/themes/popular`;
+
+      // Theme Management API - User Theme Selection
+      case DashboardServiceType.THEME_USER_SELECT:
+        return `${this.BASE_URL_API}/themes/select`;
+      case DashboardServiceType.THEME_USER_SELECTED:
+        return `${this.BASE_URL_API}/themes/selected`;
+
       default:
         return '';
 
     }
   }
 
+  // === Authentication Methods ===
+  // Handles login and token management.
+  login(email: string, password: string): Observable<LoginResponse> {
+    const body = { email, password };
+    return this.httpSvc.post<LoginResponse>(this.getUrl(DashboardServiceType.USER_LOGIN), body).pipe(
+      tap(response => {
+        localStorage.setItem('access_token', response.access_token);
+      })
+    );
+  }
+
+  // === Profile Management Methods ===
+  // Methods for user and admin profile operations.
+  getProfile(): Observable<ProfileResponse> {
+    return this.httpSvc.get<ProfileResponse>(this.getUrl(DashboardServiceType.PROFILE_GET));
+  }
+
+  /**
+   * Update profile data
+   */
+  updateProfile(data: ProfileUpdateRequest): Observable<ProfileUpdateResponse> {
+    return this.httpSvc.put<ProfileUpdateResponse>(this.getUrl(DashboardServiceType.PROFILE_UPDATE), data);
+  }
+
+  /**
+   * Upload profile photo
+   */
+  uploadProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
+    const formData = new FormData();
+    formData.append('profile_photo', file);
+    return this.httpSvc.post<ProfilePhotoUploadResponse>(this.getUrl(DashboardServiceType.PROFILE_PHOTO_UPLOAD), formData);
+  }
+
+  /**
+   * Delete profile photo
+   */
+  deleteProfilePhoto(): Observable<ProfilePhotoDeleteResponse> {
+    return this.httpSvc.delete<ProfilePhotoDeleteResponse>(this.getUrl(DashboardServiceType.PROFILE_PHOTO_DELETE));
+  }
+
+  /**
+   * Change password
+   */
+  changePassword(data: PasswordChangeRequest): Observable<PasswordChangeResponse> {
+    return this.httpSvc.post<PasswordChangeResponse>(this.getUrl(DashboardServiceType.PROFILE_CHANGE_PASSWORD), data);
+  }
+
+  /**
+   * Get admin profile data with authentication
+   */
+  getAdminProfile(): Observable<ProfileResponse> {
+    return this.httpSvc.get<ProfileResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_GET));
+  }
+
+  /**
+   * Update admin profile data
+   */
+  updateAdminProfile(data: ProfileUpdateRequest): Observable<ProfileUpdateResponse> {
+    return this.httpSvc.put<ProfileUpdateResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_UPDATE), data);
+  }
+
+  /**
+   * Upload admin profile photo
+   */
+  uploadAdminProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
+    const formData = new FormData();
+    formData.append('profile_photo', file);
+    return this.httpSvc.post<ProfilePhotoUploadResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_PHOTO_UPLOAD), formData);
+  }
+
+  /**
+   * Delete admin profile photo
+   */
+  deleteAdminProfilePhoto(): Observable<ProfilePhotoDeleteResponse> {
+    return this.httpSvc.delete<ProfilePhotoDeleteResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_PHOTO_DELETE));
+  }
+
+  /**
+   * Change admin password
+   */
+  changeAdminPassword(data: PasswordChangeRequest): Observable<PasswordChangeResponse> {
+    return this.httpSvc.post<PasswordChangeResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_CHANGE_PASSWORD), data);
+  }
+
+  // === Generic HTTP Methods ===
+  // Core HTTP methods for API calls.
   create(serviceType: DashboardServiceType, body: any): Observable<any> {
     return this.httpSvc.post(this.getUrl(serviceType), body);
   }
@@ -556,89 +731,6 @@ export class DashboardService {
   updateFile(serviceType: DashboardServiceType, formData: FormData): Observable<any> {
     // Don't set Content-Type header, let browser set it automatically for multipart/form-data
     return this.httpSvc.put(this.getUrl(serviceType), formData);
-  }
-
-  /**
-   * Get profile data with authentication
-   */
-  getProfile(): Observable<ProfileResponse> {
-    return this.httpSvc.get<ProfileResponse>(this.getUrl(DashboardServiceType.PROFILE_GET));
-  }
-
-  /**
-   * Update profile data
-   */
-  updateProfile(data: ProfileUpdateRequest): Observable<ProfileUpdateResponse> {
-    return this.httpSvc.put<ProfileUpdateResponse>(this.getUrl(DashboardServiceType.PROFILE_UPDATE), data);
-  }
-
-  /**
-   * Upload profile photo
-   */
-  uploadProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
-    const formData = new FormData();
-    formData.append('profile_photo', file);
-    return this.httpSvc.post<ProfilePhotoUploadResponse>(this.getUrl(DashboardServiceType.PROFILE_PHOTO_UPLOAD), formData);
-  }
-
-  /**
-   * Delete profile photo
-   */
-  deleteProfilePhoto(): Observable<ProfilePhotoDeleteResponse> {
-    return this.httpSvc.delete<ProfilePhotoDeleteResponse>(this.getUrl(DashboardServiceType.PROFILE_PHOTO_DELETE));
-  }
-
-  /**
-   * Change password
-   */
-  changePassword(data: PasswordChangeRequest): Observable<PasswordChangeResponse> {
-    return this.httpSvc.post<PasswordChangeResponse>(this.getUrl(DashboardServiceType.PROFILE_CHANGE_PASSWORD), data);
-  }
-
-  /**
-   * Get admin profile data with authentication
-   */
-  getAdminProfile(): Observable<ProfileResponse> {
-    return this.httpSvc.get<ProfileResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_GET));
-  }
-
-  /**
-   * Update admin profile data
-   */
-  updateAdminProfile(data: ProfileUpdateRequest): Observable<ProfileUpdateResponse> {
-    return this.httpSvc.put<ProfileUpdateResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_UPDATE), data);
-  }
-
-  /**
-   * Upload admin profile photo
-   */
-  uploadAdminProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
-    const formData = new FormData();
-    formData.append('profile_photo', file);
-    return this.httpSvc.post<ProfilePhotoUploadResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_PHOTO_UPLOAD), formData);
-  }
-
-  /**
-   * Delete admin profile photo
-   */
-  deleteAdminProfilePhoto(): Observable<ProfilePhotoDeleteResponse> {
-    return this.httpSvc.delete<ProfilePhotoDeleteResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_PHOTO_DELETE));
-  }
-
-  /**
-   * Change admin password
-   */
-  changeAdminPassword(data: PasswordChangeRequest): Observable<PasswordChangeResponse> {
-    return this.httpSvc.post<PasswordChangeResponse>(this.getUrl(DashboardServiceType.ADMIN_PROFILE_CHANGE_PASSWORD), data);
-  }
-
-  login(email: string, password: string): Observable<LoginResponse> {
-    const body = { email, password };
-    return this.httpSvc.post<LoginResponse>(this.getUrl(DashboardServiceType.USER_LOGIN), body).pipe(
-      tap(response => {
-        localStorage.setItem('access_token', response.access_token);
-      })
-    );
   }
 }
 
@@ -979,16 +1071,256 @@ export interface ValidationError {
   };
 }
 
-// Testimonial Service Methods
+// === Theme Management API Interfaces ===
+// Interfaces for theme and category management.
+export interface ThemeCategory {
+  id: number;
+  name: string;
+  type: 'website' | 'video';
+  description: string;
+  is_active: boolean;
+  sort_order: number;
+  themes_count?: number;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface ThemeCategoryResponse {
+  status: boolean;
+  data: {
+    data: ThemeCategory[];
+    pagination?: any;
+  };
+  summary?: {
+    total_categories: number;
+    active_categories: number;
+    website_categories: number;
+    video_categories: number;
+  };
+}
+
+export interface ThemeCategoryCreateRequest {
+  name: string;
+  type: 'website' | 'video';
+  description: string;
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export interface ThemeCategoryUpdateRequest {
+  name?: string;
+  type?: 'website' | 'video';
+  description?: string;
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export interface ThemeCategoryToggleRequest {
+  is_active: boolean;
+}
+
+export interface ThemeCategorySortOrderRequest {
+  categories: Array<{
+    id: number;
+    sort_order: number;
+  }>;
+}
+
+export interface ThemeCategoryStatisticsResponse {
+  status: boolean;
+  data: {
+    total_categories: number;
+    active_categories: number;
+    website_categories: number;
+    video_categories: number;
+  };
+}
+
+// Theme Interfaces
+export interface Theme {
+  id: number;
+  category_id: number;
+  name: string;
+  price: number;
+  preview: string;
+  url_thema: string;
+  demo_url: string;
+  is_active: boolean;
+  description: string;
+  features: string[];
+  sort_order: number;
+  category?: {
+    id: number;
+    name: string;
+    type: 'website' | 'video';
+  };
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ThemeResponse {
+  status: boolean;
+  data: {
+    data: Theme[];
+    pagination?: any;
+  };
+  summary?: {
+    total_themes: number;
+    active_themes: number;
+    website_themes: number;
+    video_themes: number;
+  };
+}
+
+export interface ThemeCreateRequest {
+  category_id: number;
+  name: string;
+  price: number;
+  preview: string;
+  url_thema: string;
+  demo_url: string;
+  description: string;
+  features: string[];
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export interface ThemeUpdateRequest {
+  category_id?: number;
+  name?: string;
+  price?: number;
+  preview?: string;
+  url_thema?: string;
+  demo_url?: string;
+  description?: string;
+  features?: string[];
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export interface ThemeToggleRequest {
+  is_active: boolean;
+}
+
+export interface ThemeSortOrderRequest {
+  themes: Array<{
+    id: number;
+    sort_order: number;
+  }>;
+}
+
+export interface ThemeAvailableCategoriesResponse {
+  status: boolean;
+  data: ThemeCategory[];
+}
+
+// Public Theme Browsing Interfaces
+export interface PublicTheme {
+  id: number;
+  name: string;
+  price: number;
+  preview: string;
+  image: string;
+  preview_image: string | null;
+  thumbnail_image: string | null;
+  demo_url: string;
+  features: string[];
+  description?: string;
+}
+
+export interface PublicCategoryWithThemes {
+  id: number;
+  name: string;
+  type: 'website' | 'video';
+  description: string;
+  jenis_themas: PublicTheme[];
+}
+
+export interface PublicCategoriesResponse {
+  status: boolean;
+  data: {
+    type: 'website' | 'video';
+    categories: PublicCategoryWithThemes[];
+    total_categories: number;
+    total_themes: number;
+  };
+}
+
+export interface PublicThemesByCategoryResponse {
+  status: boolean;
+  data: {
+    category: {
+      id: number;
+      name: string;
+      type: 'website' | 'video';
+    };
+    themes: PublicTheme[];
+    total_themes: number;
+  };
+}
+
+export interface PublicThemeDetailsResponse {
+  status: boolean;
+  data: Theme;
+}
+
+export interface PublicPopularThemesResponse {
+  status: boolean;
+  data: PublicTheme[];
+}
+
+// User Theme Selection Interfaces
+export interface ThemeSelectionRequest {
+  theme_id: number;
+}
+
+export interface ThemeSelection {
+  id: number;
+  user_id: number;
+  jenis_id: number;
+  selected_at: string;
+}
+
+export interface ThemeSelectionResponse {
+  status: boolean;
+  message: string;
+  data: {
+    theme: Theme;
+    selection: ThemeSelection;
+  };
+}
+
+export interface UserSelectedThemeResponse {
+  status: boolean;
+  data: {
+    theme: Theme;
+    selected_at: string;
+  };
+}
+
+// Generic API Response Interface
+// Standard response format for API calls.
+export interface ApiResponse<T = any> {
+  status: boolean;
+  message?: string;
+  data?: T;
+  errors?: {
+    [key: string]: string[];
+  };
+}
+
+// === TestimonialService Class ===
+// Service for managing testimonials.
+// Methods grouped by public and admin operations.
+
 @Injectable({
   providedIn: 'root'
 })
 export class TestimonialService {
   constructor(private dashboardService: DashboardService) {}
 
-  /**
-   * Get public testimonials for landing page
-   */
+  // === Public Testimonial Methods ===
+  // Methods for public-facing testimonial display.
   getPublicTestimonials(params?: { search?: string; limit?: number; page?: number }): Observable<TestimonialResponse> {
     let httpParams = new HttpParams();
     if (params?.search) httpParams = httpParams.set('search', params.search);
@@ -1001,9 +1333,8 @@ export class TestimonialService {
     );
   }
 
-  /**
-   * Get all testimonials for admin panel
-   */
+  // === Admin Testimonial Methods ===
+  // Methods for admin testimonial management.
   getAdminTestimonials(params?: { search?: string; status?: string; limit?: number; page?: number }): Observable<TestimonialResponse> {
     let httpParams = new HttpParams();
     if (params?.search) httpParams = httpParams.set('search', params.search);
@@ -1052,6 +1383,254 @@ export class TestimonialService {
     return this.dashboardService.httpSvc.put(
       `${this.dashboardService.getUrl(DashboardServiceType.TESTIMONI_ADMIN_UPDATE_STATUS)}/bulk-status`,
       request
+    );
+  }
+}
+
+// === ThemeService Class ===
+// Service for theme and category management.
+// Methods grouped by admin and public operations.
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ThemeService {
+  constructor(private dashboardService: DashboardService) {}
+
+  // Admin Category Management
+  /**
+   * Get all categories with filtering
+   */
+  getAdminCategories(params?: {
+    type?: 'website' | 'video';
+    status?: 'active' | 'inactive';
+    search?: string;
+    per_page?: number;
+    page?: number;
+  }): Observable<ThemeCategoryResponse> {
+    let httpParams = new HttpParams();
+    if (params?.type) httpParams = httpParams.set('type', params.type);
+    if (params?.status) httpParams = httpParams.set('status', params.status);
+    if (params?.search) httpParams = httpParams.set('search', params.search);
+    if (params?.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+
+    return this.dashboardService.httpSvc.get<ThemeCategoryResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_LIST),
+      { params: httpParams }
+    );
+  }
+
+  /**
+   * Create new category
+   */
+  createCategory(request: ThemeCategoryCreateRequest): Observable<ApiResponse<ThemeCategory>> {
+    return this.dashboardService.httpSvc.post<ApiResponse<ThemeCategory>>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_CREATE),
+      request
+    );
+  }
+
+  /**
+   * Update category
+   */
+  updateCategory(id: number, request: ThemeCategoryUpdateRequest): Observable<ApiResponse<ThemeCategory>> {
+    return this.dashboardService.httpSvc.put<ApiResponse<ThemeCategory>>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_UPDATE)}/${id}`,
+      request
+    );
+  }
+
+  /**
+   * Toggle category activation
+   */
+  toggleCategoryActivation(id: number, request: ThemeCategoryToggleRequest): Observable<ApiResponse> {
+    return this.dashboardService.httpSvc.patch<ApiResponse>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_TOGGLE_ACTIVATION)}/${id}/toggle-activation`,
+      request
+    );
+  }
+
+  /**
+   * Update category sort order
+   */
+  updateCategorySortOrder(request: ThemeCategorySortOrderRequest): Observable<ApiResponse> {
+    return this.dashboardService.httpSvc.patch<ApiResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_SORT_ORDER),
+      request
+    );
+  }
+
+  /**
+   * Get category statistics
+   */
+  getCategoryStatistics(): Observable<ThemeCategoryStatisticsResponse> {
+    return this.dashboardService.httpSvc.get<ThemeCategoryStatisticsResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_STATISTICS)
+    );
+  }
+
+  /**
+   * Delete category
+   */
+  deleteCategory(id: number): Observable<ApiResponse> {
+    return this.dashboardService.httpSvc.delete<ApiResponse>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_CATEGORIES_DELETE)}/${id}`
+    );
+  }
+
+  // Admin Theme Management
+  /**
+   * Get all themes with filtering
+   */
+  getAdminThemes(params?: {
+    category_id?: number;
+    type?: 'website' | 'video';
+    status?: 'active' | 'inactive';
+    search?: string;
+    per_page?: number;
+    page?: number;
+  }): Observable<ThemeResponse> {
+    let httpParams = new HttpParams();
+    if (params?.category_id) httpParams = httpParams.set('category_id', params.category_id.toString());
+    if (params?.type) httpParams = httpParams.set('type', params.type);
+    if (params?.status) httpParams = httpParams.set('status', params.status);
+    if (params?.search) httpParams = httpParams.set('search', params.search);
+    if (params?.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+
+    return this.dashboardService.httpSvc.get<ThemeResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_LIST),
+      { params: httpParams }
+    );
+  }
+
+  /**
+   * Create new theme
+   */
+  createTheme(request: ThemeCreateRequest): Observable<ApiResponse<Theme>> {
+    return this.dashboardService.httpSvc.post<ApiResponse<Theme>>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_CREATE),
+      request
+    );
+  }
+
+  /**
+   * Update theme
+   */
+  updateTheme(id: number, request: ThemeUpdateRequest): Observable<ApiResponse<Theme>> {
+    return this.dashboardService.httpSvc.put<ApiResponse<Theme>>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_UPDATE)}/${id}`,
+      request
+    );
+  }
+
+  /**
+   * Toggle theme activation
+   */
+  toggleThemeActivation(id: number, request: ThemeToggleRequest): Observable<ApiResponse> {
+    return this.dashboardService.httpSvc.patch<ApiResponse>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_TOGGLE_ACTIVATION)}/${id}/toggle-activation`,
+      request
+    );
+  }
+
+  /**
+   * Update theme sort order
+   */
+  updateThemeSortOrder(request: ThemeSortOrderRequest): Observable<ApiResponse> {
+    return this.dashboardService.httpSvc.patch<ApiResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_SORT_ORDER),
+      request
+    );
+  }
+
+  /**
+   * Get available categories for theme creation
+   */
+  getAvailableCategories(params?: { type?: 'website' | 'video'; include_inactive?: boolean }): Observable<ThemeAvailableCategoriesResponse> {
+    let httpParams = new HttpParams();
+    if (params?.type) httpParams = httpParams.set('type', params.type);
+    if (params?.include_inactive) httpParams = httpParams.set('include_inactive', params.include_inactive.toString());
+
+    return this.dashboardService.httpSvc.get<ThemeAvailableCategoriesResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_CATEGORIES_AVAILABLE),
+      { params: httpParams }
+    );
+  }
+
+  /**
+   * Delete theme
+   */
+  deleteTheme(id: number): Observable<ApiResponse> {
+    return this.dashboardService.httpSvc.delete<ApiResponse>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_ADMIN_THEMES_DELETE)}/${id}`
+    );
+  }
+
+  // Public Theme Browsing
+  /**
+   * Get categories with themes (public)
+   */
+  getPublicCategoriesWithThemes(type: 'website' | 'video' = 'website'): Observable<PublicCategoriesResponse> {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('type', type);
+
+    return this.dashboardService.httpSvc.get<PublicCategoriesResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_PUBLIC_CATEGORIES_WITH_THEMES),
+      { params: httpParams }
+    );
+  }
+
+  /**
+   * Get themes by category (public)
+   */
+  getPublicThemesByCategory(categoryId: number): Observable<PublicThemesByCategoryResponse> {
+    return this.dashboardService.httpSvc.get<PublicThemesByCategoryResponse>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_PUBLIC_THEMES_BY_CATEGORY)}/${categoryId}`
+    );
+  }
+
+  /**
+   * Get theme details (public)
+   */
+  getPublicThemeDetails(themeId: number): Observable<PublicThemeDetailsResponse> {
+    return this.dashboardService.httpSvc.get<PublicThemeDetailsResponse>(
+      `${this.dashboardService.getUrl(DashboardServiceType.THEME_PUBLIC_THEME_DETAILS)}/${themeId}`
+    );
+  }
+
+  /**
+   * Get popular themes (public)
+   */
+  getPublicPopularThemes(params?: { type?: 'website' | 'video'; limit?: number }): Observable<PublicPopularThemesResponse> {
+    let httpParams = new HttpParams();
+    if (params?.type) httpParams = httpParams.set('type', params.type);
+    if (params?.limit) httpParams = httpParams.set('limit', params.limit.toString());
+
+    return this.dashboardService.httpSvc.get<PublicPopularThemesResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_PUBLIC_POPULAR_THEMES),
+      { params: httpParams }
+    );
+  }
+
+  // User Theme Selection
+  /**
+   * Select a theme (authenticated)
+   */
+  selectTheme(request: ThemeSelectionRequest): Observable<ThemeSelectionResponse> {
+    return this.dashboardService.httpSvc.post<ThemeSelectionResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_USER_SELECT),
+      request
+    );
+  }
+
+  /**
+   * Get selected theme (authenticated)
+   */
+  getSelectedTheme(): Observable<UserSelectedThemeResponse> {
+    return this.dashboardService.httpSvc.get<UserSelectedThemeResponse>(
+      this.dashboardService.getUrl(DashboardServiceType.THEME_USER_SELECTED)
     );
   }
 }

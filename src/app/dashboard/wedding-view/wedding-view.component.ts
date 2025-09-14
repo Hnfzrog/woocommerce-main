@@ -79,6 +79,13 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoading: boolean = false;
   errorMessage: string | null = null;
 
+  // Audio management properties
+  private audioElement: HTMLAudioElement | null = null;
+  private audioInitialized: boolean = false;
+  isAudioLoading: boolean = false;
+  audioError: string | null = null;
+  currentVolume: number = 0.7; // Default volume (70%)
+
   // Subscriptions
   private subscriptions = new Subscription();
 
@@ -90,7 +97,8 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     IS_PLAYING: 'wedding_is_playing',
     IS_MUTED: 'wedding_is_muted',
     WEDDING_DATA: 'wedding_data',
-    DOMAIN: 'wedding_domain' // Changed from couple_name to domain
+    DOMAIN: 'wedding_domain', // Changed from couple_name to domain
+    AUDIO_VOLUME: 'wedding_audio_volume'
   };
 
   constructor(
@@ -119,6 +127,8 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
     // Save current state before component destruction
     this.saveStateToLocalStorage();
+    // Cleanup audio resources
+    this.cleanupAudio();
   }
 
   /**
@@ -165,6 +175,12 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isMuted = savedIsMuted === 'true';
       }
 
+      // Load saved volume
+      const savedVolume = localStorage.getItem(this.STORAGE_KEYS.AUDIO_VOLUME);
+      if (savedVolume !== null) {
+        this.currentVolume = parseFloat(savedVolume);
+      }
+
       if (savedDomain) {
         this.domain = savedDomain;
         console.log('Restored domain from localStorage:', savedDomain);
@@ -199,6 +215,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
       localStorage.setItem(this.STORAGE_KEYS.SIDE_ICONS_VISIBLE, this.sideIconsVisible.toString());
       localStorage.setItem(this.STORAGE_KEYS.IS_PLAYING, this.isPlaying.toString());
       localStorage.setItem(this.STORAGE_KEYS.IS_MUTED, this.isMuted.toString());
+      localStorage.setItem(this.STORAGE_KEYS.AUDIO_VOLUME, this.currentVolume.toString());
 
       if (this.domain) {
         localStorage.setItem(this.STORAGE_KEYS.DOMAIN, this.domain);
@@ -493,6 +510,9 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
         domain: this.domain
       });
 
+      // Initialize audio when wedding data is updated
+      this.initializeAudio();
+
       // Here you would update component properties based on wedding data
       // Example implementation for when you add UI binding:
       // this.groomName = data.mempelai.pria.nama_lengkap;
@@ -592,14 +612,322 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.weddingData?.mempelai?.wanita?.photo || 'assets/default-bride.jpg';
   }
 
-  togglePlay(): void {
-    this.isPlaying = !this.isPlaying;
+  /**
+   * Initialize audio system with wedding music settings
+   * Sets up HTML5 Audio element with proper event listeners
+   */
+  private initializeAudio(): void {
+    // Don't reinitialize if already done
+    if (this.audioInitialized) {
+      return;
+    }
+
+    if (!this.weddingData?.settings) {
+      console.warn('No wedding settings available for audio initialization');
+      return;
+    }
+
+    // Try to get music URL - prefer stream URL, fallback to direct musik URL
+    const musicUrl = this.weddingData.settings.music_stream_url || this.weddingData.settings.musik;
+
+    if (!musicUrl) {
+      console.warn('No music URL available in wedding settings');
+      return;
+    }
+
+    try {
+      console.log('Initializing audio with URL:', musicUrl);
+      this.isAudioLoading = true;
+      this.audioError = null;
+
+      // Create new audio element
+      this.audioElement = new Audio();
+      this.audioElement.preload = 'auto';
+      this.audioElement.loop = true; // Loop the wedding music
+      this.audioElement.volume = this.currentVolume;
+      this.audioElement.muted = this.isMuted;
+      this.audioElement.crossOrigin = 'anonymous'; // Handle CORS if needed
+
+      // Set the audio source
+      this.audioElement.src = musicUrl;
+
+      // Add event listeners for audio management
+      this.setupAudioEventListeners();
+
+      // Mark as initialized
+      this.audioInitialized = true;
+
+      console.log('Audio system initialized successfully');
+
+    } catch (error) {
+      console.error('Error initializing audio:', error);
+      this.audioError = 'Failed to initialize audio system';
+      this.isAudioLoading = false;
+    }
+  }
+
+  /**
+   * Setup event listeners for audio element
+   * Manages audio state and error handling
+   */
+  private setupAudioEventListeners(): void {
+    if (!this.audioElement) return;
+
+    // Audio loaded and ready to play
+    this.audioElement.addEventListener('canplay', () => {
+      console.log('Audio can start playing');
+      this.isAudioLoading = false;
+      this.audioError = null;
+    });
+
+    // Audio is playing
+    this.audioElement.addEventListener('play', () => {
+      console.log('Audio started playing');
+      this.isPlaying = true;
+      this.saveStateToLocalStorage();
+    });
+
+    // Audio is paused
+    this.audioElement.addEventListener('pause', () => {
+      console.log('Audio paused');
+      this.isPlaying = false;
+      this.saveStateToLocalStorage();
+    });
+
+    // Audio loading started
+    this.audioElement.addEventListener('loadstart', () => {
+      console.log('Audio loading started');
+      this.isAudioLoading = true;
+    });
+
+    // Audio metadata loaded
+    this.audioElement.addEventListener('loadedmetadata', () => {
+      console.log('Audio metadata loaded, duration:', this.audioElement?.duration);
+    });
+
+    // Audio loading error
+    this.audioElement.addEventListener('error', (event) => {
+      const error = this.audioElement?.error;
+      console.error('Audio loading error:', error);
+
+      let errorMessage = 'Audio loading failed';
+      if (error) {
+        switch (error.code) {
+          case error.MEDIA_ERR_ABORTED:
+            errorMessage = 'Audio loading was aborted';
+            break;
+          case error.MEDIA_ERR_NETWORK:
+            errorMessage = 'Network error while loading audio';
+            break;
+          case error.MEDIA_ERR_DECODE:
+            errorMessage = 'Audio decoding error';
+            break;
+          case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            errorMessage = 'Audio format not supported';
+            break;
+        }
+      }
+
+      this.audioError = errorMessage;
+      this.isAudioLoading = false;
+      this.isPlaying = false;
+    });
+
+    // Audio volume changed
+    this.audioElement.addEventListener('volumechange', () => {
+      if (this.audioElement) {
+        this.currentVolume = this.audioElement.volume;
+        this.isMuted = this.audioElement.muted;
+        this.saveStateToLocalStorage();
+      }
+    });
+
+    // Audio ended (shouldn't happen with loop=true)
+    this.audioElement.addEventListener('ended', () => {
+      console.log('Audio ended');
+      this.isPlaying = false;
+      this.saveStateToLocalStorage();
+    });
+
+    // Audio stalled
+    this.audioElement.addEventListener('stalled', () => {
+      console.warn('Audio loading stalled');
+    });
+
+    // Audio waiting for data
+    this.audioElement.addEventListener('waiting', () => {
+      console.log('Audio waiting for data');
+      this.isAudioLoading = true;
+    });
+
+    // Audio can play through
+    this.audioElement.addEventListener('canplaythrough', () => {
+      console.log('Audio can play through');
+      this.isAudioLoading = false;
+    });
+  }
+
+  /**
+   * Cleanup audio resources
+   * Called in ngOnDestroy
+   */
+  private cleanupAudio(): void {
+    if (this.audioElement) {
+      console.log('Cleaning up audio resources');
+
+      // Pause and reset
+      this.audioElement.pause();
+      this.audioElement.currentTime = 0;
+
+      // Remove event listeners
+      this.audioElement.removeEventListener('canplay', () => {});
+      this.audioElement.removeEventListener('play', () => {});
+      this.audioElement.removeEventListener('pause', () => {});
+      this.audioElement.removeEventListener('error', () => {});
+      this.audioElement.removeEventListener('volumechange', () => {});
+      this.audioElement.removeEventListener('ended', () => {});
+
+      // Clear source and element
+      this.audioElement.src = '';
+      this.audioElement.load(); // Force cleanup
+      this.audioElement = null;
+
+      this.audioInitialized = false;
+      this.isPlaying = false;
+      this.isAudioLoading = false;
+    }
+  }
+
+  /**
+   * Set audio volume
+   * @param volume - Volume level (0.0 to 1.0)
+   */
+  setVolume(volume: number): void {
+    if (volume < 0 || volume > 1) {
+      console.warn('Volume must be between 0 and 1');
+      return;
+    }
+
+    this.currentVolume = volume;
+
+    if (this.audioElement) {
+      this.audioElement.volume = volume;
+    }
+
     this.saveStateToLocalStorage();
+    console.log('Volume set to:', volume);
+  }
+
+  /**
+   * Get current audio time
+   * @returns number - Current playback time in seconds
+   */
+  getCurrentTime(): number {
+    return this.audioElement?.currentTime || 0;
+  }
+
+  /**
+   * Get audio duration
+   * @returns number - Total audio duration in seconds
+   */
+  getDuration(): number {
+    return this.audioElement?.duration || 0;
+  }
+
+  /**
+   * Check if audio is ready to play
+   * @returns boolean - Whether audio is ready
+   */
+  isAudioReady(): boolean {
+    return this.audioInitialized && !this.isAudioLoading && !this.audioError;
+  }
+
+  /**
+   * Get music information from wedding settings
+   * @returns object with music info or null
+   */
+  getMusicInfo(): any {
+    return this.weddingData?.settings?.music_info || null;
+  }
+
+  /**
+   * Check if music streaming is supported
+   * @returns boolean - Whether music streaming is supported
+   */
+  isMusicStreamingSupported(): boolean {
+    const musicInfo = this.getMusicInfo();
+    return musicInfo?.supports_streaming === true;
+  }
+
+  /**
+   * Get available music formats
+   * @returns string[] - Array of supported formats
+   */
+  getSupportedFormats(): string[] {
+    const musicInfo = this.getMusicInfo();
+    return musicInfo?.format_support || [];
+  }
+
+  togglePlay(): void {
+    if (!this.audioElement) {
+      console.warn('Audio not initialized, cannot toggle play');
+      this.initializeAudio();
+      return;
+    }
+
+    if (this.isAudioLoading) {
+      console.warn('Audio is still loading, please wait');
+      return;
+    }
+
+    if (this.audioError) {
+      console.warn('Audio error present, cannot play:', this.audioError);
+      return;
+    }
+
+    try {
+      if (this.isPlaying) {
+        this.audioElement.pause();
+        console.log('Audio paused by user');
+      } else {
+        // Handle browser autoplay policies
+        const playPromise = this.audioElement.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('Audio started playing successfully');
+            })
+            .catch(error => {
+              console.error('Audio play failed:', error);
+              this.audioError = 'Playback failed - please interact with the page first';
+              this.isPlaying = false;
+            });
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling audio play:', error);
+      this.audioError = 'Playback control failed';
+    }
+
+    // State will be updated by event listeners
   }
 
   toggleMute(): void {
-    this.isMuted = !this.isMuted;
-    this.saveStateToLocalStorage();
+    if (!this.audioElement) {
+      console.warn('Audio not initialized, cannot toggle mute');
+      this.initializeAudio();
+      return;
+    }
+
+    try {
+      this.audioElement.muted = !this.audioElement.muted;
+      console.log('Audio muted:', this.audioElement.muted);
+
+      // State will be updated by volumechange event listener
+    } catch (error) {
+      console.error('Error toggling audio mute:', error);
+    }
   }
 
   toggleSideIcons(): void {

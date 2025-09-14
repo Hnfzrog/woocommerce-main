@@ -85,6 +85,13 @@ export interface WeddingSettings {
   salam_pembuka: string;
   salam_atas: string;
   salam_bawah: string;
+  music_stream_url?: string;
+  music_info?: {
+    has_music: boolean;
+    supports_streaming: boolean;
+    supports_range_requests: boolean;
+    format_support: string[];
+  };
 }
 
 export interface FilterUndangan {
@@ -257,7 +264,7 @@ export class WeddingDataService {
     if (domain) {
       return this.generateWeddingUrlWithDomain(domain);
     }
-    
+
     // Fallback to old method if domain not available
     console.warn('Domain not found in wedding data, using fallback couple name method');
     return this.generateWeddingUrl(weddingData);
@@ -382,11 +389,11 @@ export class WeddingDataService {
    */
   getShareableUrl(weddingData: WeddingData): string {
     const domain = this.extractDomain(weddingData);
-    
+
     if (domain) {
       return this.generateWeddingUrlWithDomain(domain);
     }
-    
+
     // Fallback to couple name approach
     console.warn('No domain found, using couple name fallback for sharing URL');
     return this.generateWeddingUrl(weddingData);

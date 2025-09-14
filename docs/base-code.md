@@ -221,7 +221,7 @@ export interface User {
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-button',
+  selector: 'wc-button',
   template: `<button [type]="type" [disabled]="disabled"><ng-content></ng-content></button>`,
   styleUrls: ['./button.component.scss']
 })

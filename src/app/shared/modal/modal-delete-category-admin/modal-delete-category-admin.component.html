@@ -18,22 +18,22 @@
     </div>
 
     <h2 id="modalTitle" class="fw-semibold fs-5 text-dark text-center text-sm-start mb-3">
-      Hapus Kategori
+      {{ categoryType.includes('theme') ? 'Hapus Tema' : 'Hapus Kategori' }}
     </h2>
 
     <form [formGroup]="categoryForm">
       <label for="name" class="form-label fw-semibold text-dark fs-6 mb-2 d-block">
-        Nama Kategori
+        {{ categoryType.includes('theme') ? 'Nama Tema' : 'Nama Kategori' }}
       </label>
       <div class="input-group mb-1">
-        <input type="text" id="name" class="form-control" placeholder="-- Ketik kategori --" formControlName="name" readonly/>
+        <input type="text" id="name" class="form-control" [placeholder]="'-- ' + (categoryType.includes('theme') ? 'Nama tema' : 'Nama kategori') + ' --'" formControlName="name" readonly/>
       </div>
 
       <label for="slug" class="form-label fw-semibold text-dark fs-6 mb-2 d-block">
         Slug
       </label>
       <div class="input-group mb-5">
-        <input type="text" id="slug" class="form-control" placeholder="-- Ketik slug --" formControlName="slug" readonly/>
+        <input type="text" id="slug" class="form-control" [placeholder]="'-- Slug ' + (categoryType.includes('theme') ? 'tema' : 'kategori') + ' --'" formControlName="slug" readonly/>
       </div>
     </form>
 

@@ -75,6 +75,8 @@ import { ModalAddCategoryAdminComponent } from './shared/modal/modal-add-categor
 import { ModalEditCategoryAdminComponent } from './shared/modal/modal-edit-category-admin/modal-edit-category-admin.component';
 import { ModalDeleteCategoryAdminComponent } from './shared/modal/modal-delete-category-admin/modal-delete-category-admin.component';
 import { ModalDeleteAllCategoryComponent } from './shared/modal/modal-delete-all-category/modal-delete-all-category.component';
+import { ModalAddVideoCategoryComponent } from './shared/modal/modal-add-video-category/modal-add-video-category.component';
+import { ModalAddWebsiteCategoryComponent } from './shared/modal/modal-add-website-category/modal-add-website-category.component';
 import { WeddingViewComponent } from './dashboard/wedding-view/wedding-view.component';
 import { CoupleViewComponent } from './dashboard/wedding-view/couple-view/couple-view.component';
 import { MessageViewComponent } from './dashboard/wedding-view/message-view/message-view.component';
@@ -86,7 +88,6 @@ import { PresenceViewComponent } from './dashboard/wedding-view/presence-view/pr
 import { GiftViewComponent } from './dashboard/wedding-view/gift-view/gift-view.component';
 import { BillUserComponent } from './dashboard/bill-user/bill-user.component';
 import { ProfileAdminComponent } from './dashboard-admin/pengaturan/profile-admin/profile-admin.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -150,6 +151,8 @@ import { ProfileAdminComponent } from './dashboard-admin/pengaturan/profile-admi
     ModalEditCategoryAdminComponent,
     ModalDeleteCategoryAdminComponent,
     ModalDeleteAllCategoryComponent,
+    ModalAddVideoCategoryComponent,
+    ModalAddWebsiteCategoryComponent,
     WeddingViewComponent,
     CoupleViewComponent,
     MessageViewComponent,
@@ -160,7 +163,7 @@ import { ProfileAdminComponent } from './dashboard-admin/pengaturan/profile-admi
     PresenceViewComponent,
     GiftViewComponent,
     BillUserComponent,
-    ProfileAdminComponent
+    ProfileAdminComponent,
   ],
   imports: [
     BrowserModule,
