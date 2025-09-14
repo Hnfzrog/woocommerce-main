@@ -1,4 +1,6 @@
-export const environment = {
+import { Environment } from './environment.interface';
+
+export const environment: Environment = {
   production: true,
-  apiBaseUrl: 'https://your-production-domain.com/storage'
+  apiBaseUrl: 'https://horuzt.pioneersolve.id/'
 };
