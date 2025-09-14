@@ -102,7 +102,7 @@
 
       <!-- Collapsible icons group -->
       <div class="side-icons-group" [class.visible]="sideIconsVisible" *ngIf="sideIconsVisible">
-        <button class="side-icon-btn" aria-label="QR code">
+        <button class="side-icon-btn" aria-label="QR code" (click)="openQRCodeModal()">
           <i class="fas fa-qrcode"></i>
         </button>
 

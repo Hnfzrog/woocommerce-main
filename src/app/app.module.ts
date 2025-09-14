@@ -77,6 +77,7 @@ import { ModalDeleteCategoryAdminComponent } from './shared/modal/modal-delete-c
 import { ModalDeleteAllCategoryComponent } from './shared/modal/modal-delete-all-category/modal-delete-all-category.component';
 import { ModalAddVideoCategoryComponent } from './shared/modal/modal-add-video-category/modal-add-video-category.component';
 import { ModalAddWebsiteCategoryComponent } from './shared/modal/modal-add-website-category/modal-add-website-category.component';
+import { QRCodeModalComponent } from './shared/modal/qr-code-modal/qr-code-modal.component';
 import { WeddingViewComponent } from './dashboard/wedding-view/wedding-view.component';
 import { CoupleViewComponent } from './dashboard/wedding-view/couple-view/couple-view.component';
 import { MessageViewComponent } from './dashboard/wedding-view/message-view/message-view.component';
@@ -153,6 +154,7 @@ import { ProfileAdminComponent } from './dashboard-admin/pengaturan/profile-admi
     ModalDeleteAllCategoryComponent,
     ModalAddVideoCategoryComponent,
     ModalAddWebsiteCategoryComponent,
+    QRCodeModalComponent,
     WeddingViewComponent,
     CoupleViewComponent,
     MessageViewComponent,

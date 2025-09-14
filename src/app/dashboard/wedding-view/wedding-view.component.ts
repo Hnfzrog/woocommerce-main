@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewInit, ElementRef, Renderer2, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { DashboardService, DashboardServiceType } from 'src/app/dashboard.service';
 import { WeddingDataService, WeddingData } from '../../services/wedding-data.service';
+import { QRCodeModalComponent } from '../../shared/modal/qr-code-modal/qr-code-modal.component';
 
 // Attendance interface for type safety
 interface AttendanceRequest {
@@ -89,6 +91,9 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
   // Subscriptions
   private subscriptions = new Subscription();
 
+  // QR Code Modal
+  private qrModalRef?: BsModalRef;
+
   // LocalStorage keys - Updated to use domain instead of couple name
   private readonly STORAGE_KEYS = {
     CURRENT_VIEW: 'wedding_current_view',
@@ -107,7 +112,8 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private dashboardService: DashboardService,
-    private weddingDataService: WeddingDataService
+    private weddingDataService: WeddingDataService,
+    private modalService: BsModalService
   ) { }
 
   ngOnInit() {
@@ -129,6 +135,10 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.saveStateToLocalStorage();
     // Cleanup audio resources
     this.cleanupAudio();
+    // Clean up QR modal subscription
+    if (this.qrModalRef) {
+      this.qrModalRef.hide();
+    }
   }
 
   /**
@@ -958,7 +968,7 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const attendanceData: AttendanceRequest = {
       user_id: this.weddingData.user_info.id,
-      nama: 'View Tracker', // Default name for view tracking
+      nama: 'Viewer', // Default name for view tracking
       kehadiran: 'hadir', // Default status for view tracking
       pesan: `Undangan domain ${this.domain} telah dilihat` // Include domain in tracking message
     };
@@ -1035,6 +1045,83 @@ export class WeddingViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isCurrentView(view: ContentView): boolean {
     return this.currentView === view;
+  }
+
+  /**
+   * Open QR Code modal for sharing wedding URL
+   */
+  openQRCodeModal(): void {
+    console.log('openQRCodeModal called');
+    console.log('Current domain:', this.domain);
+
+    if (!this.domain) {
+      console.error('No domain available for QR code generation');
+      alert('No domain available for QR code generation');
+      return;
+    }
+
+    const weddingUrl = this.getWeddingUrl();
+    const coupleNames = this.getCoupleDisplayName();
+
+    console.log('Wedding URL:', weddingUrl);
+    console.log('Couple names:', coupleNames);
+
+    const initialState = {
+      url: weddingUrl,
+      title: `Share ${coupleNames}'s Wedding`,
+      description: 'Scan this QR code to view our wedding invitation'
+    };
+
+    console.log('Modal initial state:', initialState);
+    console.log('Modal service:', this.modalService);
+
+    try {
+      this.qrModalRef = this.modalService.show(QRCodeModalComponent, {
+        initialState,
+        class: 'modal-lg',
+        backdrop: true,
+        keyboard: true,
+        animated: true
+      });
+
+      console.log('Modal ref created:', this.qrModalRef);
+
+      // Handle modal close event
+      this.qrModalRef.onHide?.subscribe(() => {
+        console.log('QR Code modal closed');
+        this.qrModalRef = undefined;
+      });
+
+      console.log('QR Code modal opened successfully');
+    } catch (error) {
+      console.error('Error opening QR modal:', error);
+      alert('Error opening QR modal: ' + error);
+    }
+  }
+
+  /**
+   * Test modal opening for debugging
+   */
+  testModal(): void {
+    console.log('Test modal button clicked');
+    console.log('Modal service available:', !!this.modalService);
+    console.log('QRCodeModalComponent:', QRCodeModalComponent);
+
+    try {
+      const testModalRef = this.modalService.show(QRCodeModalComponent, {
+        initialState: {
+          url: 'https://test.example.com',
+          title: 'Test Modal',
+          description: 'This is a test modal'
+        },
+        class: 'modal-lg'
+      });
+
+      console.log('Test modal opened:', testModalRef);
+    } catch (error) {
+      console.error('Test modal error:', error);
+      alert('Test modal error: ' + error);
+    }
   }
 
   private initializeBootstrapTooltips(): void {
