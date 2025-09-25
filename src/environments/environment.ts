@@ -6,7 +6,7 @@ import { Environment } from './environment.interface';
 
 export const environment: Environment = {
   production: false,
-  apiBaseUrl: 'http://127.0.0.1:8000/storage'
+  apiBaseUrl: 'http://127.0.0.1:8000/api'
 };
 
 /*
