@@ -241,7 +241,7 @@ export interface TestimonialBulkStatusRequest {
 })
 export class DashboardService {
 
-  private BASE_URL_API = 'https://horuzt.pioneersolve.id/api';
+  private BASE_URL_API = 'http://127.0.0.1:8000/api';
 
   constructor(public httpSvc: HttpClient) { }
 
